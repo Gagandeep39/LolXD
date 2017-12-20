@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:layout_margin="16sp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:padding="16sp"
+            android:id="@+id/button"
+            android:layout_weight="1"
+            android:layout_width="0sp"
+            android:layout_height="120sp"
+            android:text="Add New Customer"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:layout_height="120sp"
+            android:padding="16sp"
+            android:id="@+id/button2"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_width="0sp"
+            android:layout_weight="1"
+            android:text="View New Customer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="0sp"
+            android:layout_height="120sp"
+            android:layout_weight="1"
+            android:text="Add Contact"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>
