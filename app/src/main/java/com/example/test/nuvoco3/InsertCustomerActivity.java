@@ -3,23 +3,18 @@ package com.example.test.nuvoco3;
 
 import android.content.ContentValues;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.Toast;
 
-import com.example.test.nuvoco3.customerdata.CustomerContract;
 import com.example.test.nuvoco3.customerdata.CustomerContract.CustomerEntry;
 import com.example.test.nuvoco3.customerdata.CustomerDbHelper;
+import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -27,7 +22,9 @@ import java.util.Date;
 
 public class InsertCustomerActivity extends AppCompatActivity {
     public static final String TAG = "NUVOCO";
+    String categoryPosition = null, areaPosition = null, districtPosition = null, statePosition = null;
     Spinner categorySpinner;
+    SearchableSpinner searchableSpinnerCategory, searchableSpinnerDistrict, searchableSpinnerArea, searchableSpinnerState;
     String customerCategory = "Dealer";
     FloatingActionButton floatingActionButtonAddData;
     TextInputEditText editTextName, editTextAddress, editTextArea, editTextDistrict, editTextState, editTextPhone, editTextEmail, editTextCreatedBy;
@@ -37,11 +34,84 @@ public class InsertCustomerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert_customer);
         findViews();
-        spinnerFunction();
+//        spinnerFunction();
         floatingActionButtonAddData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 insertCustomer();
+            }
+        });
+        initializeSpinners();
+
+    }
+
+    private void initializeSpinners() {
+        final String category[] = {"Default", "Dealer", "Subdealer", "Individual"};
+        final String area[] = {"Default", "Area 1", "Area 2", "Area 3", "Area 4"};
+        final String district[] = {"Default", "Mumbai", "Pune", "Aurangabad", "Nagpur"};
+        final String state[] = {"Default", "Maharashtra", "Gujrat", "Rajasthan", "Madhya Pradesh", "Chattissgarh"};
+        ArrayAdapter<String> categoryArrayAdapter = new ArrayAdapter<String>(InsertCustomerActivity.this, android.R.layout.simple_dropdown_item_1line, category);
+        ArrayAdapter<String> areaArrayAdapter = new ArrayAdapter<String>(InsertCustomerActivity.this, android.R.layout.simple_dropdown_item_1line, area);
+        ArrayAdapter<String> districtArrayAdapter = new ArrayAdapter<String>(InsertCustomerActivity.this, android.R.layout.simple_dropdown_item_1line, district);
+        ArrayAdapter<String> stateArrayAdapter = new ArrayAdapter<String>(InsertCustomerActivity.this, android.R.layout.simple_dropdown_item_1line, state);
+        searchableSpinnerCategory.setPositiveButton("Ok");
+        searchableSpinnerCategory.setTitle("Select Item");
+        searchableSpinnerCategory.setAdapter(categoryArrayAdapter);
+        searchableSpinnerCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                categoryPosition = category[position - 1];
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        searchableSpinnerArea.setPositiveButton("Ok");
+        searchableSpinnerArea.setTitle("Select Item");
+        searchableSpinnerArea.setAdapter(areaArrayAdapter);
+        searchableSpinnerArea.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                areaPosition = area[position];
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        searchableSpinnerDistrict.setPositiveButton("Ok");
+        searchableSpinnerDistrict.setTitle("Select Item");
+        searchableSpinnerDistrict.setAdapter(districtArrayAdapter);
+        searchableSpinnerDistrict.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                districtPosition = district[position];
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        searchableSpinnerState.setPositiveButton("Ok");
+        searchableSpinnerState.setTitle("Select Item");
+        searchableSpinnerState.setAdapter(stateArrayAdapter);
+        searchableSpinnerState.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                statePosition = state[position];
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
 
@@ -81,16 +151,20 @@ public class InsertCustomerActivity extends AppCompatActivity {
     }
 
     private void findViews() {
-        categorySpinner = findViewById(R.id.spinnerCategory);
+//        categorySpinner = findViewById(R.id.spinnerCategory);
         floatingActionButtonAddData = findViewById(R.id.fabAddData);
         editTextName = findViewById(R.id.textInputEditName);
         editTextAddress = findViewById(R.id.textInputEditAddress);
-        editTextArea = findViewById(R.id.textInputEditArea);
-        editTextDistrict = findViewById(R.id.textInputEditDistrict);
-        editTextState = findViewById(R.id.textInputEditState);
+//        editTextArea = findViewById(R.id.textInputEditArea);
+//        editTextDistrict = findViewById(R.id.textInputEditDistrict);
+//        editTextState = findViewById(R.id.textInputEditState);
         editTextPhone = findViewById(R.id.textInputEditPhone);
         editTextEmail = findViewById(R.id.textInputEditEmail);
         editTextCreatedBy = findViewById(R.id.textInputEditCreatedBy);
+        searchableSpinnerCategory = findViewById(R.id.searchCategory);
+        searchableSpinnerArea = findViewById(R.id.searchArea);
+        searchableSpinnerDistrict = findViewById(R.id.searchDistrict);
+        searchableSpinnerState = findViewById(R.id.searchState);
 
     }
 
@@ -104,13 +178,13 @@ public class InsertCustomerActivity extends AppCompatActivity {
     public void insertCustomer() {
         String currentName = editTextName.getText().toString().trim();
         String currentType = "New";
-        String currentCategory = customerCategory;
-        String currentAddress = editTextAddress.getText().toString().trim();
-        String currentArea = editTextArea.getText().toString().trim();
-        String currentDistrict = editTextDistrict.getText().toString().trim();
-        String currentState = editTextState.getText().toString().trim();
         String currentPhone = editTextPhone.getText().toString().trim();
         String currentEmail = editTextEmail.getText().toString().trim();
+        String currentCategory = categoryPosition;
+        String currentAddress = editTextAddress.getText().toString().trim();
+        String currentArea = areaPosition;
+        String currentDistrict = districtPosition;
+        String currentState = statePosition;
         String currentStatus = "1";
         String createdBy = editTextCreatedBy.getText().toString().trim();
         String createdOn = getDateTime();
