@@ -1,13 +1,17 @@
 package com.example.test.nuvoco3;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+
+import com.example.test.nuvoco3.signup.SignUpActivity;
 
 public class LoginActivity extends AppCompatActivity {
     Button buttonSkip;
+    TextView mTextViewSignUp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,5 +30,10 @@ public class LoginActivity extends AppCompatActivity {
     private void findViews() {
 
         buttonSkip = findViewById(R.id.skip);
+        mTextViewSignUp = findViewById(R.id.textViewSignUp);
     }
+
+    public void signUpFunction(View v) {
+        startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
+}
 }
