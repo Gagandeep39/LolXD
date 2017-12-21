@@ -1,10 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="16sp">
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="120sp"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/buttonComplaint"
+            android:layout_width="wrap_content"
+            android:layout_height="120sp"
+            android:layout_columnWeight="0"
+            android:layout_margin="16sp"
+            android:layout_rowWeight="0"
+            android:background="@color/colorAccent"
+            android:padding="16sp"
+            android:text="Add New Complaint" />
+    </GridLayout>
 
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

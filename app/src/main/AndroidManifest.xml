@@ -36,6 +36,7 @@
         <activity
             android:name=".viewcustomerdata.ViewCustomerActivity"
             android:label="@string/title_activity_view_customer"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <!-- <activity android:name=".splashscreen.SplashScreenActivity"></activity> -->
         <activity
@@ -53,6 +54,10 @@
         <activity
             android:name=".complaints.ComplaintDetailsActivity"
             android:label="@string/title_activity_complaint_details"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".signup.SignUpActivity"
+            android:label="@string/title_activity_sign_up"
             android:theme="@style/AppTheme"></activity>
     </application>
 

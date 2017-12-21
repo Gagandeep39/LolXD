@@ -19,13 +19,15 @@ import static com.example.test.nuvoco3.InsertCustomerActivity.TAG;
  */
 
 public class DisplayCustomerAdapter extends RecyclerView.Adapter<DisplayCustomerAdapter.ViewHolder> {
-    public DisplayCustomerAdapter(List<Customer> list, Context context) {
-        this.list = list;
+
+    private Context context;
+    private List<Customer> list;
+
+    public DisplayCustomerAdapter(Context context, List<Customer> list) {
         this.context = context;
+        this.list = list;
     }
 
-    private List<Customer> list;
-    private Context context;
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.customer_list, parent, false);
@@ -35,6 +37,8 @@ public class DisplayCustomerAdapter extends RecyclerView.Adapter<DisplayCustomer
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Customer currentCustomer = list.get(position);
+
+
         holder.textViewName.append(currentCustomer.getCustomerName());
         holder.textViewType.append(currentCustomer.getCustomerType());
         holder.textViewCategory.append(currentCustomer.getCustomerCategory());

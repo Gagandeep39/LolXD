@@ -41,25 +41,29 @@
                 android:id="@+id/tabItemLead"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:icon="@drawable/ic_business_black_24dp" />
+                android:icon="@drawable/ic_business_black_24dp"
+                android:text="Lead" />
             <!--customers-->
             <android.support.design.widget.TabItem
                 android:id="@+id/tabItemCustomer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:icon="@drawable/ic_group_black_24dp" />
+                android:icon="@drawable/ic_group_black_24dp"
+                android:text="Market" />
             <!--market-->
             <android.support.design.widget.TabItem
                 android:id="@+id/tabItemMarket"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:icon="@drawable/ic_trending_up_black_24dp" />
+                android:icon="@drawable/ic_trending_up_black_24dp"
+                android:text="Market" />
             <!--visit-->
             <android.support.design.widget.TabItem
                 android:id="@+id/tabItemVisit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:icon="@drawable/ic_location_on_black_24dp" />
+                android:icon="@drawable/ic_today"
+                android:text="Visit" />
 
         </android.support.design.widget.TabLayout>
     </android.support.design.widget.AppBarLayout>
