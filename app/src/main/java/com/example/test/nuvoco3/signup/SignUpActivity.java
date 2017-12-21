@@ -19,7 +19,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.R;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
@@ -44,7 +43,6 @@ public class SignUpActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-
         queue = Volley.newRequestQueue(this);
         initializeViews();
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -107,7 +105,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void insertData() {
         String mPinString = mTextInputEditTextPin.getText().toString();
-        String mAgeString = mTextInputEditTextPhone.getText().toString();
+        String mAgeString = mTextInputEditTextAge.getText().toString();
         if (TextUtils.isEmpty(mPinString))
             Toast.makeText(this, "Insert Pin", Toast.LENGTH_SHORT).show();
         else
@@ -120,13 +118,37 @@ public class SignUpActivity extends AppCompatActivity {
 
 
         mName = mTextInputEditTextName.getText().toString();
-        mPhone = mTextInputEditTextPhone.getText().toString();
-        mEmail = mTextInputEditTextEmail.getText().toString();
-        mAddress = mTextInputEditTextAddress.getText().toString();
-        mPassword1 = mTextInputEditTextPass1.getText().toString();
-        mPassword2 = mTextInputEditTextPass2.getText().toString();
+        if (TextUtils.isEmpty(mName))
+            Toast.makeText(this, "Name field cannot be blank", Toast.LENGTH_SHORT).show();
 
-//        postRequest();
+        mPhone = mTextInputEditTextPhone.getText().toString();
+        if (TextUtils.isEmpty(mPhone))
+            Toast.makeText(this, "You need to enter phone number", Toast.LENGTH_SHORT).show();
+        mEmail = mTextInputEditTextEmail.getText().toString();
+        if (TextUtils.isEmpty(mEmail))
+            Toast.makeText(this, "You need to enter Email", Toast.LENGTH_SHORT).show();
+        mAddress = mTextInputEditTextAddress.getText().toString();
+        if (TextUtils.isEmpty(mAddress))
+            Toast.makeText(this, "You need to enter Address", Toast.LENGTH_SHORT).show();
+
+        mPassword1 = mTextInputEditTextPass1.getText().toString();
+        if (TextUtils.isEmpty(mPhone))
+            Toast.makeText(this, "You need to Enter Password", Toast.LENGTH_SHORT).show();
+        else {
+            mPassword2 = mTextInputEditTextPass2.getText().toString();
+            if (TextUtils.isEmpty(mPhone))
+                Toast.makeText(this, "You need to Re-enter Password", Toast.LENGTH_SHORT).show();
+            else if (!mPassword1.equals(mPassword2))
+                Toast.makeText(this, "Password doesn't match", Toast.LENGTH_SHORT).show();
+        }
+        if (TextUtils.isEmpty(mArea))
+            Toast.makeText(this, "Select Area", Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(mCity))
+            Toast.makeText(this, "Select City", Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(mDepartment))
+            Toast.makeText(this, "Select Department", Toast.LENGTH_SHORT).show();
+
+        if (!TextUtils.isEmpty(mName) && !TextUtils.isEmpty(mAge + "") && !TextUtils.isEmpty(mPhone) && !TextUtils.isEmpty(mEmail) && !TextUtils.isEmpty(mAddress) && !TextUtils.isEmpty(mPassword1) && !TextUtils.isEmpty(mArea) && !TextUtils.isEmpty(mCity) && !TextUtils.isEmpty(mDepartment) && !TextUtils.isEmpty(mAge + ""))
         makeJsonObjReq();
     }
 
@@ -145,62 +167,26 @@ public class SignUpActivity extends AppCompatActivity {
         mSearchableSpinnerCity = findViewById(R.id.searchCity);
     }
 
-    void postRequest() {
-        String url = "https://35.165.145.61:8000/insert";
-        StringRequest postRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // response
-                        Log.d("Response", response);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // error
-                        Log.d("Error.Response", "Error while inserting");
-                    }
-                }
-        ) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("1", mName);
-                params.put("2", mEmail);
-                params.put("3", mPhone);
-                params.put("4", mAge + "");
-                params.put("5", mArea);
-                params.put("6", mCity);
-                params.put("7", mAddress);
-                params.put("8", mPin + "");
-                params.put("9", mDepartment);
-                params.put("10", mPassword1);
-                params.put("11", mStatus + "");
 
-                return params;
-            }
-        };
-        queue.add(postRequest);
-        Log.i("lol", "postRequest: " + "Successfull");
-    }
 
 
     private void makeJsonObjReq() {
 
 
         Map<String, String> postParam = new HashMap<String, String>();
-        postParam.put("1", mName);
-        postParam.put("2", mEmail);
-        postParam.put("3", mPhone);
+
+
+        postParam.put("1", mName);  //1=>Name, 2.Email, 3.Phone, 4.Age, 5.Address
+        postParam.put("2", mEmail); //6=>area, 7.city, 8pincode, 9.department, 10. Password
+        postParam.put("3", mPhone + "");    //11.status
         postParam.put("4", mAge + "");
-        postParam.put("5", mArea);
-        postParam.put("6", mCity);
-        postParam.put("7", mAddress);
-        postParam.put("8", mPin + "");
         postParam.put("9", mDepartment);
         postParam.put("10", mPassword1);
         postParam.put("11", mStatus + "");
+        postParam.put("5", mAddress);   //5=>Address
+        postParam.put("8", mPin + "");
+        postParam.put("7", mCity);
+        postParam.put("6", mArea);
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, "http://35.165.145.61:8000/insert", new JSONObject(postParam),
                 new Response.Listener<JSONObject>() {
