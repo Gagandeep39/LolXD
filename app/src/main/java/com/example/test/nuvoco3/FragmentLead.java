@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.test.nuvoco3.lead.InsertCustomerActivity;
+import com.example.test.nuvoco3.lead.InsertCustomerContactActivity;
 import com.example.test.nuvoco3.lead.viewcustomerdata.ViewCustomerActivity;
 
 /**
@@ -23,12 +24,13 @@ import com.example.test.nuvoco3.lead.viewcustomerdata.ViewCustomerActivity;
 
 public class FragmentLead extends android.support.v4.app.Fragment {
     private static final int PERMISSION_REQUEST_CODE = 1;
-    Button button, button2;
+    Button button, button2, mButtonContact;
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragmentlead_layout, container, false);
         button = v.findViewById(R.id.button);
         button2 = v.findViewById(R.id.button2);
+        mButtonContact = v.findViewById(R.id.button3);
         askPermission();
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,6 +42,12 @@ public class FragmentLead extends android.support.v4.app.Fragment {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getContext(), ViewCustomerActivity.class));
+            }
+        });
+        mButtonContact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(), InsertCustomerContactActivity.class));
             }
         });
 
