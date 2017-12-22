@@ -9,13 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.example.test.nuvoco3.complaints.ComplaintActivity;
+import com.example.test.nuvoco3.customer.ComplaintActivity;
 
 /**
  * Created by gagandeep on 15/12/17.
  */
 
-public class FragmentTwo extends Fragment {
+public class FragmentCustomer extends Fragment {
     Button buttonComplaint;
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragmenttwo_layout, container, false);

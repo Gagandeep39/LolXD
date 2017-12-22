@@ -2,11 +2,11 @@
 <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/recyclerView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/recyclerView"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.test.nuvoco3.viewcustomerdata.ViewCustomerActivity"
+    tools:context=".lead.viewcustomerdata.ViewCustomerActivity"
     tools:showIn="@layout/activity_view_customer">
 
 </android.support.v7.widget.RecyclerView>

@@ -11,7 +11,7 @@ import android.view.ViewGroup;
  * Created by gagandeep on 20/12/17.
  */
 
-public class FragmentThree extends Fragment {
+public class FragmentMarket extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragmentthree_layout, container, false);
 

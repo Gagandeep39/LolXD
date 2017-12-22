@@ -1,13 +1,12 @@
-package com.example.test.nuvoco3.splashscreen;
+package com.example.test.nuvoco3.signup.splashscreen;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
-import com.example.test.nuvoco3.LoginActivity;
-import com.example.test.nuvoco3.MainActivity;
 import com.example.test.nuvoco3.R;
+import com.example.test.nuvoco3.signup.LoginActivity;
 
 public class SplashScreenActivity extends AppCompatActivity {
 

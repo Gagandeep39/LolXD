@@ -1,5 +1,5 @@
 
-package com.example.test.nuvoco3;
+package com.example.test.nuvoco3.lead;
 
 import android.content.ContentValues;
 import android.content.Intent;
@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.customerdata.CustomerContract.CustomerEntry;
 import com.example.test.nuvoco3.customerdata.CustomerDbHelper;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;

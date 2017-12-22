@@ -6,9 +6,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.example.test.nuvoco3.viewcustomerdata.cusomerlistrecyclerview.CustomerContact;
-import com.example.test.nuvoco3.viewcustomerdata.cusomerlistrecyclerview.Customer;
 import com.example.test.nuvoco3.customerdata.CustomerContract.CustomerEntry;
+import com.example.test.nuvoco3.lead.viewcustomerdata.cusomerlistrecyclerview.Customer;
+import com.example.test.nuvoco3.lead.viewcustomerdata.cusomerlistrecyclerview.CustomerContact;
+
 import java.util.ArrayList;
 
 /**

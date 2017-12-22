@@ -1,4 +1,4 @@
-package com.example.test.nuvoco3.viewcustomerdata;
+package com.example.test.nuvoco3.lead.viewcustomerdata;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

@@ -2,37 +2,28 @@ package com.example.test.nuvoco3;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.net.Uri;
+import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import com.example.test.nuvoco3.customerdata.CustomerContract.CustomerEntry;
 import android.view.ViewGroup;
 
-import android.widget.TextView;
-
-import com.example.test.nuvoco3.R;
-import com.example.test.nuvoco3.customerdata.CustomerContract;
+import com.example.test.nuvoco3.customerdata.CustomerContract.CustomerEntry;
 import com.example.test.nuvoco3.customerdata.CustomerDbHelper;
-import com.example.test.nuvoco3.viewcustomerdata.FragmentFour;
+import com.example.test.nuvoco3.lead.viewcustomerdata.FragmentFour;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -51,13 +42,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
 
@@ -194,15 +185,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         public Fragment getItem(int position) {
             switch (position){
                 case 0:
-                    return new FragmentOne();
+                    return new FragmentLead();
                 case 1:
-                    return new FragmentTwo();
+                    return new FragmentCustomer();
                 case 2:
-                    return new FragmentThree();
+                    return new FragmentMarket();
                 case 3:
                     return new FragmentFour();
                     default:
-                        return new FragmentOne();
+                        return new FragmentLead();
 
 
             }

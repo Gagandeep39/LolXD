@@ -1,4 +1,4 @@
-package com.example.test.nuvoco3.complaints;
+package com.example.test.nuvoco3.customer;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;

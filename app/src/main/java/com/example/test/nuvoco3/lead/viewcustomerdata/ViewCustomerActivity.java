@@ -1,4 +1,4 @@
-package com.example.test.nuvoco3.viewcustomerdata;
+package com.example.test.nuvoco3.lead.viewcustomerdata;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,8 +8,8 @@ import android.support.v7.widget.Toolbar;
 
 import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.customerdata.CustomerDbHelper;
-import com.example.test.nuvoco3.viewcustomerdata.cusomerlistrecyclerview.Customer;
-import com.example.test.nuvoco3.viewcustomerdata.cusomerlistrecyclerview.DisplayCustomerAdapter;
+import com.example.test.nuvoco3.lead.viewcustomerdata.cusomerlistrecyclerview.Customer;
+import com.example.test.nuvoco3.lead.viewcustomerdata.cusomerlistrecyclerview.DisplayCustomerAdapter;
 
 import java.util.ArrayList;
 

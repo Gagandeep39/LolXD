@@ -1,4 +1,4 @@
-package com.example.test.nuvoco3.viewcustomerdata.cusomerlistrecyclerview;
+package com.example.test.nuvoco3.lead.viewcustomerdata.cusomerlistrecyclerview;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +12,7 @@ import com.example.test.nuvoco3.R;
 
 import java.util.List;
 
-import static com.example.test.nuvoco3.InsertCustomerActivity.TAG;
+import static com.example.test.nuvoco3.lead.InsertCustomerActivity.TAG;
 
 /**
  * Created by Administrator on 15-12-2017.

@@ -1,4 +1,4 @@
-package com.example.test.nuvoco3.viewcustomerdata.cusomerlistrecyclerview;
+package com.example.test.nuvoco3.lead.viewcustomerdata.cusomerlistrecyclerview;
 
 /**
  * Created by Administrator on 15-12-2017.
@@ -20,6 +20,23 @@ public class Customer {
     private String customerCreatedOn;
     private String customerUpdatedBy;
     private String customerUpdatedOn;
+
+    public Customer(String customerName, String customerType, String customerCategory, String customerAddress, String customerArea, String customerDistrict, String customerState, String customerPhoneno, String customerEmailId, String customerStatus, String customerCreatedBy, String customerCreatedOn, String customerUpdatedBy, String customerUpdatedOn) {
+        this.customerName = customerName;
+        this.customerType = customerType;
+        this.customerCategory = customerCategory;
+        this.customerAddress = customerAddress;
+        this.customerArea = customerArea;
+        this.customerDistrict = customerDistrict;
+        this.customerState = customerState;
+        this.customerPhoneno = customerPhoneno;
+        this.customerEmailId = customerEmailId;
+        this.customerStatus = customerStatus;
+        this.customerCreatedBy = customerCreatedBy;
+        this.customerCreatedOn = customerCreatedOn;
+        this.customerUpdatedBy = customerUpdatedBy;
+        this.customerUpdatedOn = customerUpdatedOn;
+    }
 
     public String getCustomerName() {
         return customerName;
@@ -61,7 +78,6 @@ public class Customer {
         return customerState;
     }
 
-
     public String getCustomerCreatedBy() {
         return customerCreatedBy;
     }
@@ -76,25 +92,6 @@ public class Customer {
 
     public String getCustomerUpdatedOn() {
         return customerUpdatedOn;
-    }
-
-
-
-    public Customer(String customerName, String customerType, String customerCategory, String customerAddress, String customerArea, String customerDistrict, String customerState, String customerPhoneno, String customerEmailId, String customerStatus, String customerCreatedBy, String customerCreatedOn, String customerUpdatedBy, String customerUpdatedOn) {
-        this.customerName = customerName;
-        this.customerType = customerType;
-        this.customerCategory = customerCategory;
-        this.customerAddress = customerAddress;
-        this.customerArea = customerArea;
-        this.customerDistrict = customerDistrict;
-        this.customerState = customerState;
-        this.customerPhoneno = customerPhoneno;
-        this.customerEmailId = customerEmailId;
-        this.customerStatus = customerStatus;
-        this.customerCreatedBy = customerCreatedBy;
-        this.customerCreatedOn = customerCreatedOn;
-        this.customerUpdatedBy = customerUpdatedBy;
-        this.customerUpdatedOn = customerUpdatedOn;
     }
 
 

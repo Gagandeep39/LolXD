@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16sp"
-    tools:context="com.example.test.nuvoco3.InsertCustomerActivity">
+    tools:context="com.example.test.nuvoco3.lead.InsertCustomerActivity">
 
 
     <android.support.design.widget.TextInputLayout

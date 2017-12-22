@@ -1,4 +1,4 @@
-package com.example.test.nuvoco3.complaints;
+package com.example.test.nuvoco3.customer;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;

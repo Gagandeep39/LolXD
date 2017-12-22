@@ -1,14 +1,17 @@
-package com.example.test.nuvoco3;
+package com.example.test.nuvoco3.lead;
 
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TextView;
+
+import com.example.test.nuvoco3.MainActivity;
+import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.customerdata.CustomerContract.CustomerEntry;
 import com.example.test.nuvoco3.customerdata.CustomerDbHelper;
 

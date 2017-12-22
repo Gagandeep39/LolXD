@@ -1,6 +1,5 @@
 package com.example.test.nuvoco3;
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -15,15 +14,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.test.nuvoco3.viewcustomerdata.ViewCustomerActivity;
-
-import static com.example.test.nuvoco3.InsertCustomerActivity.TAG;
+import com.example.test.nuvoco3.lead.InsertCustomerActivity;
+import com.example.test.nuvoco3.lead.viewcustomerdata.ViewCustomerActivity;
 
 /**
  * Created by gagandeep on 15/12/17.
  */
 
-public class FragmentOne extends android.support.v4.app.Fragment{
+public class FragmentLead extends android.support.v4.app.Fragment {
     private static final int PERMISSION_REQUEST_CODE = 1;
     Button button, button2;
 
@@ -74,11 +72,7 @@ public class FragmentOne extends android.support.v4.app.Fragment{
 
     private boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        if (result == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        } else {
-            return false;
-        }
+        return result == PackageManager.PERMISSION_GRANTED;
     }
 
     private void requestPermission() {
