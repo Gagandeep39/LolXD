@@ -21,12 +21,15 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.signup.SignUpActivity;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
+    private static final String TAG = "NUVOCO";
     public static String mEmailLogin, mPasswordLogin;
     Button buttonSkip, mButtonLogin;
     TextView mTextViewSignUp;
@@ -51,7 +54,6 @@ public class LoginActivity extends AppCompatActivity {
                 authenticate();
             }
         });
-
     }
 
     private void authenticate() {
@@ -90,19 +92,20 @@ public class LoginActivity extends AppCompatActivity {
         postParam.put("1", mEmailLogin);  //1=>Name, 2.Email, 3.Phone, 4.Age, 5.Address
         postParam.put("2", mPasswordLogin);
 
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, "http://35.165.145.61:8000/auth", new JSONObject(postParam),
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, "http://52.38.68.15:8000/auth", new JSONObject(postParam),
                 new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        if (response.equals("not_existing"))
+                        if (response.toString().equals("{\"status\":\"not_existing\"}"))
                             Toast.makeText(LoginActivity.this, "Account does't Exist", Toast.LENGTH_SHORT).show();
-                        else if (response.equals("unsuccessful"))
+                        else if (response.toString().equals("{\"status\":\"unsuccessful\"}"))
                             Toast.makeText(LoginActivity.this, "Wrong Password", Toast.LENGTH_SHORT).show();
-                        else if (response.equals("successful")) {
+                        else if (response.toString().equals("{\"status\":\"successful\"}")) {
                             startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                            makeJsonObjectRequest();
                         }
-                        Log.i("LOL", response.toString());
+                        Log.e("LOL", response.toString());
                     }
                 }, new Response.ErrorListener() {
 
@@ -135,4 +138,61 @@ public class LoginActivity extends AppCompatActivity {
     } */
 
     }
+
+
+    private void makeJsonObjectRequest() {
+
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
+                "http://52.38.68.15:8000", null, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d(TAG, response.toString());
+
+                try {
+                    JSONArray array = response.getJSONArray("message");
+                    for (int i = 0; i < 10; i++) {
+
+                        JSONObject object = array.getJSONObject(i);
+                        String name = object.getString("u_phone");
+                        String email = object.getString("u_email");
+                        if (email == "something@mail.com") {
+                            String lol = "";
+
+                            lol += "Name: " + name + "\n\n";
+                            lol += "Email: " + email + "\n\n";
+                            Log.i(TAG, "onResponse: " + lol);
+                        }
+
+                    }
+                    // Parsing json object response
+                    // response will be a json object
+//                    JSONObject phone = response.getJSONObject("message");
+//                    String name = phone.getString("u_area");
+//                    String email = phone.getString("u_phone");
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(),
+                            "Error: " + e.getMessage(),
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                Toast.makeText(getApplicationContext(),
+                        error.getMessage(), Toast.LENGTH_SHORT).show();
+                // hide the progress dialog
+            }
+        });
+
+        // Adding request to request queue
+        queue.add(jsonObjReq);
+    }
+
 }

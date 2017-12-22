@@ -23,12 +23,14 @@ import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.R;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class SignUpActivity extends AppCompatActivity {
+    private static final String TAG = "NUVOCO";
     FloatingActionButton fab;
     TextInputEditText mTextInputEditTextName, mTextInputEditTextPhone, mTextInputEditTextEmail, mTextInputEditTextAddress, mTextInputEditTextPass1, mTextInputEditTextPass2, mTextInputEditTextAge, mTextInputEditTextPin;
     String mName, mEmail, mPhone, mAddress, mPassword1, mPassword2, mCity, mArea, mDepartment;
@@ -226,4 +228,48 @@ public class SignUpActivity extends AppCompatActivity {
     } */
 
     }
+
+
+    private void makeJsonObjectRequest() {
+
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
+                "www.lol_xD.com", null, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d(TAG, response.toString());
+
+                try {
+                    // Parsing json object response
+                    // response will be a json object
+                    String name = response.getString("name");
+                    String email = response.getString("email");
+                    JSONObject phone = response.getJSONObject("phone");
+                    String home = phone.getString("home");
+                    String mobile = phone.getString("mobile");
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(),
+                            "Error: " + e.getMessage(),
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                Toast.makeText(getApplicationContext(),
+                        error.getMessage(), Toast.LENGTH_SHORT).show();
+                // hide the progress dialog
+            }
+        });
+
+        // Adding request to request queue
+        queue.add(jsonObjReq);
+    }
+
 }

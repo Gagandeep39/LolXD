@@ -36,4 +36,6 @@ public class ViewCustomerActivity extends AppCompatActivity {
        recyclerView.setAdapter(adapter);
 
     }
+
+
 }
