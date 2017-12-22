@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,16 +31,20 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
-    private static final String TAG = "NUVOCO";
-    public static String mEmailLogin, mPasswordLogin, mNameLogin, mDepart, mCity, mArea;
-    public static String LOGIN_KEY = "loggedin";
+    public static final String TAG = "NUVOCO";
+    public static final String DATABASE_URL = "http://52.38.68.15:8000";
+    public static String mEmailLogin, mPasswordLogin, mNameLogin, mDepartmentLogin, mCityLogin, mAreaLogin, mPhoneLogin;  //Stores logged in User's Information
+    public static String LOGIN_KEY = "loggedin";    //Stores login status eg. Keep me Logged in
+    int mIdLogin;   //Stores Logged in user data
     Button buttonSkip, mButtonLogin;
     TextView mTextViewSignUp;
     TextInputEditText mTextInputEditTextEmail, mTextInputEditTextPassword;
     RequestQueue queue;
     ProgressDialog progressDialog;
+    CheckBox mCheckBoxLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,14 +66,14 @@ public class LoginActivity extends AppCompatActivity {
         mButtonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                authenticate();
+                tryLoggingIn();
             }
         });
 
         progressDialog = new ProgressDialog(this);
     }
 
-    private void authenticate() {
+    private void tryLoggingIn() {
         mEmailLogin = mTextInputEditTextEmail.getText().toString();
         mPasswordLogin = mTextInputEditTextPassword.getText().toString();
         if (TextUtils.isEmpty(mEmailLogin))
@@ -93,6 +98,7 @@ public class LoginActivity extends AppCompatActivity {
         mTextViewSignUp = findViewById(R.id.textViewSignUp);
         mTextInputEditTextEmail = findViewById(R.id.textInputEditEmail);
         mTextInputEditTextPassword = findViewById(R.id.textInputEditPassword);
+        mCheckBoxLogin = findViewById(R.id.checkbox);
     }
 
     public void signUpFunction(View v) {
@@ -103,13 +109,13 @@ public class LoginActivity extends AppCompatActivity {
     private void makeJsonObjReq() {
 
 
-        Map<String, String> postParam = new HashMap<String, String>();
+        Map<String, String> postParam = new HashMap<>();
 
 
         postParam.put("1", mEmailLogin);  //1=>Name, 2.Email, 3.Phone, 4.Age, 5.Address
         postParam.put("2", mPasswordLogin);
 
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, "http://52.38.68.15:8000/auth", new JSONObject(postParam),
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, DATABASE_URL + "/auth", new JSONObject(postParam),
                 new Response.Listener<JSONObject>() {
 
                     @Override
@@ -122,21 +128,27 @@ public class LoginActivity extends AppCompatActivity {
                                 Toast.makeText(LoginActivity.this, "Wrong Password", Toast.LENGTH_SHORT).show();
                             else if (response.getString("status").equals("successful")) {
                                 SharedPreferences.Editor editor = getSharedPreferences("LoginCode", MODE_PRIVATE).edit();
-                                editor.putInt(LOGIN_KEY, 1);
-                                editor.apply();
+                                if (mCheckBoxLogin.isChecked()) {
+                                    editor.putInt(LOGIN_KEY, 1);
+                                    editor.apply();
+                                } else {
+                                    editor.putInt(LOGIN_KEY, 0);
+                                    editor.apply();
+                                }
+                                storeLoggedInUserInfo();
                                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
                                 finish();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        Log.i("LOL", response.toString());
+                        Log.i(TAG, "Error while getting Response Code : " + response.toString());
                     }
                 }, new Response.ErrorListener() {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                VolleyLog.d("Error", "Error: " + error.getMessage());
+                VolleyLog.d(TAG, "Error while making database connection : " + error.getMessage());
             }
         }) {
 
@@ -157,37 +169,31 @@ public class LoginActivity extends AppCompatActivity {
         // Adding request to request queue
         queue.add(jsonObjReq);
 
-        // Cancelling request
-    /* if (queue!= null) {
-    queue.cancelAll(TAG);
-    } */
-
     }
 
 
-    private void makeJsonObjectRequest() {
+    private void storeLoggedInUserInfo() {
 
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
-                "http://52.38.68.15:8000", null, new Response.Listener<JSONObject>() {
+                DATABASE_URL, null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
-                Log.d(TAG, response.toString());
+//                Log.d(TAG, response.toString());    //To check actual response
 
                 try {
                     JSONArray array = response.getJSONArray("message");
                     for (int i = 0; i < 10; i++) {
-
                         JSONObject object = array.getJSONObject(i);
-                        String name = object.getString("u_phone");
                         String email = object.getString("u_email");
-                        if (email == "something@mail.com") {
-                            String lol = "";
-
-                            lol += "Name: " + name + "\n\n";
-                            lol += "Email: " + email + "\n\n";
-                            Log.i(TAG, "onResponse: " + lol);
+                        if (Objects.equals(email, mEmailLogin)) {       //Comparing email ID in database to retrieve user info
+                            mNameLogin = object.getString("u_name");
+                            mAreaLogin = object.getString("u_area");
+                            mPhoneLogin = object.getString("u_phone");
+                            mCityLogin = object.getString("u_city");
+                            mIdLogin = object.getInt("u_id");
+                            mDepartmentLogin = object.getString("u_department");
                         }
 
                     }
@@ -203,9 +209,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(),
-                        error.getMessage(), Toast.LENGTH_SHORT).show();
+                VolleyLog.d(TAG, "Error with Internet : " + error.getMessage());
                 // hide the progress dialog
             }
         });

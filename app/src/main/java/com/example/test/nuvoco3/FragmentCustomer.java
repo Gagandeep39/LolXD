@@ -18,7 +18,7 @@ import com.example.test.nuvoco3.customer.ComplaintActivity;
 public class FragmentCustomer extends Fragment {
     Button buttonComplaint;
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragmenttwo_layout, container, false);
+        View v = inflater.inflate(R.layout.fragmentcustomer_layout, container, false);
         buttonComplaint = v.findViewById(R.id.buttonComplaint);
         buttonComplaint.setOnClickListener(new View.OnClickListener() {
             @Override

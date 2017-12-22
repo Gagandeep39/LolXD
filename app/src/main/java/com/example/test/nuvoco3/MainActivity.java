@@ -1,6 +1,8 @@
 package com.example.test.nuvoco3;
 
 import android.content.ContentValues;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -20,17 +22,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.test.nuvoco3.customerdata.CustomerContract.CustomerEntry;
 import com.example.test.nuvoco3.customerdata.CustomerDbHelper;
 import com.example.test.nuvoco3.lead.viewcustomerdata.FragmentFour;
+import com.example.test.nuvoco3.signup.LoginActivity;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static com.example.test.nuvoco3.signup.LoginActivity.LOGIN_KEY;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    private static final String TAG = "NUVOCO";
+    public static final String TAG = "NUVOCO";
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
     @Override
@@ -77,6 +83,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.action_settings) {
             insertDummyData();
             return true;
+        }
+        switch (id) {
+            case R.id.action_settings:
+                insertDummyData();
+                break;
+            case R.id.action_logout:
+                SharedPreferences.Editor editor = getSharedPreferences("LoginCode", MODE_PRIVATE).edit();
+                editor.putInt(LOGIN_KEY, 0);
+                editor.apply();
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                break;
+            default:
+                Toast.makeText(this, "Invalid", Toast.LENGTH_SHORT).show();
         }
 
         return super.onOptionsItemSelected(item);
@@ -170,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragmentone_layout, container, false);
+            View rootView = inflater.inflate(R.layout.fragmentlead_layout, container, false);
             return rootView;
         }
     }

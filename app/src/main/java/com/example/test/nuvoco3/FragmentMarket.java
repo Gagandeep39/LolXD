@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 
 public class FragmentMarket extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragmentthree_layout, container, false);
+        View v = inflater.inflate(R.layout.fragmentmarket_layout, container, false);
 
 
         return v;

@@ -26,7 +26,7 @@ public class FragmentLead extends android.support.v4.app.Fragment {
     Button button, button2;
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragmentone_layout, container, false);
+        View v = inflater.inflate(R.layout.fragmentlead_layout, container, false);
         button = v.findViewById(R.id.button);
         button2 = v.findViewById(R.id.button2);
         askPermission();

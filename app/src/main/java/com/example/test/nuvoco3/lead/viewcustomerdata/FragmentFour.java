@@ -15,7 +15,7 @@ import com.example.test.nuvoco3.R;
 
 public class FragmentFour extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragmentfour_layout, container, false);
+        View v = inflater.inflate(R.layout.fragmentvisit_layout, container, false);
 
 
         return v;
