@@ -7,7 +7,7 @@ package com.example.test.nuvoco3.lead.viewcustomerdata.cusomerlistrecyclerview;
 public class Customer {
 
     private String customerName;
-    private String customerType;
+    private String customerId;
     private String customerCategory;
     private String customerAddress;
     private String customerArea;
@@ -21,9 +21,9 @@ public class Customer {
     private String customerUpdatedBy;
     private String customerUpdatedOn;
 
-    public Customer(String customerName, String customerType, String customerCategory, String customerAddress, String customerArea, String customerDistrict, String customerState, String customerPhoneno, String customerEmailId, String customerStatus, String customerCreatedBy, String customerCreatedOn, String customerUpdatedBy, String customerUpdatedOn) {
+    public Customer(String customerName, String customerId, String customerCategory, String customerAddress, String customerArea, String customerDistrict, String customerState, String customerPhoneno, String customerEmailId, String customerStatus, String customerCreatedBy, String customerCreatedOn, String customerUpdatedBy, String customerUpdatedOn) {
         this.customerName = customerName;
-        this.customerType = customerType;
+        this.customerId = customerId;
         this.customerCategory = customerCategory;
         this.customerAddress = customerAddress;
         this.customerArea = customerArea;
@@ -43,7 +43,7 @@ public class Customer {
     }
 
     public String getCustomerType() {
-        return customerType;
+        return customerId;
     }
 
     public String getCustomerCategory() {
