@@ -1,6 +1,5 @@
 package com.example.test.nuvoco3.lead.viewcustomerdata;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,7 +22,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 
@@ -42,20 +40,21 @@ public class ViewCustomerActivity extends AppCompatActivity {
         queue = Volley.newRequestQueue(this);
         mRecyclerView = findViewById(R.id.recyclerView);
         mCustomerArrayList = new ArrayList<>();
+        readData();
 //        mCustomerArrayList.add(new Customer("lol", "lol", "lol", "lol", "lol", "lol", "lol", "lol", "lol", "lol", "lol", "lol", "lol", "lol"));
-        mCustomerArrayList = readData();
+//        mCustomerArrayList = readData();
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 //        mRecyclerView.setHasFixedSize(true);
         mAdapter = new CustomerAdapter(this, mCustomerArrayList);
         mRecyclerView.setAdapter(mAdapter);
 
-        NewsAsyncTask task = new NewsAsyncTask();
-        task.execute();
+//        NewsAsyncTask task = new NewsAsyncTask();
+//        task.execute();
 //
     }
 
 
-    private ArrayList<Customer> readData() {
+    private void readData() {
 
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
@@ -83,7 +82,8 @@ public class ViewCustomerActivity extends AppCompatActivity {
                         mUpdatedBy = object.getString("updatedBy") + "";
                         mUpdatedOn = object.getString("updatedOn") + "";
                         Log.i("lol", "onResponse: " + mName + mArea + mCategory + "  " + mStatus + " " + mId);
-                        mCustomerArrayList.add(new Customer("de", "we", "we", "", "w", "we", "w", "w", "w", "w", "w", "w", "w", "w"));
+                        mCustomerArrayList.add(new Customer(mName, mId, mCategory, mAddress, mArea, mDistrict, mState, mPhone, mEmail, mStatus, mCreatedBy, mCreatedOn, mUpdatedBy, mUpdatedOn));
+                        mAdapter.notifyDataSetChanged();
                     }
 
                 } catch (JSONException e1) {
@@ -103,34 +103,33 @@ public class ViewCustomerActivity extends AppCompatActivity {
 
         // Adding request to request queue
         queue.add(jsonObjReq);
-        return mCustomerArrayList;
     }
 
-    public class NewsAsyncTask extends AsyncTask<String, Void, List<Customer>> {
-
-
-        @Override
-        protected List<Customer> doInBackground(String... strings) {
-            if (strings.length < 1 || strings[0] == null)
-                return null;
-            List<Customer> result = readData();
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(List<Customer> news) {
-
-            //mAdapter.clear();
-            if (news != null && !news.isEmpty()) {
-                //mAdapter.addAll(news);
-                CustomerAdapter adapter1 = new CustomerAdapter(getBaseContext(), news);
-                mRecyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
-                mRecyclerView.setAdapter(adapter1);
-
-
-            }
-        }
-    }
+//    public class NewsAsyncTask extends AsyncTask<String, Void, List<Customer>> {
+//
+//
+//        @Override
+//        protected List<Customer> doInBackground(String... strings) {
+//            if (strings.length < 1 || strings[0] == null)
+//                return null;
+//            List<Customer> result = readData();
+//            return result;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(List<Customer> news) {
+//
+//            //mAdapter.clear();
+//            if (news != null && !news.isEmpty()) {
+//                //mAdapter.addAll(news);
+//                CustomerAdapter adapter1 = new CustomerAdapter(getBaseContext(), news);
+//                mRecyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
+//                mRecyclerView.setAdapter(adapter1);
+//
+//
+//            }
+//        }
+//    }
 
 
 
