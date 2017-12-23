@@ -42,7 +42,7 @@ public class Customer {
         return customerName;
     }
 
-    public String getCustomerType() {
+    public String getCustomerId() {
         return customerId;
     }
 

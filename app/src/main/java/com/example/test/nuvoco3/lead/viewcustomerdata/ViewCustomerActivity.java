@@ -28,9 +28,9 @@ import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 
 public class ViewCustomerActivity extends AppCompatActivity {
     private static final String TAG = "NUVOCO";
+    public static ArrayList<Customer> mCustomerArrayList;
     RecyclerView mRecyclerView;
     String mAddress, mArea, mDistrict, mCategory, mEmail, mPhone, mState, mCreatedBy, mCreatedOn, mUpdatedBy, mUpdatedOn, mId, mName, mStatus;
-    ArrayList<Customer> mCustomerArrayList;
     CustomerAdapter mAdapter;
     RequestQueue queue;
     SearchView mSearchView;

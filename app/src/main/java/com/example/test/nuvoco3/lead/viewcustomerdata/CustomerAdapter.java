@@ -1,7 +1,11 @@
 package com.example.test.nuvoco3.lead.viewcustomerdata;
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.constraint.ConstraintLayout;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +15,9 @@ import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.lead.viewcustomerdata.cusomerlistrecyclerview.Customer;
 
 import java.util.List;
+
+import static com.example.test.nuvoco3.lead.viewcustomerdata.ViewCustomerActivity.mCustomerArrayList;
+import static com.example.test.nuvoco3.signup.LoginActivity.TAG;
 
 /**
  * Created by gagandeep on 23/12/17.
@@ -32,14 +39,24 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         Customer currentCustomer = mCustomer.get(position);
+        int id = Integer.parseInt(currentCustomer.getCustomerId());
         holder.setIsRecyclable(false);
         holder.mCustomerName.append(currentCustomer.getCustomerName());
         holder.mCustomerArea.append(currentCustomer.getCustomerArea());
-        holder.mCustomerType.append(currentCustomer.getCustomerType());
+        holder.mCustomerType.append(currentCustomer.getCustomerId());
         holder.mCustomerCategory.append(currentCustomer.getCustomerCategory());
+        holder.mConstraintLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i(TAG, "onClick: " + position);
+                Log.i(TAG, "onClick: " +
+                        mCustomerArrayList.get(position));
+                mContext.startActivity(new Intent(mContext, CustomerDetailsActivity.class).putExtra("position", position));
 
+            }
+        });
     }
 
     @Override
@@ -49,6 +66,8 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.ViewHo
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView mCustomerName, mCustomerType, mCustomerArea, mCustomerCategory;
+        CardView mCardView;
+        ConstraintLayout mConstraintLayout;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -56,6 +75,8 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.ViewHo
             mCustomerType = itemView.findViewById(R.id.textViewCustomerType);
             mCustomerCategory = itemView.findViewById(R.id.textViewCustomerCategory);
             mCustomerArea = itemView.findViewById(R.id.textViewCustomerArea);
+            mCardView = itemView.findViewById(R.id.cardView);
+            mConstraintLayout = itemView.findViewById(R.id.constraintLayout);
         }
     }
 }
