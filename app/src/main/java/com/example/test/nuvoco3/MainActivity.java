@@ -26,7 +26,6 @@ import android.widget.Toast;
 
 import com.example.test.nuvoco3.customerdata.CustomerContract.CustomerEntry;
 import com.example.test.nuvoco3.customerdata.CustomerDbHelper;
-import com.example.test.nuvoco3.lead.viewcustomerdata.FragmentFour;
 import com.example.test.nuvoco3.signup.LoginActivity;
 
 import java.text.DateFormat;
@@ -210,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 case 2:
                     return new FragmentMarket();
                 case 3:
-                    return new FragmentFour();
+                    return new FragmentVisit();
                     default:
                         return new FragmentLead();
 

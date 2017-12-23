@@ -7,8 +7,9 @@
     android:orientation="vertical"
     android:padding="16sp"
     tools:context=".lead.InsertCustomerContactActivity">
+
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/textInputLayoutName"
+        android:id="@+id/textInputLayoutCustomerId"
         android:layout_width="match_parent"
         android:layout_height="59dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -17,13 +18,46 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/textInputEditEmployName"
+            android:id="@+id/textInputEditCustomerId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Name of Employ" />
+            android:hint="Customer ID" />
     </android.support.design.widget.TextInputLayout>
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/textInputLayoutAddress"
+        android:id="@+id/textInputLayoutCustomerName"
+        android:layout_width="match_parent"
+        android:layout_height="59dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.413"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/textInputEditCustomerName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Name of Customer" />
+    </android.support.design.widget.TextInputLayout>
+
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/textInputLayoutContactName"
+        android:layout_width="match_parent"
+        android:layout_height="59dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.413"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/textInputEditContactName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Name of Contact Person" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/textInputLayoutContactPhone"
         android:layout_width="match_parent"
         android:layout_height="59dp"
         app:layout_constraintEnd_toEndOf="@+id/textInputLayoutCategory"
@@ -32,7 +66,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textInputLayoutCategory">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/textInputEditEmployPhone"
+            android:id="@+id/textInputEditContactPhone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Phone Number of Employ"
@@ -40,7 +74,7 @@
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/textInputLayoutArea"
+        android:id="@+id/textInputLayoutContactEmail"
         android:layout_width="match_parent"
         android:layout_height="59dp"
         app:layout_constraintEnd_toEndOf="@+id/textInputLayoutAddress"
@@ -49,7 +83,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textInputLayoutAddress">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/textInputEditEmployEmail"
+            android:id="@+id/textInputEditContactEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Email ID of Employ" />

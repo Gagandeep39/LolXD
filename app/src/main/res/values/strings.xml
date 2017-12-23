@@ -183,4 +183,5 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="log_out">Log Out</string>
+    <string name="title_activity_complaint_status">ComplaintStatusActivity</string>
 </resources>

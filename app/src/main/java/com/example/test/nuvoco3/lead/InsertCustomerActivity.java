@@ -39,7 +39,7 @@ public class InsertCustomerActivity extends AppCompatActivity {
     String categoryPosition = null, areaPosition = null, districtPosition = null, statePosition = null;
     SearchableSpinner searchableSpinnerCategory, searchableSpinnerDistrict, searchableSpinnerArea, searchableSpinnerState;
     FloatingActionButton floatingActionButtonAddData;
-    TextInputEditText editTextName, editTextAddress, editTextPhone, editTextEmail, editTextCreatedBy;
+    TextInputEditText editTextName, editTextAddress, editTextPhone, editTextEmail;
     String mName, mType, mCategory, mAddress, mArea, mDistrict, mState, mPhone, mEmail, mStatus, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy;
     RequestQueue queue;
     @Override
@@ -55,7 +55,6 @@ public class InsertCustomerActivity extends AppCompatActivity {
             }
         });
         initializeSpinners();
-
     }
 
     private void initializeSpinners() {
@@ -153,10 +152,12 @@ public class InsertCustomerActivity extends AppCompatActivity {
 
 
     public void insertCustomer() {
-        mName = editTextName.getText().toString().trim();
+
+
+        mName = editTextName.getText().toString();
         mType = "New";
         mCategory = categoryPosition;
-        mAddress = editTextAddress.getText().toString().trim();
+        mAddress = editTextAddress.getText().toString();
         mArea = areaPosition;
         mDistrict = districtPosition;
         mState = statePosition;
@@ -208,6 +209,7 @@ public class InsertCustomerActivity extends AppCompatActivity {
                                 intent.putExtra("createdOn", mCreatedOn);
                                 intent.putExtra("updatedBy", mUpdatedBy);
                                 intent.putExtra("updatedOn", mUpdatedOn);
+                                intent.putExtra("email", mEmail);
                                 startActivity(intent);
 
                             }
@@ -221,7 +223,7 @@ public class InsertCustomerActivity extends AppCompatActivity {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error with Connection: " + error.getMessage());
+                VolleyLog.d(TAG, "Error with Connection: " + error.getMessage() + "lol");
             }
         }) {
 

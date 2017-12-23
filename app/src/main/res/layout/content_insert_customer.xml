@@ -59,7 +59,9 @@
             android:layout_height="wrap_content"
             android:hint="Email" />
 
-        <android.support.design.widget.TextInputLayout
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
             android:id="@+id/textInputLayoutAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -77,7 +79,6 @@
 
         </android.support.design.widget.TextInputLayout>
 
-    </android.support.design.widget.TextInputLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -158,21 +159,6 @@
             app:hintText="Default" />
     </LinearLayout>
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/textInputLayoutCreatedBy"
-        android:layout_width="match_parent"
-        android:layout_height="59dp"
-        app:layout_constraintEnd_toEndOf="@+id/textInputLayoutPhone"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/textInputLayoutPhone"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPhone">
-
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/textInputEditCreatedBy"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Created By" />
-    </android.support.design.widget.TextInputLayout>
 
 
 <!--To Prevent Glitches-->

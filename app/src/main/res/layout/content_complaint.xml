@@ -75,7 +75,7 @@
                 android:id="@+id/textInputEditComplaint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Title" />
+                android:hint="Complaint Types" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -90,7 +90,7 @@
                 android:layout_weight="1"
                 android:ems="10"
                 android:gravity="start"
-                android:hint="Address"
+                android:hint="Details"
                 android:inputType="textMultiLine"
                 android:minLines="4" />
 
