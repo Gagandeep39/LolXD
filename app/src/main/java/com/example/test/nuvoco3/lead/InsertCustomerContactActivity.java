@@ -131,8 +131,8 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
     }
 
     private String getDateTime() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-//        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+//        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         return dateFormat.format(date);
     }
@@ -162,11 +162,11 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
         postParam.put("4", mContactEmail);
         postParam.put("5", mContactPhone);
         postParam.put("6", mContactDOB);
-        postParam.put("7", "2014-03-01");
-        postParam.put("8", "2014-03-01");
-        postParam.put("9", "211");
-        postParam.put("10", "2014-03-01");
-        postParam.put("11", "211");
+        postParam.put("7", mContactDOA);
+        postParam.put("8", mCreatedOn);
+        postParam.put("9", mCreatedBy);
+        postParam.put("10", mUpdatedOn);
+        postParam.put("11", mUpdatedBy);
         postParam.put("12", mCustomerId);
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, DATABASE_URL + "/insertCon", new JSONObject(postParam),
