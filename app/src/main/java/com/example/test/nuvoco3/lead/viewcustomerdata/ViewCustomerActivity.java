@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
@@ -26,11 +27,14 @@ import java.util.ArrayList;
 import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 
 public class ViewCustomerActivity extends AppCompatActivity {
+    private static final String TAG = "NUVOCO";
     RecyclerView mRecyclerView;
     String mAddress, mArea, mDistrict, mCategory, mEmail, mPhone, mState, mCreatedBy, mCreatedOn, mUpdatedBy, mUpdatedOn, mId, mName, mStatus;
     ArrayList<Customer> mCustomerArrayList;
     CustomerAdapter mAdapter;
     RequestQueue queue;
+    SearchView mSearchView;
+    String mSearchText = "0";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,18 +43,35 @@ public class ViewCustomerActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         queue = Volley.newRequestQueue(this);
         mRecyclerView = findViewById(R.id.recyclerView);
+        mSearchView = findViewById(R.id.searchView);
         mCustomerArrayList = new ArrayList<>();
         readData();
-//        mCustomerArrayList.add(new Customer("lol", "lol", "lol", "lol", "lol", "lol", "lol", "lol", "lol", "lol", "lol", "lol", "lol", "lol"));
-//        mCustomerArrayList = readData();
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.getItemAnimator();
         mAdapter = new CustomerAdapter(this, mCustomerArrayList);
         mRecyclerView.setAdapter(mAdapter);
 
-//        NewsAsyncTask task = new NewsAsyncTask();
-//        task.execute();
-//
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.i(TAG, "onQueryTextSubmit: " + query);
+                mCustomerArrayList.clear();
+                mSearchText = query;
+                readData();
+
+                mRecyclerView.setHasFixedSize(true);
+                mRecyclerView.getItemAnimator();
+                mRecyclerView.setAdapter(mAdapter);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                return false;
+            }
+        });
     }
 
 
@@ -62,28 +83,39 @@ public class ViewCustomerActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(JSONObject response) {
-                Log.i("lol", "onResponse:  " + response);
+//                Log.i("lol", "onResponse:  " + response);
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
-                    for (int i = 0; i < 10; i++) {
+                    for (int i = 0; i < 50; i++) {
+
                         JSONObject object = jsonArray.getJSONObject(i);
-                        mAddress = object.getString("address") + "";
-                        mArea = object.getString("c_area") + "";
-                        mCategory = object.getString("c_category") + "";
-                        mDistrict = object.getString("c_district") + "";
-                        mEmail = object.getString("c_email") + "";
-                        mPhone = object.getString("c_phone") + "";
-                        mState = object.getString("c_state") + "";
-                        mName = object.getString("name") + "";
-                        mId = object.getString("record_id") + "";
-                        mStatus = object.getString("status") + "";
-                        mCreatedBy = object.getString("createdBy") + "";
-                        mCreatedOn = object.getString("createdOn") + "";
-                        mUpdatedBy = object.getString("updatedBy") + "";
-                        mUpdatedOn = object.getString("updatedOn") + "";
-                        Log.i("lol", "onResponse: " + mName + mArea + mCategory + "  " + mStatus + " " + mId);
-                        mCustomerArrayList.add(new Customer(mName, mId, mCategory, mAddress, mArea, mDistrict, mState, mPhone, mEmail, mStatus, mCreatedBy, mCreatedOn, mUpdatedBy, mUpdatedOn));
-                        mAdapter.notifyDataSetChanged();
+                        if (object.getString("address").toLowerCase().contains(mSearchText.toLowerCase())
+                                || object.getString("c_area").toLowerCase().contains(mSearchText.toLowerCase())
+                                || object.getString("c_district").toLowerCase().contains(mSearchText.toLowerCase())
+                                || object.getString("c_email").toLowerCase().contains(mSearchText.toLowerCase())
+                                || object.getString("c_phone").toLowerCase().contains(mSearchText.toLowerCase())
+                                || object.getString("c_state").toLowerCase().contains(mSearchText.toLowerCase())
+                                || object.getString("name").toLowerCase().contains(mSearchText.toLowerCase())
+                                || object.getString("record_id").toLowerCase().contains(mSearchText.toLowerCase())) {
+                            mAddress = object.getString("address") + "";
+                            mArea = object.getString("c_area") + "";
+                            mCategory = object.getString("c_category") + "";
+                            mDistrict = object.getString("c_district") + "";
+                            mEmail = object.getString("c_email") + "";
+                            mPhone = object.getString("c_phone") + "";
+                            mState = object.getString("c_state") + "";
+                            mName = object.getString("name") + "";
+                            mId = object.getString("record_id") + "";
+                            mStatus = object.getString("status") + "";
+                            mCreatedBy = object.getString("createdBy") + "";
+                            mCreatedOn = object.getString("createdOn") + "";
+                            mUpdatedBy = object.getString("updatedBy") + "";
+                            mUpdatedOn = object.getString("updatedOn") + "";
+                            Log.i("lol", "onResponse: " + mName + mArea + mCategory + "  " + mStatus + " " + mId);
+                            mCustomerArrayList.add(new Customer(mName, mId, mCategory, mAddress, mArea, mDistrict, mState, mPhone, mEmail, mStatus, mCreatedBy, mCreatedOn, mUpdatedBy, mUpdatedOn));
+                            mAdapter.notifyDataSetChanged();
+                        }
+
                     }
 
                 } catch (JSONException e1) {
@@ -105,31 +137,6 @@ public class ViewCustomerActivity extends AppCompatActivity {
         queue.add(jsonObjReq);
     }
 
-//    public class NewsAsyncTask extends AsyncTask<String, Void, List<Customer>> {
-//
-//
-//        @Override
-//        protected List<Customer> doInBackground(String... strings) {
-//            if (strings.length < 1 || strings[0] == null)
-//                return null;
-//            List<Customer> result = readData();
-//            return result;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(List<Customer> news) {
-//
-//            //mAdapter.clear();
-//            if (news != null && !news.isEmpty()) {
-//                //mAdapter.addAll(news);
-//                CustomerAdapter adapter1 = new CustomerAdapter(getBaseContext(), news);
-//                mRecyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
-//                mRecyclerView.setAdapter(adapter1);
-//
-//
-//            }
-//        }
-//    }
 
 
 

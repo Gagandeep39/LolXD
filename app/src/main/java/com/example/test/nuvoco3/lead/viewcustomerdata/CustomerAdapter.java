@@ -34,6 +34,7 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Customer currentCustomer = mCustomer.get(position);
+        holder.setIsRecyclable(false);
         holder.mCustomerName.append(currentCustomer.getCustomerName());
         holder.mCustomerArea.append(currentCustomer.getCustomerArea());
         holder.mCustomerType.append(currentCustomer.getCustomerType());
