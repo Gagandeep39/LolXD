@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
@@ -49,6 +50,10 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert_customer_contact);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         getReferences();
         queue = Volley.newRequestQueue(this);
         bundle = getIntent().getExtras();
@@ -125,9 +130,6 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
 
     public void insertData(View v){
         insertDataInFields();
-//        insertData();
-//        finish();
-//        startActivity(new Intent(InsertCustomerContactActivity.this, MainActivity.class));
     }
 
     private String getDateTime() {
@@ -141,20 +143,6 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
 
 
         Map<String, String> postParam = new HashMap<>();
-
-//
-
-//        postParam.put("2", mCustomerName);
-//        postParam.put("3", mContactName);
-//        postParam.put("4", mContactPhone);
-//        postParam.put("5", mContactEmail);
-//        postParam.put("6", mContactDOB);
-//        postParam.put("7", mContactDOA);
-//        postParam.put("8", mCreatedOn);
-//        postParam.put("9", mCreatedBy);
-//        postParam.put("10", mUpdatedOn);
-//        postParam.put("11", mUpdatedBy);
-//        postParam.put("12", mCustomerId);
 
 
         postParam.put("2", mCustomerName);

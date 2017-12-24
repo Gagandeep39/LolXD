@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".lead.ViewCustomerActivity">
+    tools:context=".lead.CustomerContactDetailsActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -28,31 +28,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
-                app:popupTheme="@style/AppTheme.PopupOverlay"
-                app:title="Add new Customer" />
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
-
     </android.support.design.widget.AppBarLayout>
-    <android.support.v4.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <include layout="@layout/content_insert_customer" />
-
-    </android.support.v4.widget.NestedScrollView>
-
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabAddData"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@drawable/ic_done_black_24dp" />
+    <include layout="@layout/content_customer_contact_details" />
 
 </android.support.design.widget.CoordinatorLayout>
-
-
-

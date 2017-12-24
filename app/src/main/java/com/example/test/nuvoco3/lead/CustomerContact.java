@@ -1,12 +1,12 @@
-package com.example.test.nuvoco3.lead.viewcustomerdata.cusomerlistrecyclerview;
+package com.example.test.nuvoco3.lead;
 
 /**
  * Created by gagandeep on 17/12/17.
  */
 
 public class CustomerContact {
-    private int recordID;
-    private int customerID;
+    private String contactId;
+    private String customerId;
     private String customerName;
     private String customerContactName;
     private String customerContactPhone;
@@ -18,9 +18,9 @@ public class CustomerContact {
     private String updatedBy;
     private String updatedOn;
 
-    public CustomerContact(int recordID, int customerID, String customerName, String customerContactName, String customerContactPhone, String customerContactEmail, String customerContactDOB, String customerContactDOA, String createdBy, String createdOn, String updatedBy, String updatedOn) {
-        this.recordID = recordID;
-        this.customerID = customerID;
+    public CustomerContact(String contactId, String customerId, String customerName, String customerContactName, String customerContactPhone, String customerContactEmail, String customerContactDOB, String customerContactDOA, String createdBy, String createdOn, String updatedBy, String updatedOn) {
+        this.contactId = contactId;
+        this.customerId = customerId;
         this.customerName = customerName;
         this.customerContactName = customerContactName;
         this.customerContactPhone = customerContactPhone;
@@ -33,12 +33,12 @@ public class CustomerContact {
         this.updatedOn = updatedOn;
     }
 
-    public int getRecordID() {
-        return recordID;
+    public String getContactId() {
+        return contactId;
     }
 
-    public int getCustomerID() {
-        return customerID;
+    public String getCustomerId() {
+        return customerId;
     }
 
     public String getCustomerName() {

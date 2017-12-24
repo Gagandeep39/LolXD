@@ -7,8 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.test.nuvoco3.customerdata.CustomerContract.CustomerEntry;
-import com.example.test.nuvoco3.lead.viewcustomerdata.cusomerlistrecyclerview.Customer;
-import com.example.test.nuvoco3.lead.viewcustomerdata.cusomerlistrecyclerview.CustomerContact;
+import com.example.test.nuvoco3.lead.Customer;
 
 import java.util.ArrayList;
 
@@ -115,6 +114,8 @@ public class CustomerDbHelper extends SQLiteOpenHelper {
         return customers;
 
     }
+
+    /*
     public ArrayList<CustomerContact> getDataCustomerContact(){
         ArrayList<CustomerContact> mCustomerContact = new ArrayList<>();
 
@@ -156,6 +157,8 @@ public class CustomerDbHelper extends SQLiteOpenHelper {
         return mCustomerContact;
 
     }
+
+    */
 
     public void insertData(String tableName, ContentValues values){
         SQLiteDatabase database = getWritableDatabase();

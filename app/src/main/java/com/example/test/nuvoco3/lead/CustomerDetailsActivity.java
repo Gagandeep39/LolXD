@@ -1,4 +1,4 @@
-package com.example.test.nuvoco3.lead.viewcustomerdata;
+package com.example.test.nuvoco3.lead;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.example.test.nuvoco3.R;
 
-import static com.example.test.nuvoco3.lead.viewcustomerdata.ViewCustomerActivity.mCustomerArrayList;
+import static com.example.test.nuvoco3.lead.ViewCustomerActivity.mCustomerArrayList;
 
 public class CustomerDetailsActivity extends AppCompatActivity {
     TextView mName, mType, mCategory, mStatus, mPhone, mEmail, mArea, mDistrict, mState, mAddress, mCreatedBy, mCreatedOn, mUpdatedBy, mUpdatedOn;
@@ -19,6 +19,8 @@ public class CustomerDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_customer_details);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         initializeViews();
         displayData();
 

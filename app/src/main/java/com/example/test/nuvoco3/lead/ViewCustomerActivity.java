@@ -1,6 +1,7 @@
-package com.example.test.nuvoco3.lead.viewcustomerdata;
+package com.example.test.nuvoco3.lead;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,7 +17,6 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.R;
-import com.example.test.nuvoco3.lead.viewcustomerdata.cusomerlistrecyclerview.Customer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,6 +30,7 @@ public class ViewCustomerActivity extends AppCompatActivity {
     private static final String TAG = "NUVOCO";
     public static ArrayList<Customer> mCustomerArrayList;
     RecyclerView mRecyclerView;
+    SwipeRefreshLayout mSwipeRefresh;
     String mAddress, mArea, mDistrict, mCategory, mEmail, mPhone, mState, mCreatedBy, mCreatedOn, mUpdatedBy, mUpdatedOn, mId, mName, mStatus;
     CustomerAdapter mAdapter;
     RequestQueue queue;
@@ -41,8 +42,11 @@ public class ViewCustomerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_customer);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         queue = Volley.newRequestQueue(this);
         mRecyclerView = findViewById(R.id.recyclerView);
+        mSwipeRefresh = findViewById(R.id.swipeRefreshLayout);
         mSearchView = findViewById(R.id.searchView);
         mCustomerArrayList = new ArrayList<>();
         readData();
@@ -72,7 +76,19 @@ public class ViewCustomerActivity extends AppCompatActivity {
                 return false;
             }
         });
+        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mSearchText = "";
+                readData();
+                Log.i(TAG, "onRefresh: " + "test");
+                mSwipeRefresh.setRefreshing(false);
+            }
+
+        });
+
     }
+
 
 
     private void readData() {
@@ -89,10 +105,7 @@ public class ViewCustomerActivity extends AppCompatActivity {
                     for (int i = 0; i < 50; i++) {
 
                         JSONObject object = jsonArray.getJSONObject(i);
-                        if (object.getString("address").toLowerCase().contains(mSearchText.toLowerCase())
-                                || object.getString("c_area").toLowerCase().contains(mSearchText.toLowerCase())
-                                || object.getString("c_district").toLowerCase().contains(mSearchText.toLowerCase())
-                                || object.getString("c_email").toLowerCase().contains(mSearchText.toLowerCase())
+                        if (object.getString("c_email").toLowerCase().contains(mSearchText.toLowerCase())
                                 || object.getString("c_phone").toLowerCase().contains(mSearchText.toLowerCase())
                                 || object.getString("c_state").toLowerCase().contains(mSearchText.toLowerCase())
                                 || object.getString("name").toLowerCase().contains(mSearchText.toLowerCase())
@@ -111,7 +124,7 @@ public class ViewCustomerActivity extends AppCompatActivity {
                             mCreatedOn = object.getString("createdOn") + "";
                             mUpdatedBy = object.getString("updatedBy") + "";
                             mUpdatedOn = object.getString("updatedOn") + "";
-                            Log.i("lol", "onResponse: " + mName + mArea + mCategory + "  " + mStatus + " " + mId);
+//                            Log.i("lol", "onResponse: " + mName + mArea + mCategory + "  " + mStatus + " " + mId);
                             mCustomerArrayList.add(new Customer(mName, mId, mCategory, mAddress, mArea, mDistrict, mState, mPhone, mEmail, mStatus, mCreatedBy, mCreatedOn, mUpdatedBy, mUpdatedOn));
                             mAdapter.notifyDataSetChanged();
                         }

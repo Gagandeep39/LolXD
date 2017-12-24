@@ -185,4 +185,6 @@
     <string name="log_out">Log Out</string>
     <string name="title_activity_complaint_status">ComplaintStatusActivity</string>
     <string name="title_activity_customer_details">CustomerDetailsActivity</string>
+    <string name="title_activity_view_customer_contact">ViewCustomerContactActivity</string>
+    <string name="title_activity_customer_contact_details">CustomerContactDetailsActivity</string>
 </resources>

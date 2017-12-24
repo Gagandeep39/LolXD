@@ -1,4 +1,4 @@
-package com.example.test.nuvoco3.lead.viewcustomerdata.cusomerlistrecyclerview;
+package com.example.test.nuvoco3.lead;
 
 /**
  * Created by Administrator on 15-12-2017.
