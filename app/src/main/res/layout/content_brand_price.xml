@@ -27,7 +27,9 @@
                 android:id="@+id/textInputEditRepresentative"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Representative" />
+                android:hint="Representative"
+                android:inputType="number"
+                android:maxLength="4" />
 
 
         </android.support.design.widget.TextInputLayout>
@@ -103,7 +105,8 @@
                 android:id="@+id/textInputEditWSP"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="WSP" />
+                android:hint="WSP"
+                android:inputType="numberDecimal" />
 
 
         </android.support.design.widget.TextInputLayout>
@@ -112,6 +115,7 @@
             android:id="@+id/textInputLayoutRSP"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
             app:layout_constraintEnd_toEndOf="@+id/textInputLayoutCategory"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/textInputLayoutCategory"
@@ -121,7 +125,8 @@
                 android:id="@+id/textInputEditRSP"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="RSP" />
+                android:hint="RSP"
+                android:inputType="numberDecimal" />
 
 
         </android.support.design.widget.TextInputLayout>
@@ -130,6 +135,7 @@
             android:id="@+id/textInputLayoutStocks"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
             app:layout_constraintEnd_toEndOf="@+id/textInputLayoutCategory"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/textInputLayoutCategory"
@@ -139,7 +145,8 @@
                 android:id="@+id/textInputEditStocks"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Stocks" />
+                android:hint="Stocks"
+                android:inputType="numberDecimal" />
 
 
         </android.support.design.widget.TextInputLayout>
@@ -159,6 +166,7 @@
             <!--android:layout_height="wrap_content"-->
             <!--android:hint="Counter" />-->
             <EditText
+                android:id="@+id/editTextRemark"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="top"
