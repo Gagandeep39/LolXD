@@ -10,24 +10,31 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.test.nuvoco3.market.BrandPriceActivity;
+import com.example.test.nuvoco3.market.InsertGeneralMarketActivity;
 
 /**
  * Created by gagandeep on 20/12/17.
  */
 
 public class FragmentMarket extends Fragment {
-    Button mButtonBrandPrice, mButton2, mButton3, mButton4;
+    Button mButtonBrandPrice, mButton2, mButton3, mButtonGeneralMarket;
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragmentmarket_layout, container, false);
         mButtonBrandPrice = v.findViewById(R.id.button);
         mButton2 = v.findViewById(R.id.button2);
         mButton3 = v.findViewById(R.id.button3);
-        mButton4 = v.findViewById(R.id.button4);
+        mButtonGeneralMarket = v.findViewById(R.id.button4);
 
         mButtonBrandPrice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(v.getContext(), BrandPriceActivity.class));
+            }
+        });
+        mButtonGeneralMarket.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(v.getContext(), InsertGeneralMarketActivity.class));
             }
         });
 

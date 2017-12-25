@@ -69,14 +69,14 @@ public class BrandPriceActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                insertPriceInfo();
+                validateDate();
             }
         });
 
     }
 
     //Stores data and variables and checks if Something is left empty or not
-    private void insertPriceInfo() {
+    private void validateDate() {
         mRepresentative = mEditTextRepresentative.getText().toString();
         mCounter = mEditTextCounter.getText().toString();
         mWSP = mEditTextWSP.getText().toString();

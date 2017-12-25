@@ -189,4 +189,7 @@
     <string name="title_activity_customer_contact_details">CustomerContactDetailsActivity</string>
     <string name="title_activity_user_account">UserAccountActivity</string>
     <string name="title_activity_brand_price">BrandPriceActivity</string>
+    <string name="title_activity_insert_general_market">InsertGeneralMarketActivity</string>
+    <string name="title_activity_view_new_customer">ViewNewCustomerActivity</string>
+    <string name="title_activity_view_general_market">ViewGeneralMarketActivity</string>
 </resources>
