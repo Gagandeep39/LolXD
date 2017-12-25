@@ -17,6 +17,7 @@ import java.util.List;
  */
 
 public class CustomerContactAdapter extends RecyclerView.Adapter<CustomerContactAdapter.ViewHolder> {
+    private static final String TAG = "CustomerContact Adapter Activity";
     private Context mContext;
     private List<CustomerContact> mCustomerContactList;
 
@@ -31,36 +32,29 @@ public class CustomerContactAdapter extends RecyclerView.Adapter<CustomerContact
         return new ViewHolder(v);
     }
 
+    //Holds the item in a Single View
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         CustomerContact mCurrentContact = mCustomerContactList.get(position);
-        int id = Integer.parseInt(mCurrentContact.getCustomerId());
         holder.setIsRecyclable(false);
         holder.mTextViewCustomerId.append(mCurrentContact.getCustomerId());
         holder.mTextViewName.append(mCurrentContact.getCustomerContactName());
         holder.mTextViewPhone.append(mCurrentContact.getCustomerContactPhone());
         holder.mTextViewEmail.append(mCurrentContact.getCustomerContactEmail());
-//        holder.mConstraintLayout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Log.i(TAG, "onClick: " + position);
-//                Log.i(TAG, "onClick: " +
-//                        mCustomerArrayList.get(position));
-//                mContext.startActivity(new Intent(mContext, CustomerDetailsActivity.class).putExtra("position", position));
-//
-//            }
-//        });
     }
 
+    //  Provides count of Items in The View
     @Override
     public int getItemCount() {
         return mCustomerContactList.size();
     }
 
+    //  Initialize Items in a ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView mTextViewName, mTextViewPhone, mTextViewEmail, mTextViewCustomerId;
         ConstraintLayout mConstraintLayout;
 
+        //  Initialize Widgets in a single Item View
         public ViewHolder(View itemView) {
             super(itemView);
             mTextViewCustomerId = itemView.findViewById(R.id.textViewContactId);

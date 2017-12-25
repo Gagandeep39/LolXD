@@ -6,7 +6,6 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -23,6 +22,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.R;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -31,7 +31,7 @@ import java.util.Map;
 import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 
 public class SignUpActivity extends AppCompatActivity {
-    public static final String TAG = "NUVOCO";
+    private static final String TAG = "SignUp Activity";
     FloatingActionButton fab;
     TextInputEditText mTextInputEditTextName, mTextInputEditTextPhone, mTextInputEditTextEmail, mTextInputEditTextAddress, mTextInputEditTextPass1, mTextInputEditTextPass2, mTextInputEditTextAge, mTextInputEditTextPin;
     String mName, mEmail, mPhone, mAddress, mPassword1, mPassword2, mCity, mArea, mDepartment;
@@ -55,6 +55,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     }
 
+    //  Populates Spinners
     private void initializeOnClicks() {
         ArrayAdapter mDepartmentAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, departmentTypes);
         ArrayAdapter mCityAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, cityTypes);
@@ -106,6 +107,7 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
+    //  Performs A check if any field is left Empty
     private void insertData() {
         String mPinString = mTextInputEditTextPin.getText().toString();
         String mAgeString = mTextInputEditTextAge.getText().toString();
@@ -152,9 +154,10 @@ public class SignUpActivity extends AppCompatActivity {
             Toast.makeText(this, "Select Department", Toast.LENGTH_SHORT).show();
 
         if (!TextUtils.isEmpty(mName) && !TextUtils.isEmpty(mAge + "") && !TextUtils.isEmpty(mPhone) && !TextUtils.isEmpty(mEmail) && !TextUtils.isEmpty(mAddress) && !TextUtils.isEmpty(mPassword1) && !TextUtils.isEmpty(mArea) && !TextUtils.isEmpty(mCity) && !TextUtils.isEmpty(mDepartment) && !TextUtils.isEmpty(mAge + ""))
-        makeJsonObjReq();
+            makeJsonObjReq();
     }
 
+    //  Initialize Views
     private void initializeViews() {
         fab = findViewById(R.id.fab);
         mTextInputEditTextName = findViewById(R.id.textInputEditName);
@@ -171,8 +174,7 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
 
-
-
+    //  Stores User data on Server on Successful Account Creation
     private void makeJsonObjReq() {
 
 
@@ -196,19 +198,23 @@ public class SignUpActivity extends AppCompatActivity {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.i(TAG, response.toString());
+                        try {
+                            if (response.getString("status").equals("updated")) {
+                                Toast.makeText(SignUpActivity.this, "Successfully Signed Up", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Response.ErrorListener() {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                VolleyLog.d("Error", "Error: " + error.getMessage());
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
             }
         }) {
-
-            /**
-             * Passing some request headers
-             * */
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
@@ -219,15 +225,9 @@ public class SignUpActivity extends AppCompatActivity {
 
         };
 
-        jsonObjReq.setTag("LOL");
+        jsonObjReq.setTag(TAG);
         // Adding request to request queue
         queue.add(jsonObjReq);
-
-        // Cancelling request
-    /* if (queue!= null) {
-    queue.cancelAll(TAG);
-    } */
-
     }
 
 }

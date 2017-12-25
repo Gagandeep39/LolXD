@@ -1,8 +1,11 @@
 package com.example.test.nuvoco3.lead;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -22,18 +25,19 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.MainActivity;
 import com.example.test.nuvoco3.R;
+import com.example.test.nuvoco3.signup.ObjectSerializer;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 
@@ -45,6 +49,7 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
     Bundle bundle;      //Data from another activity
     String mContactName, mCustomerName, mCreatedBy, mCreatedOn, mUpdatedBy, mUpdatedOn, mContactEmail, mContactDOB, mContactDOA, mContactPhone, mCustomerId;  //Customer=>Brand, CustomerContact=>Human
     RequestQueue queue;
+    FloatingActionButton mInsertData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,42 +60,56 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getReferences();
-        queue = Volley.newRequestQueue(this);
-        bundle = getIntent().getExtras();
-        if (getIntent().getStringExtra("customerName") != null) {
 
-            retrieveCustomerId();
+        queue = Volley.newRequestQueue(this);
+        populatingDataFields();
+    }
+
+    // Populates the Customer ID and Customer Name when Redirected from New Customer Section
+    private void populatingDataFields() {
+        bundle = getIntent().getExtras();
+        ArrayList<String> newArralist = new ArrayList<>();
+        // Creates a shared preferences variable to retrieve the logeed in users IDs and store it in Updated By Section
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.test.nuvoco3", Context.MODE_PRIVATE);
+
+        try {
+            newArralist = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("CustomerData", ObjectSerializer.serialize(new ArrayList<String>())));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (getIntent().getStringExtra("customerName") != null) {
+            mCustomerId = bundle.getString("customerId");
             mCustomerName = bundle.getString("customerName");
             mCreatedBy = bundle.getString("createdBy");
             mCreatedOn = bundle.getString("createdOn");
-            mUpdatedBy = bundle.getString("updatedBy");
-            mUpdatedOn = bundle.getString("updatedOn");
             editTextCustomerName.setText(mCustomerName);
+            editTextCustomerId.setText(mCustomerId);
+            editTextCustomerId.setKeyListener(null);
             editTextCustomerName.setKeyListener(null);
 
         } else {
+
             mCustomerName = editTextCustomerName.getText().toString();
-            mCreatedBy = "200";
+            mCreatedBy = newArralist.get(6);
             mCreatedOn = getDateTime();
-            mUpdatedBy = "200";
-            mUpdatedOn = getDateTime();
         }
+
+        mUpdatedBy = newArralist.get(6);
+        mUpdatedOn = getDateTime();
     }
 
     private void insertDataInFields() {
-//        Log.i("LOL", "insertData: " + getIntent().getStringExtra("customerName"));
 
         mContactName = editTextContactName.getText().toString();
         mContactPhone = editTextContactPhone.getText().toString();
-        Log.i(TAG, "insertDataInFields: " + mContactPhone);
         mContactEmail = editTextContactEmail.getText().toString();
-        Log.i(TAG, "insertDataInFields: " + mContactEmail);
         mContactDOB = textViewDOB.getText().toString();
         mContactDOA = textViewDOA.getText().toString();
         mCustomerId = editTextCustomerId.getText().toString();
         storeData();
     }
 
+    // initialize Views
     private void getReferences() {
         editTextContactName = findViewById(R.id.textInputEditContactName);
         editTextCustomerName = findViewById(R.id.textInputEditCustomerName);
@@ -101,6 +120,7 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
         textViewDOB = findViewById(R.id.textViewSelectDOB);
     }
 
+    // Allows to select data when clicked on datapicker textView
     public void datePickerFunction(View v) {
         final View buttonClicked = v;
 
@@ -118,9 +138,9 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
                     public void onDateSet(DatePicker view, int year,
                                           int monthOfYear, int dayOfMonth) {
 
-                        if (buttonClicked.getId()==R.id.textViewSelectDOB)
+                        if (buttonClicked.getId() == R.id.textViewSelectDOB)
                             textViewDOB.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
-                        else if (buttonClicked.getId()==R.id.textViewSelectDOA)
+                        else if (buttonClicked.getId() == R.id.textViewSelectDOA)
                             textViewDOA.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
 
                     }
@@ -128,10 +148,12 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
         datePickerDialog.show();
     }
 
-    public void insertData(View v){
+    // Stores data in strings and calls storeData() to store dta in server
+    public void insertData(View v) {
         insertDataInFields();
     }
 
+    // Used to get current date and time
     private String getDateTime() {
 //        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -139,6 +161,7 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
         return dateFormat.format(date);
     }
 
+    // Stores data in server
     private void storeData() {
 
 
@@ -200,55 +223,6 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
         queue.add(jsonObjReq);
 
     }
-
-
-    private void retrieveCustomerId() {
-
-
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
-                DATABASE_URL + "/dispCust", null, new Response.Listener<JSONObject>() {
-
-            @Override
-            public void onResponse(JSONObject response) {
-//                Log.d(TAG, response.toString());    //To check actual response
-                String customerEmail = bundle.getString("email");
-
-                try {
-                    JSONArray array = response.getJSONArray("message");
-                    for (int i = 0; i != 50; i++) {
-                        JSONObject object = array.getJSONObject(i);
-                        String email = object.getString("c_email");
-                        if (Objects.equals(email, customerEmail)) {       //Comparing email ID in database to retrieve user info
-                            mCustomerId = object.getString("record_id");
-                            editTextCustomerId.setText(mCustomerId);
-                            editTextCustomerId.setKeyListener(null);
-                            Log.i(TAG, "onResponse: " + mCustomerId);
-                        }
-
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Toast.makeText(getApplicationContext(),
-                            "Error: " + e.getMessage(),
-                            Toast.LENGTH_LONG).show();
-                }
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error with Internet : " + error.getMessage());
-                // hide the progress dialog
-            }
-        });
-
-        // Adding request to request queue
-        queue.add(jsonObjReq);
-    }
-
-
-
 
 
 }

@@ -18,6 +18,7 @@ public class CustomerDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_details);
         Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Customer Details");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -27,6 +28,7 @@ public class CustomerDetailsActivity extends AppCompatActivity {
 
     }
 
+    //  Displays details of a particular adapter from the ID received from the recycler view
     private void displayData() {
 
         int position = getIntent().getIntExtra("position", -1);
@@ -46,6 +48,7 @@ public class CustomerDetailsActivity extends AppCompatActivity {
         mUpdatedOn.append(mCustomerArrayList.get(position).getCustomerUpdatedOn());
     }
 
+    //  Initialize Views
     private void initializeViews() {
         mName = findViewById(R.id.textViewName);
         mType = findViewById(R.id.textViewType);

@@ -5,12 +5,11 @@ import android.content.Intent;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.test.nuvoco3.R;
@@ -18,14 +17,13 @@ import com.example.test.nuvoco3.R;
 import java.util.List;
 
 import static com.example.test.nuvoco3.lead.ViewCustomerActivity.mCustomerArrayList;
-import static com.example.test.nuvoco3.signup.LoginActivity.TAG;
 
 /**
  * Created by gagandeep on 23/12/17.
  */
 
 public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.ViewHolder> {
-    ViewHolder mViewHolder;
+    private static final String TAG = "Customer Adapter";
     private Context mContext;
     private List<Customer> mCustomer;
 
@@ -34,12 +32,14 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.ViewHo
         this.mCustomer = mCustomer;
     }
 
+    //Creates view Holder
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.customer_list, parent, false);
         return new ViewHolder(v);
     }
 
+    //Use to Populate individual Items
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         Customer currentCustomer = mCustomer.get(position);
@@ -52,29 +52,14 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.ViewHo
         holder.mConstraintLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mContext.startActivity(new Intent(mContext, CustomerDetailsActivity.class).putExtra("position", position));
+                expandOrReduce(holder);
 
             }
         });
-        mViewHolder = holder;
-        holder.mImageExpand.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i(TAG, "onClick: " + "clicked");
-//                TransitionManager.beginDelayedTransition(mViewHolder.mCardView);
-                holder.mGridLayout.setVisibility(View.VISIBLE);
-                holder.mImageExpand.setVisibility(View.INVISIBLE);
-                holder.mImageExpandLess.setVisibility(View.VISIBLE);
-
-            }
-        });
-
         holder.mImageExpandLess.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.mGridLayout.setVisibility(View.GONE);
-                holder.mImageExpand.setVisibility(View.VISIBLE);
-                holder.mImageExpandLess.setVisibility(View.INVISIBLE);
+                expandOrReduce(holder);
 
             }
         });
@@ -93,17 +78,36 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.ViewHo
         });
     }
 
+    private void expandOrReduce(ViewHolder holder) {
+
+        if (holder.mLinearLayout.getVisibility() == View.GONE && holder.mImageExpand.getVisibility() == View.VISIBLE && holder.mImageExpandLess.getVisibility() == View.GONE) {
+
+            holder.mLinearLayout.setVisibility(View.VISIBLE);
+            holder.mImageExpand.setVisibility(View.GONE);
+            holder.mImageExpandLess.setVisibility(View.VISIBLE);
+        } else if (holder.mLinearLayout.getVisibility() == View.VISIBLE && holder.mImageExpand.getVisibility() == View.GONE && holder.mImageExpandLess.getVisibility() == View.VISIBLE) {
+
+            holder.mLinearLayout.setVisibility(View.GONE);
+            holder.mImageExpand.setVisibility(View.VISIBLE);
+            holder.mImageExpandLess.setVisibility(View.GONE);
+        }
+    }
+
+    //Expands or Compress the Items in recycler view
+
+    //Gives the Size of to Create a Recycler view
     @Override
     public int getItemCount() {
         return mCustomer.size();
     }
 
+    //Initialize Views in ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView mCustomerName, mCustomerType, mCustomerArea, mCustomerCategory;
         TextView mTextViewCustomer, mTextViewContacts;
         CardView mCardView;
         ConstraintLayout mConstraintLayout;
-        GridLayout mGridLayout;
+        LinearLayout mLinearLayout;
         ImageView mImageExpand, mImageExpandLess;
 
         public ViewHolder(View itemView) {
@@ -116,7 +120,7 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.ViewHo
             mConstraintLayout = itemView.findViewById(R.id.constraintLayout);
             mImageExpand = itemView.findViewById(R.id.imageViewExpand);
             mImageExpandLess = itemView.findViewById(R.id.imageViewExpandLess);
-            mGridLayout = itemView.findViewById(R.id.gridLayoutExpanded);
+            mLinearLayout = itemView.findViewById(R.id.gridLayoutExpanded);
             mTextViewCustomer = itemView.findViewById(R.id.textViewCustomer);
             mTextViewContacts = itemView.findViewById(R.id.textViewContact);
         }

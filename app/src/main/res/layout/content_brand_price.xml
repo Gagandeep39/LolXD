@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".market.BrandPriceActivity"
+    tools:showIn="@layout/activity_brand_price">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16sp">
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/textInputLayoutRepresentative"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@+id/textInputLayoutCategory"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/textInputLayoutCategory"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutCategory">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/textInputEditRepresentative"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Representative" />
+
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/textInputLayoutCounter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@+id/textInputLayoutCategory"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/textInputLayoutCategory"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutCategory">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/textInputEditCounter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Counter" />
+
+
+        </android.support.design.widget.TextInputLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8sp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select Brand" />
+
+            <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+
+                android:id="@+id/searchCategoryBrand"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintText="Default" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8sp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select Product" />
+
+            <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+
+                android:id="@+id/searchCategoryProduct"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintText="Default" />
+        </LinearLayout>
+
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/textInputLayoutWSP"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@+id/textInputLayoutCategory"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/textInputLayoutCategory"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutCategory">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/textInputEditWSP"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="WSP" />
+
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/textInputLayoutRSP"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@+id/textInputLayoutCategory"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/textInputLayoutCategory"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutCategory">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/textInputEditRSP"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="RSP" />
+
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/textInputLayoutStocks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@+id/textInputLayoutCategory"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/textInputLayoutCategory"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutCategory">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/textInputEditStocks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Stocks" />
+
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/textInputLayoutRemark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@+id/textInputLayoutCategory"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/textInputLayoutCategory"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutCategory">
+
+            <!--<android.support.design.widget.TextInputEditText-->
+            <!--android:id="@+id/textInputEditRemark"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:hint="Counter" />-->
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top"
+                android:hint="Remarks"
+                android:minLines="2" />
+
+
+        </android.support.design.widget.TextInputLayout>
+
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>

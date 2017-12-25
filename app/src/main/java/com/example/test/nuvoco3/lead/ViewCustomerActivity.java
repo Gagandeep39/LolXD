@@ -45,9 +45,7 @@ public class ViewCustomerActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         queue = Volley.newRequestQueue(this);
-        mRecyclerView = findViewById(R.id.recyclerView);
-        mSwipeRefresh = findViewById(R.id.swipeRefreshLayout);
-        mSearchView = findViewById(R.id.searchView);
+        initializeViews();
         mCustomerArrayList = new ArrayList<>();
         readData();
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -64,8 +62,6 @@ public class ViewCustomerActivity extends AppCompatActivity {
                 mSearchText = query;
                 readData();
 
-                mRecyclerView.setHasFixedSize(true);
-                mRecyclerView.getItemAnimator();
                 mRecyclerView.setAdapter(mAdapter);
                 return true;
             }
@@ -89,6 +85,12 @@ public class ViewCustomerActivity extends AppCompatActivity {
 
     }
 
+    private void initializeViews() {
+
+        mRecyclerView = findViewById(R.id.recyclerView);
+        mSwipeRefresh = findViewById(R.id.swipeRefreshLayout);
+        mSearchView = findViewById(R.id.searchView);
+    }
 
 
     private void readData() {
@@ -99,10 +101,10 @@ public class ViewCustomerActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(JSONObject response) {
-//                Log.i("lol", "onResponse:  " + response);
+                Log.i("lol", "onResponse:  " + response);
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
-                    for (int i = 0; i < 50; i++) {
+                    for (int i = 0; i < 20; i++) {
 
                         JSONObject object = jsonArray.getJSONObject(i);
                         if (object.getString("c_email").toLowerCase().contains(mSearchText.toLowerCase())
@@ -124,7 +126,7 @@ public class ViewCustomerActivity extends AppCompatActivity {
                             mCreatedOn = object.getString("createdOn") + "";
                             mUpdatedBy = object.getString("updatedBy") + "";
                             mUpdatedOn = object.getString("updatedOn") + "";
-//                            Log.i("lol", "onResponse: " + mName + mArea + mCategory + "  " + mStatus + " " + mId);
+                            Log.i(TAG, "onResponse: " + mAddress);
                             mCustomerArrayList.add(new Customer(mName, mId, mCategory, mAddress, mArea, mDistrict, mState, mPhone, mEmail, mStatus, mCreatedBy, mCreatedOn, mUpdatedBy, mUpdatedOn));
                             mAdapter.notifyDataSetChanged();
                         }

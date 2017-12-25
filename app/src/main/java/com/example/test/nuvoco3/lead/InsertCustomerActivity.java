@@ -1,7 +1,9 @@
 
 package com.example.test.nuvoco3.lead;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
@@ -22,13 +24,16 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.R;
+import com.example.test.nuvoco3.signup.ObjectSerializer;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,13 +41,14 @@ import java.util.Map;
 import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 
 public class InsertCustomerActivity extends AppCompatActivity {
-    public static final String TAG = "NUVOCO";
+    public static final String TAG = "Insert Customer Activity";
     String categoryPosition = null, areaPosition = null, districtPosition = null, statePosition = null;
     SearchableSpinner searchableSpinnerCategory, searchableSpinnerDistrict, searchableSpinnerArea, searchableSpinnerState;
     FloatingActionButton floatingActionButtonAddData;
     TextInputEditText editTextName, editTextAddress, editTextPhone, editTextEmail;
     String mName, mType, mCategory, mAddress, mArea, mDistrict, mState, mPhone, mEmail, mStatus, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy;
     RequestQueue queue;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +68,7 @@ public class InsertCustomerActivity extends AppCompatActivity {
         initializeSpinners();
     }
 
+    //  Populates the spinners
     private void initializeSpinners() {
         final String category[] = {"Default", "Dealer", "Subdealer", "Individual"};
         final String area[] = {"Default", "Area 1", "Area 2", "Area 3", "Area 4"};
@@ -134,7 +141,7 @@ public class InsertCustomerActivity extends AppCompatActivity {
 
     }
 
-
+    //  initialize the views on the screen
     private void initializeViews() {
         floatingActionButtonAddData = findViewById(R.id.fabAddData);
         editTextName = findViewById(R.id.textInputEditName);
@@ -148,17 +155,26 @@ public class InsertCustomerActivity extends AppCompatActivity {
 
     }
 
+    //  Function to provide current data and time
     private String getDateTime() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-//        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+//        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         return dateFormat.format(date);
     }
 
-
+    //Takes the Variable from Edit texts inside the string and starts storedata function to store data in the server
     public void insertCustomer() {
+        ArrayList<String> newArralist = new ArrayList<>();
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.test.nuvoco3", Context.MODE_PRIVATE);
 
+        try {
+            newArralist = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("CustomerData", ObjectSerializer.serialize(new ArrayList<String>())));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        //I edit the prefs and add my string set and label it as "List"
         mName = editTextName.getText().toString();
         mType = "New";
         mCategory = categoryPosition;
@@ -170,14 +186,14 @@ public class InsertCustomerActivity extends AppCompatActivity {
         mEmail = editTextEmail.getText().toString().trim();
         mStatus = "1";
         mCreatedOn = getDateTime();
-        mCreatedBy = "200";
+        mCreatedBy = newArralist.get(6);
         mUpdatedOn = getDateTime();
-        mUpdatedBy = "200";
+        mUpdatedBy = newArralist.get(6);
         storeData();
 
     }
 
-
+    //  Stores data to Server
     private void storeData() {
 
 
@@ -207,8 +223,11 @@ public class InsertCustomerActivity extends AppCompatActivity {
                         Log.i(TAG, response.toString());
                         try {
                             if (response.getString("status").equals("updated")) {
+
                                 Toast.makeText(InsertCustomerActivity.this, "Successfully Inserted data", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(InsertCustomerActivity.this, InsertCustomerContactActivity.class);
+                                intent.putExtra("customerId", response.getString("allot_id"));
+                                Log.i(TAG, "onResponse: " + response.getString("allot_id"));
                                 intent.putExtra("customerName", mName);
                                 intent.putExtra("createdBy", mCreatedBy);
                                 intent.putExtra("createdOn", mCreatedOn);
@@ -248,11 +267,6 @@ public class InsertCustomerActivity extends AppCompatActivity {
         jsonObjReq.setTag("LOL");
         // Adding request to request queue
         queue.add(jsonObjReq);
-
-        // Cancelling request
-    /* if (queue!= null) {
-    queue.cancelAll(TAG);
-    } */
 
     }
 

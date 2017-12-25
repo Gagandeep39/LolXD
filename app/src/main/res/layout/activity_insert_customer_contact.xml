@@ -162,13 +162,6 @@
                 android:text="Select Date"
                 android:textSize="20sp" />
 
-            <Button
-                android:id="@+id/Done"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:onClick="insertData"
-                android:padding="16sp"
-                android:text="Done" />
 
         </LinearLayout>
 
@@ -181,6 +174,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
+        android:onClick="insertData"
         app:srcCompat="@drawable/ic_done_black_24dp" />
 
 </android.support.design.widget.CoordinatorLayout>

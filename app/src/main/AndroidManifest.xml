@@ -62,23 +62,32 @@
             android:label="@string/title_activity_sign_up"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings" />
-        <activity
             android:name=".customer.ComplaintStatusActivity"
             android:label="@string/title_activity_complaint_status"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".lead.CustomerDetailsActivity"
             android:label="@string/title_activity_customer_details"
+            android:parentActivityName=".lead.ViewCustomerActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".lead.ViewCustomerContactActivity"
             android:label="@string/title_activity_view_customer_contact"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".lead.CustomerContactDetailsActivity"
             android:label="@string/title_activity_customer_contact_details"
+            android:parentActivityName=".lead.ViewCustomerContactActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".signup.UserAccountActivity"
+            android:label="@string/title_activity_user_account"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".market.BrandPriceActivity"
+            android:label="@string/title_activity_brand_price"
             android:theme="@style/AppTheme"></activity>
     </application>
 

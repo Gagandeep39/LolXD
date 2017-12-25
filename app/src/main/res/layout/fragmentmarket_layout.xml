@@ -40,7 +40,7 @@
             android:layout_margin="16sp"
             android:layout_row="1"
             android:layout_rowWeight="1"
-            android:background="@color/colorAccent"
+            android:background="@color/light_grey"
             android:text="Add Campaign" />
 
         <Button
@@ -52,7 +52,7 @@
             android:layout_margin="16sp"
             android:layout_row="1"
             android:layout_rowWeight="1"
-            android:background="@color/colorAccent"
+            android:background="@color/light_grey"
             android:text="Add General Market Info" />
 
 
