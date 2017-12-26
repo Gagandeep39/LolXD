@@ -1,5 +1,6 @@
 package com.example.test.nuvoco3.market;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -16,6 +18,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.test.nuvoco3.MainActivity;
 import com.example.test.nuvoco3.R;
 
 import org.json.JSONArray;
@@ -28,7 +31,6 @@ import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 
 public class ViewBrandPriceActivity extends AppCompatActivity {
     public static final String URL_DISPLAY_MARKET = "/dispMarket";
-    public static ArrayList<GeneralMarket> mGeneralMarketArrayList;
     public static ArrayList<BrandPrice> mBrandPriceArrayList;
     RecyclerView mRecyclerView;
     SwipeRefreshLayout mSwipeRefresh;
@@ -51,6 +53,8 @@ public class ViewBrandPriceActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mBrandPriceAdapter);
+
+
     }
 
     private void initializeSearch() {
@@ -135,4 +139,17 @@ public class ViewBrandPriceActivity extends AppCompatActivity {
         queue.add(jsonObjReq);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        item.getItemId();
+        if (item.getItemId() == android.R.id.home) {
+            Log.i("Test", "onOptionsItemSelected: " + "Button Pressed");
+            startActivity(new Intent(this, MainActivity.class).putExtra("fragmentNumber", "2"));
+//            FragmentManager transaction = getFragmentManager();
+//            transaction.beginTransaction()
+//                    .replace(R.id.container, Fragment.instantiate(this, "LOL")) //<---replace a view in your layout (id: container) with the newFragment
+//                    .commit();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

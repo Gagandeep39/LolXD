@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -249,54 +250,21 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return newArralist.get(6);
+        if (newArralist.size() > 0)
+            return newArralist.get(6);
+
+        return "Invalid User";
+
     }
 
-    //Populate Brand Spinner
-//    private void populateBrand(){
-//
-//        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
-//                DATABASE_URL + URL_BRAND_INFO, null, new Response.Listener<JSONObject>() {
-//
-//            @Override
-//            public void onResponse(JSONObject response) {
-//
-//                try {
-//                    JSONArray jsonArray = response.getJSONArray("message");
-//                    for (int i = 0; i < 50; i++) {
-//
-//                        JSONObject object = jsonArray.getJSONObject(i);
-//
-//                        mBrandArrayList.add(object.getString("Brand"));
-//                        if (!mBrand.equals("default")) {
-//                            if (object.getString("product").toLowerCase().contains(mBrand)) {
-//                                mProductArrayList.add(object.getString("product"));
-//
-//                            }
-//                        }
-//
-//                        Log.i(TAG, "onResponse: " + mBrandArrayList.size());
-//                    }
-////                    Log.i(TAG, "onResponse: " + mBrandArrayList);
-//
-//                } catch (JSONException e1) {
-//                    e1.printStackTrace();
-//                    e1.printStackTrace();
-//                }
-//            }
-//
-//        }, new Response.ErrorListener() {
-//
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                VolleyLog.d("lol", "Error with Internet : " + error.getMessage());
-//                // hide the progress dialog
-//            }
-//        });
-//
-//        // Adding request to request queue
-//        queue.add(jsonObjReq);
-//
-//    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
 }

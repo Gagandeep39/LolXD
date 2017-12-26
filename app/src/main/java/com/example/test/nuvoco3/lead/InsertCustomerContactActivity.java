@@ -2,7 +2,6 @@ package com.example.test.nuvoco3.lead;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -24,7 +23,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.test.nuvoco3.MainActivity;
 import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.signup.ObjectSerializer;
 
@@ -43,7 +41,7 @@ import java.util.Map;
 import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 
 public class InsertCustomerContactActivity extends AppCompatActivity {
-    private static final String TAG = "NUVOCO";
+    private static final String TAG = "InsertContacts";
     TextInputEditText editTextContactName, editTextContactPhone, editTextContactEmail, editTextCustomerName, editTextCustomerId;
     TextView textViewDOB, textViewDOA;
     int mYear, mMonth, mDay;
@@ -204,7 +202,7 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
                         try {
                             if (response.getString("status").equals("updated")) {
                                 Toast.makeText(InsertCustomerContactActivity.this, "Successfully Inserted New Contact", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(InsertCustomerContactActivity.this, MainActivity.class));
+                                finish();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

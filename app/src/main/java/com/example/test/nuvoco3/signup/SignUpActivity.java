@@ -58,7 +58,7 @@ public class SignUpActivity extends AppCompatActivity {
     //  Populates Spinners
     private void initializeOnClicks() {
         ArrayAdapter mDepartmentAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, departmentTypes);
-        ArrayAdapter mCityAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, cityTypes);
+        final ArrayAdapter mCityAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, cityTypes);
         ArrayAdapter mAreaAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, areaTypes);
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -81,6 +81,7 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
+                mDepartment = getString(R.string.default_name);
             }
         });
         mSearchableSpinnerArea.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -92,6 +93,7 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
+                mArea = getString(R.string.default_name);
             }
         });
         mSearchableSpinnerCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -102,7 +104,7 @@ public class SignUpActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
+                mCity = getString(R.string.default_name);
             }
         });
     }
@@ -120,7 +122,7 @@ public class SignUpActivity extends AppCompatActivity {
         mPassword2 = mTextInputEditTextPass2.getText().toString();
 
         if (TextUtils.isEmpty(mPinString)) {
-            mTextInputEditTextPin.setError("Enter Pin");
+            mTextInputEditTextPin.setError("Enter Pincode");
         } else {
             mPin = Integer.parseInt(mPinString);
         }
@@ -133,8 +135,12 @@ public class SignUpActivity extends AppCompatActivity {
             mTextInputEditTextName.setError("Enter Name");
         if (TextUtils.isEmpty(mPhone))
             mTextInputEditTextPhone.setError("Enter Phone number");
-        if (TextUtils.isEmpty(mEmail))
+        if (TextUtils.isEmpty(mEmail)) {
+
             mTextInputEditTextEmail.setError("Enter Email");
+        } else if (!isEmailValid(mEmail)) {
+            mTextInputEditTextEmail.setError("Invalid Email");
+        }
         if (TextUtils.isEmpty(mAddress))
             mTextInputEditTextAddress.setError("Enter Address");
 
@@ -144,14 +150,21 @@ public class SignUpActivity extends AppCompatActivity {
         else {
             if (TextUtils.isEmpty(mPassword2))
                 mTextInputEditTextPass2.setError("Re-Enter Password");
-            else if (TextUtils.equals(mPassword1, mPassword2))
+            else if (!TextUtils.equals(mPassword1, mPassword2))
                 mTextInputEditTextPass2.setError("Both the Passwords are different");
         }
         if (TextUtils.isEmpty(mPassword2))
             mTextInputEditTextPass2.setError("Re-Enter Password");
 
+        if (TextUtils.equals(mArea, getString(R.string.default_name)))
+            Toast.makeText(this, "Select Area", Toast.LENGTH_SHORT).show();
+        if (TextUtils.equals(mCity, getString(R.string.default_name)))
+            Toast.makeText(this, "Select City", Toast.LENGTH_SHORT).show();
+        if (TextUtils.equals(mDepartment, getString(R.string.default_name)))
+            Toast.makeText(this, "Select Department", Toast.LENGTH_SHORT).show();
 
-        if (!TextUtils.isEmpty(mName) && !TextUtils.isEmpty(mAge + "") && !TextUtils.isEmpty(mPhone) && !TextUtils.isEmpty(mEmail) && !TextUtils.isEmpty(mAddress) && !TextUtils.isEmpty(mPassword1) && !TextUtils.isEmpty(mArea) && !TextUtils.isEmpty(mCity) && !TextUtils.isEmpty(mDepartment) && !TextUtils.isEmpty(mAge + ""))
+
+        if (!TextUtils.isEmpty(mName) && !TextUtils.isEmpty(mAge + "") && !TextUtils.isEmpty(mPhone) && isEmailValid(mEmail) && !TextUtils.isEmpty(mEmail) && !TextUtils.isEmpty(mAddress) && !TextUtils.isEmpty(mPassword1) && TextUtils.equals(mPassword1, mPassword2) && !TextUtils.equals(mArea, getString(R.string.default_name)) && !TextUtils.equals(mCity, getString(R.string.default_name)) && !TextUtils.equals(mDepartment, getString(R.string.default_name)))
             makeJsonObjReq();
     }
 
@@ -227,5 +240,11 @@ public class SignUpActivity extends AppCompatActivity {
         // Adding request to request queue
         queue.add(jsonObjReq);
     }
+
+    private boolean isEmailValid(String email) {
+        //TODO: Replace this with your own logic
+        return email.contains("@") && email.contains(".com");
+    }
+
 
 }

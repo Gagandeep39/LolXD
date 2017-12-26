@@ -3,6 +3,7 @@ package com.example.test.nuvoco3;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -15,7 +16,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -23,7 +23,7 @@ import android.widget.Toast;
 import com.example.test.nuvoco3.signup.LoginActivity;
 import com.example.test.nuvoco3.signup.UserAccountActivity;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, FragmentMarket.OnFragmentInteractionListener {
     public static final String TAG = "MAIN ACTIVITY";
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
@@ -32,19 +32,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        String s1 = getIntent().getStringExtra("test");
-        Log.i(TAG, "onCreate: " + s1);
-        if (s1 != null && s1.equals("1")) {
-            Log.i(TAG, "onCreate: " + "Entered");
-            s1 = "";
-            Fragment fragment = new FragmentMarket();
-            if (fragment != null) {
-                android.app.FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction()
-                        .commit();
-            }
+        if (getIntent().hasExtra("asd")) {
+            if (getSupportFragmentManager().getBackStackEntryCount() > 0)
+                getSupportFragmentManager().popBackStackImmediate("MESSAGE_TAG", 0);
         }
+
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -124,6 +116,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+        //you can leave it empty
     }
 
     //Starts a Fragment Activity on Selecting One of The Fragments

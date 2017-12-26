@@ -104,6 +104,11 @@
             android:name=".market.ViewBrandPriceActivity"
             android:label="@string/title_activity_view_general_market"
             android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".market.InsertCampaignActivity"
+            android:label="@string/title_activity_insert_campaign"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme"></activity>
     </application>
 
