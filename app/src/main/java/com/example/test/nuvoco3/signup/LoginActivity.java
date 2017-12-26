@@ -78,12 +78,29 @@ public class LoginActivity extends AppCompatActivity {
 
     //    Sends Email ID and Password to Server for Authentication
     private void tryLoggingIn() {
+        View focusView;
+        boolean cancel = false;
         mEmailLogin = mTextInputEditTextEmail.getText().toString();
         mPasswordLogin = mTextInputEditTextPassword.getText().toString();
-        if (TextUtils.isEmpty(mEmailLogin))
-            Toast.makeText(this, "Enter Email", Toast.LENGTH_SHORT).show();
-        if (TextUtils.isEmpty(mPasswordLogin))
-            Toast.makeText(this, "Enter Password", Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(mEmailLogin)) {
+            mTextInputEditTextEmail.setError("Enter Email");
+            focusView = mTextInputEditTextEmail;
+            focusView.requestFocus();
+            cancel = true;
+        } else if (!isEmailValid(mEmailLogin)) {
+            mTextInputEditTextEmail.setError("Enter a valid Email");
+            focusView = mTextInputEditTextEmail;
+            focusView.requestFocus();
+            cancel = true;
+        } else {
+            if (TextUtils.isEmpty(mPasswordLogin)) {
+                mTextInputEditTextPassword.setError("Enter Password");
+                focusView = mTextInputEditTextPassword;
+                focusView.requestFocus();
+                cancel = true;
+            }
+
+        }
         if (!TextUtils.isEmpty(mEmailLogin) && !TextUtils.isEmpty(mPasswordLogin)) {
             progressDialog.setMessage("Please Wait...");
             progressDialog.setCancelable(false);
@@ -202,6 +219,11 @@ public class LoginActivity extends AppCompatActivity {
         if (newArralist.size() != 0)
             return Integer.parseInt(newArralist.get(11));
         return 0;
+    }
+
+    private boolean isEmailValid(String email) {
+        //TODO: Replace this with your own logic
+        return email.contains("@");
     }
 
 

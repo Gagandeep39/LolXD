@@ -9,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -43,11 +44,16 @@ import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 public class InsertCustomerActivity extends AppCompatActivity {
     public static final String TAG = "Insert Customer Activity";
     String categoryPosition = null, areaPosition = null, districtPosition = null, statePosition = null;
-    SearchableSpinner searchableSpinnerCategory, searchableSpinnerDistrict, searchableSpinnerArea, searchableSpinnerState;
+    SearchableSpinner searchableSpinnerCategory, searchableSpinnerDistrict, searchableSpinnerArea, searchableSpinnerState, searchableSpinnerType;
     FloatingActionButton floatingActionButtonAddData;
     TextInputEditText editTextName, editTextAddress, editTextPhone, editTextEmail;
     String mName, mType, mCategory, mAddress, mArea, mDistrict, mState, mPhone, mEmail, mStatus, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy;
     RequestQueue queue;
+    String category[] = {"Default", "Dealer", "Subdealer", "Individual"};
+    String area[] = {"Default", "Area 1", "Area 2", "Area 3", "Area 4"};
+    String district[] = {"Default", "Mumbai", "Pune", "Aurangabad", "Nagpur"};
+    String state[] = {"Default", "Maharashtra", "Gujrat", "Rajasthan", "Madhya Pradesh", "Chattissgarh"};
+    String type[] = {"New", "Prospect"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +68,7 @@ public class InsertCustomerActivity extends AppCompatActivity {
         floatingActionButtonAddData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                insertCustomer();
+                validateData();
             }
         });
         initializeSpinners();
@@ -70,27 +76,24 @@ public class InsertCustomerActivity extends AppCompatActivity {
 
     //  Populates the spinners
     private void initializeSpinners() {
-        final String category[] = {"Default", "Dealer", "Subdealer", "Individual"};
-        final String area[] = {"Default", "Area 1", "Area 2", "Area 3", "Area 4"};
-        final String district[] = {"Default", "Mumbai", "Pune", "Aurangabad", "Nagpur"};
-        final String state[] = {"Default", "Maharashtra", "Gujrat", "Rajasthan", "Madhya Pradesh", "Chattissgarh"};
         ArrayAdapter<String> categoryArrayAdapter = new ArrayAdapter<String>(InsertCustomerActivity.this, android.R.layout.simple_dropdown_item_1line, category);
         ArrayAdapter<String> areaArrayAdapter = new ArrayAdapter<String>(InsertCustomerActivity.this, android.R.layout.simple_dropdown_item_1line, area);
         ArrayAdapter<String> districtArrayAdapter = new ArrayAdapter<String>(InsertCustomerActivity.this, android.R.layout.simple_dropdown_item_1line, district);
         ArrayAdapter<String> stateArrayAdapter = new ArrayAdapter<String>(InsertCustomerActivity.this, android.R.layout.simple_dropdown_item_1line, state);
+        ArrayAdapter<String> typeArrayAdapter = new ArrayAdapter<>(InsertCustomerActivity.this, android.R.layout.simple_list_item_1, type);
         searchableSpinnerCategory.setPositiveButton("Ok");
         searchableSpinnerCategory.setTitle("Select Item");
         searchableSpinnerCategory.setAdapter(categoryArrayAdapter);
         searchableSpinnerCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                categoryPosition = category[position];
+                mCategory = category[position];
 
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
+                mCategory = "default";
             }
         });
         searchableSpinnerArea.setPositiveButton("Ok");
@@ -99,13 +102,13 @@ public class InsertCustomerActivity extends AppCompatActivity {
         searchableSpinnerArea.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                areaPosition = area[position];
+                mArea = area[position];
 
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
+                mArea = "default";
             }
         });
         searchableSpinnerDistrict.setPositiveButton("Ok");
@@ -114,13 +117,13 @@ public class InsertCustomerActivity extends AppCompatActivity {
         searchableSpinnerDistrict.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                districtPosition = district[position];
+                mDistrict = district[position];
 
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
+                mDistrict = "default";
             }
         });
         searchableSpinnerState.setPositiveButton("Ok");
@@ -129,13 +132,25 @@ public class InsertCustomerActivity extends AppCompatActivity {
         searchableSpinnerState.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                statePosition = state[position];
+                mState = state[position];
 
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
+                mState = "default";
+            }
+        });
+        searchableSpinnerType.setAdapter(typeArrayAdapter);
+        searchableSpinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mType = type[position];
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                mType = "default";
             }
         });
 
@@ -152,6 +167,7 @@ public class InsertCustomerActivity extends AppCompatActivity {
         searchableSpinnerArea = findViewById(R.id.searchArea);
         searchableSpinnerDistrict = findViewById(R.id.searchDistrict);
         searchableSpinnerState = findViewById(R.id.searchState);
+        searchableSpinnerType = findViewById(R.id.searchType);
 
     }
 
@@ -164,31 +180,41 @@ public class InsertCustomerActivity extends AppCompatActivity {
     }
 
     //Takes the Variable from Edit texts inside the string and starts storedata function to store data in the server
-    public void insertCustomer() {
-        ArrayList<String> newArralist = new ArrayList<>();
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.test.nuvoco3", Context.MODE_PRIVATE);
-
-        try {
-            newArralist = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("CustomerData", ObjectSerializer.serialize(new ArrayList<String>())));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void validateData() {
 
         //I edit the prefs and add my string set and label it as "List"
         mName = editTextName.getText().toString();
-        mType = "New";
-        mCategory = categoryPosition;
         mAddress = editTextAddress.getText().toString();
-        mArea = areaPosition;
-        mDistrict = districtPosition;
-        mState = statePosition;
         mPhone = editTextPhone.getText().toString().trim();
         mEmail = editTextEmail.getText().toString().trim();
         mStatus = "1";
         mCreatedOn = getDateTime();
-        mCreatedBy = newArralist.get(6);
+        mCreatedBy = getCustomerId();
         mUpdatedOn = getDateTime();
-        mUpdatedBy = newArralist.get(6);
+        mUpdatedBy = getCustomerId();
+        if (TextUtils.isEmpty(mName)) {
+            editTextName.setError("Enter Name");
+        }
+        if (TextUtils.isEmpty(mAddress)) {
+            editTextAddress.setError("Enter Address");
+        }
+        if (TextUtils.isEmpty(mPhone)) {
+            editTextPhone.setError("Enter Phone Number");
+        }
+        if (TextUtils.isEmpty(mEmail)) {
+            editTextEmail.setError("Enter Email Address");
+        }
+        if (TextUtils.equals(mArea, "default"))
+            Toast.makeText(this, "Select Area", Toast.LENGTH_SHORT).show();
+        if (TextUtils.equals(mDistrict, "default"))
+            Toast.makeText(this, "Select Category", Toast.LENGTH_SHORT).show();
+        if (TextUtils.equals(mState, "default"))
+            Toast.makeText(this, "Select State", Toast.LENGTH_SHORT).show();
+        if (TextUtils.equals(mType, "default"))
+            Toast.makeText(this, "Select Type", Toast.LENGTH_SHORT).show();
+        if (TextUtils.equals(mCategory, "default"))
+            Toast.makeText(this, "Select Category", Toast.LENGTH_SHORT).show();
+        if (!TextUtils.isEmpty(mName) && !TextUtils.isEmpty(mAddress) && !TextUtils.isEmpty(mPhone) && !TextUtils.isEmpty(mEmail) && !TextUtils.equals(mArea, "default") && !TextUtils.equals(mState, "default") && !TextUtils.equals(mDistrict, "default") && !TextUtils.equals(mType, "default") && !TextUtils.equals(mCategory, "default"))
         storeData();
 
     }
@@ -267,6 +293,22 @@ public class InsertCustomerActivity extends AppCompatActivity {
         jsonObjReq.setTag("LOL");
         // Adding request to request queue
         queue.add(jsonObjReq);
+
+    }
+
+    private String getCustomerId() {
+        ArrayList<String> newArralist = new ArrayList<>();
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.test.nuvoco3", Context.MODE_PRIVATE);
+
+        try {
+            newArralist = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("CustomerData", ObjectSerializer.serialize(new ArrayList<String>())));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (newArralist.size() > 0)
+            return newArralist.get(6);
+
+        return "Invalid User";
 
     }
 

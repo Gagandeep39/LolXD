@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".market.ViewGeneralMarketActivity">
+    tools:context=".market.ViewBrandPriceActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -28,7 +28,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
-                app:popupTheme="@style/AppTheme.PopupOverlay" />
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                app:title="View Products" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
@@ -51,7 +52,7 @@
 
         </android.support.v7.widget.CardView>
 
-        <include layout="@layout/content_view_general_market" />
+        <include layout="@layout/content_view_brand_price" />
     </LinearLayout>
 
 

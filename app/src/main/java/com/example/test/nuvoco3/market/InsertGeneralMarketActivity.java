@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -42,10 +41,10 @@ import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 
 public class InsertGeneralMarketActivity extends AppCompatActivity {
     public static final String URL_INSERT_GEN_MARKET = "/insertGen";
-    private static final String TAG = "InsertGeneralMarket Activity";
+    private static final String TAG = "GeneralMarket Activity";
     String mRepresentative, mCounter, mDate, mCustomer, mMarketDetail, mMSP, mPrice, mDemand, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy;
     TextInputEditText mEditTextRepresentative, mEditTextCounter, mEditTextMSP, mEditTextPrice;
-    EditText mEditTextMarketDetails, mEditTextDemands;
+    TextInputEditText mEditTextMarketDetails, mEditTextDemands;
     SearchableSpinner mSearchCustomer;
     String mCustomerArray[] = {"Customer 1", "Customer 2", "Customer 3"};
     RequestQueue queue;
@@ -79,18 +78,23 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
         mCreatedOn = getDateTime();
         mUpdatedBy = getUserId();
         mUpdatedOn = getDateTime();
-        if (TextUtils.isEmpty(mRepresentative))
-            Toast.makeText(this, "Enter Representative's ID", Toast.LENGTH_SHORT).show();
-        if (TextUtils.isEmpty(mCounter))
-            Toast.makeText(this, "Enter Counter's Name", Toast.LENGTH_SHORT).show();
-        if (TextUtils.isEmpty(mMSP))
-            Toast.makeText(this, "Enter MSP", Toast.LENGTH_SHORT).show();
-        if (TextUtils.isEmpty(mPrice))
-            Toast.makeText(this, "Enter Price", Toast.LENGTH_SHORT).show();
-        if (TextUtils.isEmpty(mMarketDetail))
-            Toast.makeText(this, "Enter Market Details", Toast.LENGTH_SHORT).show();
-        if (TextUtils.isEmpty(mDemand))
-            Toast.makeText(this, "Details Field cannot be Empty", Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(mRepresentative)) {
+            mEditTextRepresentative.setError("Enter Representative's Name");
+        }
+        if (TextUtils.isEmpty(mCounter)) {
+            mEditTextCounter.setError("Enter Counter's Name");
+        }
+        if (TextUtils.isEmpty(mMSP)) {
+            mEditTextMSP.setError("Enter MSP");
+        }
+        if (TextUtils.isEmpty(mPrice)) {
+            mEditTextPrice.setError("Enter Price");
+        }
+        if (TextUtils.isEmpty(mMarketDetail)) {
+            mEditTextMarketDetails.setError("Enter Market Details");
+        }
+
+
         if (TextUtils.equals(mCustomer, "default"))
             Toast.makeText(this, "Select a Customer", Toast.LENGTH_SHORT).show();
         if (!TextUtils.isEmpty(mRepresentative) && !TextUtils.isEmpty(mCounter) && !TextUtils.isEmpty(mMSP) && !TextUtils.isEmpty(mPrice) && !TextUtils.isEmpty(mMarketDetail) && !TextUtils.isEmpty(mDemand) && !TextUtils.equals(mCustomer, "default"))
@@ -188,6 +192,8 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
         mEditTextMarketDetails = findViewById(R.id.editTextDetails);
         mEditTextDemands = findViewById(R.id.editTextDemand);
         mSearchCustomer = findViewById(R.id.searchCategoryBrand);
+        mEditTextRepresentative.setText(getUserId());
+        mEditTextRepresentative.setKeyListener(null);
     }
 
     //  Function to provide current data and time
@@ -209,6 +215,12 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return newArralist.get(6);
+        if (newArralist.size() > 0)
+            return newArralist.get(6);
+
+        return "Invalid User";
+
     }
+
+
 }

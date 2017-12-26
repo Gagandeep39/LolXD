@@ -31,7 +31,7 @@
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/AppTheme.PopupOverlay"
-                app:title="Add new Customer" />
+                app:title="Add new Contact" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
@@ -81,7 +81,7 @@
                     android:id="@+id/textInputEditCustomerName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Name of Customer" />
+                    android:hint="Customer" />
             </android.support.design.widget.TextInputLayout>
 
 
@@ -114,7 +114,7 @@
                     android:id="@+id/textInputEditContactPhone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Phone Number of Employ"
+                    android:hint="Phone Number"
                     android:inputType="phone" />
             </android.support.design.widget.TextInputLayout>
 
@@ -131,7 +131,7 @@
                     android:id="@+id/textInputEditContactEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Email ID of Employ" />
+                    android:hint="Email ID" />
             </android.support.design.widget.TextInputLayout>
 
             <TextView

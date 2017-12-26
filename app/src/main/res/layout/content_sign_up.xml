@@ -27,7 +27,8 @@
                 android:id="@+id/textInputEditName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Name" />
+                android:hint="Name"
+                android:inputType="textPersonName" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -61,7 +62,8 @@
                 android:id="@+id/textInputEditEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Email ID" />
+                android:hint="Email ID"
+                android:inputType="textEmailAddress" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -77,7 +79,8 @@
                 android:id="@+id/textInputEditPassword1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Enter Password" />
+                android:hint="Enter Password"
+                android:inputType="textPassword" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -112,8 +115,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Age"
-                android:inputType="phone"
-                android:maxLength="13" />
+                android:inputType="number"
+                android:maxLength="2" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -130,14 +133,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Pincode"
-                android:inputType="phone" />
+                android:inputType="number"
+                android:maxLength="6" />
         </android.support.design.widget.TextInputLayout>
 
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/textInputLayoutAddress"
             android:layout_width="match_parent"
-            android:layout_height="59dp"
+            android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="@+id/textInputLayoutState"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/textInputLayoutState"
@@ -147,7 +151,9 @@
                 android:id="@+id/textInputEditAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Address" />
+                android:gravity="start"
+                android:hint="Address"
+                android:minLines="2" />
         </android.support.design.widget.TextInputLayout>
 
         <LinearLayout

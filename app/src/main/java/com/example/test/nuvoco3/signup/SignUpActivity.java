@@ -109,49 +109,47 @@ public class SignUpActivity extends AppCompatActivity {
 
     //  Performs A check if any field is left Empty
     private void insertData() {
+        View focusView;
         String mPinString = mTextInputEditTextPin.getText().toString();
         String mAgeString = mTextInputEditTextAge.getText().toString();
-        if (TextUtils.isEmpty(mPinString))
-            Toast.makeText(this, "Insert Pin", Toast.LENGTH_SHORT).show();
-        else
-            mPin = Integer.parseInt(mPinString);
-
-        if (TextUtils.isEmpty(mAgeString))
-            Toast.makeText(this, "Insert Age", Toast.LENGTH_SHORT).show();
-        else
-            mAge = Integer.parseInt(mAgeString);
-
-
         mName = mTextInputEditTextName.getText().toString();
-        if (TextUtils.isEmpty(mName))
-            Toast.makeText(this, "Name field cannot be blank", Toast.LENGTH_SHORT).show();
-
         mPhone = mTextInputEditTextPhone.getText().toString();
-        if (TextUtils.isEmpty(mPhone))
-            Toast.makeText(this, "You need to enter phone number", Toast.LENGTH_SHORT).show();
         mEmail = mTextInputEditTextEmail.getText().toString();
-        if (TextUtils.isEmpty(mEmail))
-            Toast.makeText(this, "You need to enter Email", Toast.LENGTH_SHORT).show();
         mAddress = mTextInputEditTextAddress.getText().toString();
-        if (TextUtils.isEmpty(mAddress))
-            Toast.makeText(this, "You need to enter Address", Toast.LENGTH_SHORT).show();
-
         mPassword1 = mTextInputEditTextPass1.getText().toString();
-        if (TextUtils.isEmpty(mPhone))
-            Toast.makeText(this, "You need to Enter Password", Toast.LENGTH_SHORT).show();
-        else {
-            mPassword2 = mTextInputEditTextPass2.getText().toString();
-            if (TextUtils.isEmpty(mPhone))
-                Toast.makeText(this, "You need to Re-enter Password", Toast.LENGTH_SHORT).show();
-            else if (!mPassword1.equals(mPassword2))
-                Toast.makeText(this, "Password doesn't match", Toast.LENGTH_SHORT).show();
+        mPassword2 = mTextInputEditTextPass2.getText().toString();
+
+        if (TextUtils.isEmpty(mPinString)) {
+            mTextInputEditTextPin.setError("Enter Pin");
+        } else {
+            mPin = Integer.parseInt(mPinString);
         }
-        if (TextUtils.isEmpty(mArea))
-            Toast.makeText(this, "Select Area", Toast.LENGTH_SHORT).show();
-        if (TextUtils.isEmpty(mCity))
-            Toast.makeText(this, "Select City", Toast.LENGTH_SHORT).show();
-        if (TextUtils.isEmpty(mDepartment))
-            Toast.makeText(this, "Select Department", Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(mAgeString)) {
+            mTextInputEditTextAge.setError("Enter Age");
+        } else {
+            mAge = Integer.parseInt(mAgeString);
+        }
+        if (TextUtils.isEmpty(mName))
+            mTextInputEditTextName.setError("Enter Name");
+        if (TextUtils.isEmpty(mPhone))
+            mTextInputEditTextPhone.setError("Enter Phone number");
+        if (TextUtils.isEmpty(mEmail))
+            mTextInputEditTextEmail.setError("Enter Email");
+        if (TextUtils.isEmpty(mAddress))
+            mTextInputEditTextAddress.setError("Enter Address");
+
+        //Check Passoword
+        if (TextUtils.isEmpty(mPassword1))
+            mTextInputEditTextPass1.setError("Enter Password");
+        else {
+            if (TextUtils.isEmpty(mPassword2))
+                mTextInputEditTextPass2.setError("Re-Enter Password");
+            else if (TextUtils.equals(mPassword1, mPassword2))
+                mTextInputEditTextPass2.setError("Both the Passwords are different");
+        }
+        if (TextUtils.isEmpty(mPassword2))
+            mTextInputEditTextPass2.setError("Re-Enter Password");
+
 
         if (!TextUtils.isEmpty(mName) && !TextUtils.isEmpty(mAge + "") && !TextUtils.isEmpty(mPhone) && !TextUtils.isEmpty(mEmail) && !TextUtils.isEmpty(mAddress) && !TextUtils.isEmpty(mPassword1) && !TextUtils.isEmpty(mArea) && !TextUtils.isEmpty(mCity) && !TextUtils.isEmpty(mDepartment) && !TextUtils.isEmpty(mAge + ""))
             makeJsonObjReq();

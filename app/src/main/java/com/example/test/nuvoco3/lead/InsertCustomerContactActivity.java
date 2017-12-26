@@ -9,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
@@ -68,20 +69,10 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
     // Populates the Customer ID and Customer Name when Redirected from New Customer Section
     private void populatingDataFields() {
         bundle = getIntent().getExtras();
-        ArrayList<String> newArralist = new ArrayList<>();
-        // Creates a shared preferences variable to retrieve the logeed in users IDs and store it in Updated By Section
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.test.nuvoco3", Context.MODE_PRIVATE);
 
-        try {
-            newArralist = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("CustomerData", ObjectSerializer.serialize(new ArrayList<String>())));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         if (getIntent().getStringExtra("customerName") != null) {
             mCustomerId = bundle.getString("customerId");
             mCustomerName = bundle.getString("customerName");
-            mCreatedBy = bundle.getString("createdBy");
-            mCreatedOn = bundle.getString("createdOn");
             editTextCustomerName.setText(mCustomerName);
             editTextCustomerId.setText(mCustomerId);
             editTextCustomerId.setKeyListener(null);
@@ -90,23 +81,47 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
         } else {
 
             mCustomerName = editTextCustomerName.getText().toString();
-            mCreatedBy = newArralist.get(6);
-            mCreatedOn = getDateTime();
         }
 
-        mUpdatedBy = newArralist.get(6);
+        mCreatedBy = getUserId();
+        mCreatedOn = getDateTime();
+        mUpdatedBy = getUserId();
         mUpdatedOn = getDateTime();
     }
 
     private void insertDataInFields() {
 
         mContactName = editTextContactName.getText().toString();
+        mCustomerName = editTextCustomerName.getText().toString();
         mContactPhone = editTextContactPhone.getText().toString();
         mContactEmail = editTextContactEmail.getText().toString();
         mContactDOB = textViewDOB.getText().toString();
         mContactDOA = textViewDOA.getText().toString();
         mCustomerId = editTextCustomerId.getText().toString();
-        storeData();
+        if (TextUtils.isEmpty(mContactName)) {
+            editTextContactName.setError("Enter Contact's Name");
+        }
+        if (TextUtils.isEmpty(mContactPhone)) {
+            editTextContactPhone.setError("Enter Contact's Phone Number");
+        }
+        if (TextUtils.isEmpty(mContactEmail)) {
+            editTextContactEmail.setError("Enter Contact's Email ID");
+        }
+        if (TextUtils.isEmpty(mContactDOB)) {
+            textViewDOB.setError("Enter Contact's Date of Birth");
+        }
+        if (TextUtils.isEmpty(mContactDOA)) {
+            textViewDOA.setError("Enter Contact's Date of Anniversary");
+        }
+        if (TextUtils.isEmpty(mCustomerId)) {
+            editTextCustomerId.setError("Enter Customer's ID");
+        }
+        if (TextUtils.isEmpty(mCustomerName)) {
+            editTextCustomerName.setError("Enter Customer's Name");
+        }
+
+        if (!TextUtils.isEmpty(mContactName) && !TextUtils.isEmpty(mContactPhone) && !TextUtils.isEmpty(mContactEmail) && !TextUtils.isEmpty(mContactDOB) && !TextUtils.isEmpty(mContactDOA) && !TextUtils.isEmpty(mCustomerId) && !TextUtils.isEmpty(mCustomerName))
+            storeData();
     }
 
     // initialize Views
@@ -225,4 +240,20 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
     }
 
 
+    private String getUserId() {
+        ArrayList<String> newArralist = new ArrayList<>();
+        // Creates a shared preferences variable to retrieve the logeed in users IDs and store it in Updated By Section
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.test.nuvoco3", Context.MODE_PRIVATE);
+
+        try {
+            newArralist = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("CustomerData", ObjectSerializer.serialize(new ArrayList<String>())));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (newArralist.size() > 0)
+            return newArralist.get(6);
+
+        return "Invalid User";
+
+    }
 }

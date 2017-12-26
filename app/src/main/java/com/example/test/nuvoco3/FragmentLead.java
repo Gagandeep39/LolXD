@@ -3,6 +3,8 @@ package com.example.test.nuvoco3;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +21,8 @@ import com.example.test.nuvoco3.lead.ViewCustomerContactActivity;
 
 public class FragmentLead extends android.support.v4.app.Fragment {
     private static final String TAG = "LEAD FRAGMENT";
-    Button button, button2, mButtonContact, mButtonViewContact;
+    Button button2, mButtonContact, mButtonViewContact;
+    ConstraintLayout button;
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragmentlead_layout, container, false);
@@ -51,6 +54,7 @@ public class FragmentLead extends android.support.v4.app.Fragment {
         });
 
 
+        Log.i("Test", "onCreateView:  " + v.getId());
         return v;
     }
 

@@ -40,7 +40,7 @@ import java.util.Map;
 
 import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 
-public class BrandPriceActivity extends AppCompatActivity {
+public class InsertBrandPriceActivity extends AppCompatActivity {
     public static final String URL_INSERT_MARKET_PRICE = "/insertR";
     public static final String URL_BRAND_INFO = "/dispBrand";
     private static final String TAG = "BrandPrice Activity";
@@ -139,7 +139,7 @@ public class BrandPriceActivity extends AppCompatActivity {
                         Log.i(TAG, response.toString());
                         try {
                             if (response.getString("status").equals("updated")) {
-                                Toast.makeText(BrandPriceActivity.this, "Successfully Inserted Data", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(InsertBrandPriceActivity.this, "Successfully Inserted Data", Toast.LENGTH_SHORT).show();
                                 finish();
 
                             }
@@ -225,6 +225,8 @@ public class BrandPriceActivity extends AppCompatActivity {
         mEditTextRemarks = findViewById(R.id.editTextRemark);
         mSearchBrand = findViewById(R.id.searchCategoryBrand);
         mSearchProduct = findViewById(R.id.searchCategoryProduct);
+        mEditTextRepresentative.setText(getUserId());
+        mEditTextRepresentative.setKeyListener(null);
     }
 
 

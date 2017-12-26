@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.example.test.nuvoco3.R;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class UserAccountActivity extends AppCompatActivity {
+    private static final String TAG = "UserAccount Activity";
     TextView mName, mPhone, mEmail, mArea, mCity, mState, mStatus, mPin, mDepartment, mAge, mId, mAddress;
 
     @Override
@@ -38,18 +40,24 @@ public class UserAccountActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        //I edit the prefs and add my string set and label it as "List"
-        mAddress.append(newArralist.get(0) + "");
-        mAge.append(newArralist.get(1) + "");
-        mArea.append(newArralist.get(2) + "");
-        mCity.append(newArralist.get(3) + "");
-        mDepartment.append(newArralist.get(4) + "");
-        mEmail.append(newArralist.get(5) + "");
-        mId.append(newArralist.get(6) + "");
-        mName.append(newArralist.get(7) + "");
-        mPhone.append(newArralist.get(8) + "");
-        mPin.append(newArralist.get(9) + "");
-        mStatus.append(newArralist.get(10) + "");
+        if (newArralist.size() < 0) {
+            Log.i(TAG, "displayData: " + "user Not Logged In");
+        } else {
+
+
+            //Shows user Information
+            mAddress.append(newArralist.get(0) + "");
+            mAge.append(newArralist.get(1) + "");
+            mArea.append(newArralist.get(2) + "");
+            mCity.append(newArralist.get(3) + "");
+            mDepartment.append(newArralist.get(4) + "");
+            mEmail.append(newArralist.get(5) + "");
+            mId.append(newArralist.get(6) + "");
+            mName.append(newArralist.get(7) + "");
+            mPhone.append(newArralist.get(8) + "");
+            mPin.append(newArralist.get(9) + "");
+            mStatus.append(newArralist.get(10) + "");
+        }
 
     }
 

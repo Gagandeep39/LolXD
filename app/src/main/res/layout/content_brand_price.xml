@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".market.BrandPriceActivity"
+    tools:context=".market.InsertBrandPriceActivity"
     tools:showIn="@layout/activity_brand_price">
 
     <LinearLayout
@@ -27,7 +27,7 @@
                 android:id="@+id/textInputEditRepresentative"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Representative"
+                android:hint="User ID"
                 android:inputType="number"
                 android:maxLength="4" />
 

@@ -24,7 +24,10 @@
             android:id="@+id/textInputEditName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Name" />
+            android:hint="Name"
+            android:maxLength="50"
+            android:maxLines="1"
+            android:nextFocusDown="@id/textInputEditPhone" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -42,7 +45,8 @@
             android:layout_height="wrap_content"
             android:hint="Phone No. "
             android:inputType="phone"
-            android:maxLength="13" />
+            android:maxLength="13"
+            android:maxLines="1" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -58,7 +62,9 @@
             android:id="@+id/textInputEditEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email" />
+            android:hint="Email"
+            android:maxLength="50"
+            android:maxLines="1" />
 
     </android.support.design.widget.TextInputLayout>
 
@@ -75,10 +81,31 @@
                 android:id="@+id/textInputEditAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Address" />
+                android:hint="Address"
+                android:maxLength="50"
+                android:maxLines="1" />
 
 
         </android.support.design.widget.TextInputLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8sp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Customer Type" />
+
+        <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+
+            android:id="@+id/searchType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:hintText="Default" />
+    </LinearLayout>
 
 
     <LinearLayout

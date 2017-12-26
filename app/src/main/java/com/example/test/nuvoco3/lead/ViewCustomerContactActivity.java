@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 
 public class ViewCustomerContactActivity extends AppCompatActivity {
+    private static final String TAG = "ViewCustomerContact";
     public static ArrayList<CustomerContact> mCustomerContactArrayList;
     CustomerContactAdapter mAdapter;
     RequestQueue queue;
@@ -64,6 +65,7 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
         queue = Volley.newRequestQueue(this);
         mCustomerContactArrayList = new ArrayList<>();
         if (getIntent().getStringExtra("customerID") != null) {
+            Log.i(TAG, "populateActivity: " + "Test");
             mSearchText = getIntent().getStringExtra("customerID");
             readData();
         } else

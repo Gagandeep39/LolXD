@@ -1,8 +1,10 @@
 package com.example.test.nuvoco3.lead;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.TextView;
 
 import com.example.test.nuvoco3.R;
@@ -12,7 +14,7 @@ import static com.example.test.nuvoco3.lead.ViewCustomerActivity.mCustomerArrayL
 public class CustomerDetailsActivity extends AppCompatActivity {
     TextView mName, mType, mCategory, mStatus, mPhone, mEmail, mArea, mDistrict, mState, mAddress, mCreatedBy, mCreatedOn, mUpdatedBy, mUpdatedOn;
     TextView mNewContact, mNewComplaint, mNewCampaign, mNewPrice;
-
+    int position;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,17 +25,26 @@ public class CustomerDetailsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         initializeViews();
-        displayData();
+        position = getIntent().getIntExtra("position", -1);
+        displayData(position);
+        mNewContact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CustomerDetailsActivity.this, InsertCustomerContactActivity.class);
+                intent.putExtra("customerId", mCustomerArrayList.get(position).getCustomerId());
+                intent.putExtra("customerName", mCustomerArrayList.get(position).getCustomerName());
+                startActivity(intent);
+            }
+        });
 
 
     }
 
     //  Displays details of a particular adapter from the ID received from the recycler view
-    private void displayData() {
+    private void displayData(int position) {
 
-        int position = getIntent().getIntExtra("position", -1);
         mName.append(mCustomerArrayList.get(position).getCustomerName());
-        mType.setText(mCustomerArrayList.get(position).getCustomerId());
+        mType.append(mCustomerArrayList.get(position).getCustomerId());
         mCategory.append(mCustomerArrayList.get(position).getCustomerCategory());
         mStatus.append(mCustomerArrayList.get(position).getCustomerStatus());
         mPhone.append(mCustomerArrayList.get(position).getCustomerPhoneno());

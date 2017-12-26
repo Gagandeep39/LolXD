@@ -100,9 +100,9 @@ public class ViewNewCustomerActivity extends AppCompatActivity {
 
 
     private void readData() {
-        progressDialog.setMessage("Loading...");
-        progressDialog.setCancelable(false);
-        progressDialog.show();
+//        progressDialog.setMessage("Loading...");
+//        progressDialog.setCancelable(false);
+//        progressDialog.show();
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 DATABASE_URL + "/dispCust", null, new Response.Listener<JSONObject>() {
 

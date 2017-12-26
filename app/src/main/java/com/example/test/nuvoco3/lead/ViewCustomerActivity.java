@@ -1,5 +1,6 @@
 package com.example.test.nuvoco3.lead;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +17,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.test.nuvoco3.MainActivity;
 import com.example.test.nuvoco3.R;
 
 import org.json.JSONArray;
@@ -27,7 +29,7 @@ import java.util.ArrayList;
 import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 
 public class ViewCustomerActivity extends AppCompatActivity {
-    private static final String TAG = "NUVOCO";
+    private static final String TAG = "ViewCustomer Activity";
     public static ArrayList<Customer> mCustomerArrayList;
     RecyclerView mRecyclerView;
     SwipeRefreshLayout mSwipeRefresh;
@@ -152,7 +154,12 @@ public class ViewCustomerActivity extends AppCompatActivity {
         queue.add(jsonObjReq);
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(ViewCustomerActivity.this, MainActivity.class);
 
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 
-
+        startActivity(intent);
+    }
 }

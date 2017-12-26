@@ -4,10 +4,14 @@
     android:id="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8sp"
+    android:layout_marginBottom="8sp"
+    android:layout_marginLeft="8sp"
+    android:layout_marginRight="8sp"
     android:elevation="20sp"
     android:orientation="vertical"
-    android:padding="16sp">
+    android:paddingBottom="8sp"
+    android:paddingEnd="8sp"
+    android:paddingStart="8sp">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/constraintLayout"
