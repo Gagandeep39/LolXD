@@ -23,7 +23,13 @@ import android.widget.Toast;
 import com.example.test.nuvoco3.signup.LoginActivity;
 import com.example.test.nuvoco3.signup.UserAccountActivity;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, FragmentMarket.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
+        FragmentMarket.OnFragmentInteractionListener,
+        FragmentCustomer.OnFragmentInteractionListener,
+        FragmentVisit.OnFragmentInteractionListener,
+        FragmentLead.OnFragmentInteractionListener {
+
+
     public static final String TAG = "MAIN ACTIVITY";
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
