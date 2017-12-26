@@ -20,6 +20,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.test.nuvoco3.fragments.FragmentCustomer;
+import com.example.test.nuvoco3.fragments.FragmentLead;
+import com.example.test.nuvoco3.fragments.FragmentMarket;
+import com.example.test.nuvoco3.fragments.FragmentVisit;
 import com.example.test.nuvoco3.signup.LoginActivity;
 import com.example.test.nuvoco3.signup.UserAccountActivity;
 

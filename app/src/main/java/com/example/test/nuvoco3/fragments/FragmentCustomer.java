@@ -1,4 +1,4 @@
-package com.example.test.nuvoco3;
+package com.example.test.nuvoco3.fragments;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,8 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.example.test.nuvoco3.customer.ComplaintActivity;
+import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.customer.ComplaintStatusActivity;
+import com.example.test.nuvoco3.customer.InsertComplaintActivity;
 import com.example.test.nuvoco3.customer.ViewNewCustomerActivity;
 
 
@@ -80,7 +81,7 @@ public class FragmentCustomer extends Fragment {
         buttonComplaint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getContext(), ComplaintActivity.class));
+                startActivity(new Intent(getContext(), InsertComplaintActivity.class));
             }
         });
         mButton4.setOnClickListener(new View.OnClickListener() {
