@@ -79,7 +79,7 @@ public class ViewComplaintActivity extends AppCompatActivity {
                             mDetails = object.getString("complaint_details") + "";
                             mStatus = object.getString("complaint_status") + "";
                             mCreatedOn = object.getString("createdOn") + "";
-                            mCreatedBy = object.getString("createdBy") + "";
+                            mCreatedBy = object.getString("creayedBy") + "";
                             mRecordId = object.getString("record_id") + "";
                             mRemark = object.getString("resolution_remark") + "";
                             mUpdatedBy = object.getString("updatedBy") + "";

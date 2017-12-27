@@ -48,8 +48,6 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Log.i("lol", "onQueryTextSubmit: " + query);
-                mCustomerContactArrayList.clear();
                 mSearchText = query;
                 readData();
                 return true;
@@ -67,14 +65,13 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
         queue = Volley.newRequestQueue(this);
         mCustomerContactArrayList = new ArrayList<>();
         if (getIntent().getStringExtra("customerID") != null) {
-            Log.i(TAG, "populateActivity: " + "Test");
             mSearchText = getIntent().getStringExtra("customerID");
             readData();
         } else
             readData();
+        mAdapter = new CustomerContactAdapter(this, mCustomerContactArrayList);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.getItemAnimator();
-        mAdapter = new CustomerContactAdapter(this, mCustomerContactArrayList);
         mRecyclerView.setAdapter(mAdapter);
 
     }
@@ -90,14 +87,14 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
             public void onResponse(JSONObject response) {
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
-                    for (int i = 0; i < 50; i++) {
+                    for (int i = 0; i < 20; i++) {
 
                         JSONObject object = jsonArray.getJSONObject(i);
                         if (object.getString("record_id").toLowerCase().contains(mSearchText.toLowerCase())
                                 || object.getString("c_name").toLowerCase().contains(mSearchText.toLowerCase())
                                 || object.getString("contactPerson").toLowerCase().contains(mSearchText.toLowerCase())
                                 || object.getString("contactPerson_email").toLowerCase().contains(mSearchText.toLowerCase())) {
-                            mContactId = object.getString("c_id") + "";   //primary key
+                            mContactId = object.getString("record_id") + "";   //primary key
                             mCustomerName = object.getString("c_name") + "";
                             mContactName = object.getString("contactPerson") + "";
                             mContactPhone = object.getString("contactPerson_phone") + "";
@@ -137,10 +134,8 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
 
 
     private void initializeViews() {
-        mRecyclerView = findViewById(R.id.recyclerView);
         mSearchView = findViewById(R.id.searchView);
         mRecyclerView = findViewById(R.id.recyclerView);
-        mSearchView = findViewById(R.id.searchView);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -160,5 +155,6 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
 
         mSearchView.setIconified(false);
     }
+
 
 }

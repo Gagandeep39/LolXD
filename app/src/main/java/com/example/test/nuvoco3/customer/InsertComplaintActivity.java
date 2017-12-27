@@ -16,7 +16,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -32,6 +31,7 @@ import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.signup.ObjectSerializer;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -54,7 +54,7 @@ public class InsertComplaintActivity extends AppCompatActivity {
     TextInputEditText mEditTextDate, mEditTextCustomerId, mEditTextComplaintDetails;
     int mYear, mMonth, mDay;
     ImageView imageViewCalendar;
-    EditText editTextDate;
+    ArrayList<String> mCustomerList, mIdList;
     RequestQueue queue;
     FloatingActionButton fab;
     String mCustomerArray[] = {"Customer 1", "Customer 2", "Customer 3"};
@@ -62,9 +62,12 @@ public class InsertComplaintActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_complaint);
+        setContentView(R.layout.activity_insert_complaint);
         initializeViews();
+        mCustomerList = new ArrayList<>();
+        mIdList = new ArrayList<>();
         queue = Volley.newRequestQueue(this);
+        populateCustomers();
         populateSpinners();
 
 
@@ -80,7 +83,6 @@ public class InsertComplaintActivity extends AppCompatActivity {
     private void validateData() {
         mDate = mEditTextDate.getText().toString();
         mComplaintDetails = mEditTextComplaintDetails.getText().toString();
-        mCustomerId = mEditTextCustomerId.getText().toString();
         mCreatedBy = getUserId();
         mCreatedOn = getDateTime();
         mUpdatedBy = getUserId();
@@ -97,8 +99,10 @@ public class InsertComplaintActivity extends AppCompatActivity {
         if (TextUtils.equals(mComplaintType, getString(R.string.default_name)))
             Toast.makeText(this, "Select Complaint Type", Toast.LENGTH_SHORT).show();
 
-        if (!TextUtils.isEmpty(mDate) && !TextUtils.isEmpty(mComplaintDetails) && !TextUtils.isEmpty(mCustomerId) && !TextUtils.equals(mCustomerName, getString(R.string.default_name)) && !TextUtils.equals(mComplaintType, getString(R.string.default_name)))
+        if (!TextUtils.isEmpty(mDate) && !TextUtils.isEmpty(mComplaintDetails) && !TextUtils.isEmpty(mCustomerId) && !TextUtils.equals(mCustomerName, getString(R.string.default_name)) && !TextUtils.equals(mComplaintType, getString(R.string.default_name))) {
+            Log.i("lol", "validateData: " + "test OnClicks");
             storeDataToServer();
+        }
     }
 
     private void storeDataToServer() {
@@ -169,14 +173,17 @@ public class InsertComplaintActivity extends AppCompatActivity {
 
 
     private void populateSpinners() {
-        ArrayAdapter<String> mCustomerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mCustomerArray);
+        ArrayAdapter<String> mCustomerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mCustomerList);
         ArrayAdapter<String> mTypeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mTypeArray);
         mSearchCustomer.setAdapter(mCustomerAdapter);
         mSearchType.setAdapter(mTypeAdapter);
+        mCustomerAdapter.notifyDataSetChanged();
         mSearchCustomer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mCustomerName = mCustomerArray[position];
+                mCustomerName = mCustomerList.get(position);
+                mCustomerId = mIdList.get(position);
+                Log.i("lol", "onItemSelected: " + mCustomerName + " " + mCustomerId);
             }
 
             @Override
@@ -213,6 +220,7 @@ public class InsertComplaintActivity extends AppCompatActivity {
         mSearchCustomer = findViewById(R.id.searchCustomer);
         mSearchType = findViewById(R.id.searchType);
         mEditTextDate.setKeyListener(null);
+        mEditTextDate.setText(getDateTime());
     }
 
     public void datePickerFunction(View v) {
@@ -274,6 +282,43 @@ public class InsertComplaintActivity extends AppCompatActivity {
 
         return "Invalid User";
 
+    }
+
+    public void populateCustomers() {
+
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
+                DATABASE_URL + "/dispCust", null, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONArray jsonArray = response.getJSONArray("message");
+                    for (int i = 0; i < 50; i++) {
+
+                        JSONObject object = jsonArray.getJSONObject(i);
+                        mIdList.add(object.getString("record_id"));   //primary key
+                        mCustomerList.add(object.getString("name"));
+                    }
+
+
+                } catch (JSONException e1) {
+                    e1.printStackTrace();
+                    e1.printStackTrace();
+                }
+            }
+
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("lol", "Error with Internet : " + error.getMessage());
+                // hide the progress dialog
+            }
+        });
+
+        // Adding request to request queue
+        queue.add(jsonObjReq);
     }
 
 

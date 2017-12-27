@@ -3,6 +3,7 @@ package com.example.test.nuvoco3.customer;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
@@ -215,10 +216,20 @@ public class InsertComplaintDetailsActivity extends AppCompatActivity {
 
 
             mEditTextDate.setKeyListener(null);
-            mEditTextRepresentative.setKeyListener(null);
-            mEditTextCustomerName.setKeyListener(null);
             mEditTextCustomerId.setKeyListener(null);
+            mEditTextCustomerName.setKeyListener(null);
             mEditTextComplaintDetails.setKeyListener(null);
+            mEditTextComplaintId.setKeyListener(null);
+            mEditTextRepresentative.setKeyListener(null);
+
+
+            mEditTextDate.getBackground().mutate().setColorFilter(getResources().getColor(R.color.light_grey), PorterDuff.Mode.SRC_ATOP);
+            mEditTextCustomerId.getBackground().mutate().setColorFilter(getResources().getColor(R.color.light_grey), PorterDuff.Mode.SRC_ATOP);
+            mEditTextCustomerName.getBackground().mutate().setColorFilter(getResources().getColor(R.color.light_grey), PorterDuff.Mode.SRC_ATOP);
+            mEditTextComplaintDetails.getBackground().mutate().setColorFilter(getResources().getColor(R.color.light_grey), PorterDuff.Mode.SRC_ATOP);
+            mEditTextComplaintId.getBackground().mutate().setColorFilter(getResources().getColor(R.color.light_grey), PorterDuff.Mode.SRC_ATOP);
+            mEditTextRepresentative.getBackground().mutate().setColorFilter(getResources().getColor(R.color.light_grey), PorterDuff.Mode.SRC_ATOP);
+
         }
 
     }

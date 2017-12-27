@@ -12,7 +12,10 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,7 +29,9 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.signup.ObjectSerializer;
+import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -50,6 +55,9 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
     String mContactName, mCustomerName, mCreatedBy, mCreatedOn, mUpdatedBy, mUpdatedOn, mContactEmail, mContactDOB, mContactDOA, mContactPhone, mCustomerId;  //Customer=>Brand, CustomerContact=>Human
     RequestQueue queue;
     FloatingActionButton mInsertData;
+    SearchableSpinner mSearchCustomer;
+    LinearLayout mLinearLayout;
+    ArrayList<String> mCustomerList, mIdList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,13 +70,33 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
         getReferences();
 
         queue = Volley.newRequestQueue(this);
+        populatingSpinner();
         populatingDataFields();
+    }
+
+    private void populatingSpinner() {
+        populateCustomers();
+        ArrayAdapter<String> mCustomerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mCustomerList);
+
+        mSearchCustomer.setAdapter(mCustomerAdapter);
+        mCustomerAdapter.notifyDataSetChanged();
+        mSearchCustomer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mCustomerName = mCustomerList.get(position);
+                mCustomerId = mIdList.get(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                mCustomerName = getString(R.string.default_name);
+            }
+        });
     }
 
     // Populates the Customer ID and Customer Name when Redirected from New Customer Section
     private void populatingDataFields() {
         bundle = getIntent().getExtras();
-
         if (getIntent().getStringExtra("customerName") != null) {
             mCustomerId = bundle.getString("customerId");
             mCustomerName = bundle.getString("customerName");
@@ -132,6 +160,13 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
         editTextCustomerId = findViewById(R.id.textInputEditCustomerId);
         textViewDOA = findViewById(R.id.textViewSelectDOA);
         textViewDOB = findViewById(R.id.textViewSelectDOB);
+        mSearchCustomer = findViewById(R.id.searchCustomer);
+        mLinearLayout = findViewById(R.id.linearLayout);
+
+        if (getIntent().getStringExtra("needSearch").equals("Need")) {
+            editTextCustomerName.setVisibility(View.GONE);
+            mLinearLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     // Allows to select data when clicked on datapicker textView
@@ -264,5 +299,45 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public void populateCustomers() {
+        ArrayAdapter<String> mCustomerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mCustomerList);
+
+        mCustomerList = new ArrayList<String>();
+        mIdList = new ArrayList<>();
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
+                DATABASE_URL + "/dispCust", null, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONArray jsonArray = response.getJSONArray("message");
+                    for (int i = 0; i < 50; i++) {
+
+                        JSONObject object = jsonArray.getJSONObject(i);
+                        mIdList.add(object.getString("record_id"));   //primary key
+                        mCustomerList.add(object.getString("name"));
+                    }
+
+
+                } catch (JSONException e1) {
+                    e1.printStackTrace();
+                    e1.printStackTrace();
+                }
+            }
+
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("lol", "Error with Internet : " + error.getMessage());
+                // hide the progress dialog
+            }
+        });
+
+        // Adding request to request queue
+        queue.add(jsonObjReq);
+    }
+
 
 }

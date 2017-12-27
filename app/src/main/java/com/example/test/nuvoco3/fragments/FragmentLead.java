@@ -33,8 +33,8 @@ public class FragmentLead extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    Button button2, mButtonContact, mButtonViewContact;
-    ConstraintLayout button;
+    Button mButtonContact, mButtonViewContact;
+    ConstraintLayout button, button2;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -94,7 +94,7 @@ public class FragmentLead extends Fragment {
         mButtonContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getContext(), InsertCustomerContactActivity.class));
+                startActivity(new Intent(getContext(), InsertCustomerContactActivity.class).putExtra("needSearch", "Need"));
             }
         });
         mButtonViewContact.setOnClickListener(new View.OnClickListener() {

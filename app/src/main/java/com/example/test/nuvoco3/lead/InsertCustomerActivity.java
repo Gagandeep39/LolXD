@@ -50,11 +50,11 @@ public class InsertCustomerActivity extends AppCompatActivity {
     TextInputEditText editTextName, editTextAddress, editTextPhone, editTextEmail;
     String mName, mType, mCategory, mAddress, mArea, mDistrict, mState, mPhone, mEmail, mStatus, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy;
     RequestQueue queue;
-    String category[] = {"Default", "Dealer", "Subdealer", "Individual"};
-    String area[] = {"Default", "Area 1", "Area 2", "Area 3", "Area 4"};
-    String district[] = {"Default", "Mumbai", "Pune", "Aurangabad", "Nagpur"};
-    String state[] = {"Default", "Maharashtra", "Gujrat", "Rajasthan", "Madhya Pradesh", "Chattissgarh"};
-    String type[] = {"New", "Prospect"};
+    String category[] = {"Dealer", "Subdealer", "Individual"};
+    String area[] = {"Area 1", "Area 2", "Area 3", "Area 4"};
+    String district[] = {"Mumbai", "Pune", "Aurangabad", "Nagpur"};
+    String state[] = {"Maharashtra", "Gujrat", "Rajasthan", "Madhya Pradesh", "Chattissgarh"};
+    String type[] = {"Old", "Prospect"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

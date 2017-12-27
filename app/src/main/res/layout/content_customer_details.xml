@@ -20,7 +20,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:text="Name : "
+            android:text="Name  : "
+            android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -29,7 +31,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Status : "
+            android:text="Status    : "
+            android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/textViewName"
             app:layout_constraintTop_toBottomOf="@+id/textViewName" />
 
@@ -38,7 +42,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Customer ID : "
+            android:text="Customer ID   : "
+            android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/textViewStatus"
             app:layout_constraintTop_toBottomOf="@+id/textViewStatus" />
 
@@ -47,7 +53,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Category : "
+            android:text="Category  : "
+            android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/textViewType"
             app:layout_constraintTop_toBottomOf="@+id/textViewType" />
 
@@ -57,7 +65,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Phone No. : "
+            android:text="Phone Number  : "
+            android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/textViewCategory"
             app:layout_constraintTop_toBottomOf="@+id/textViewCategory" />
 
@@ -67,6 +77,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Email : "
+            android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/textViewPhone"
             app:layout_constraintTop_toBottomOf="@+id/textViewPhone" />
 
@@ -75,7 +87,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Area : "
+            android:text="Area  : "
+            android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/textViewEmail"
             app:layout_constraintTop_toBottomOf="@+id/textViewEmail" />
 
@@ -84,7 +98,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="District : "
+            android:text="District  : "
+            android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/textViewArea"
             app:layout_constraintTop_toBottomOf="@+id/textViewArea" />
 
@@ -94,6 +110,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="State : "
+            android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/textViewDistrict"
             app:layout_constraintTop_toBottomOf="@+id/textViewDistrict" />
 
@@ -103,7 +121,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Address : "
+            android:text="Address   : "
+            android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/textViewState"
             app:layout_constraintTop_toBottomOf="@+id/textViewState" />
 
@@ -112,7 +132,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Created By : ID"
+            android:text="Created By    : ID"
+            android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/textViewAddress"
             app:layout_constraintTop_toBottomOf="@+id/textViewAddress" />
 
@@ -121,7 +143,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Created on : "
+            android:text="Created on    : "
+            android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/textViewCreatedBy"
             app:layout_constraintTop_toBottomOf="@+id/textViewCreatedBy" />
 
@@ -130,7 +154,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Updated By : ID"
+            android:text="Updated By    : ID"
+            android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/textViewCreatedOn"
             app:layout_constraintTop_toBottomOf="@+id/textViewCreatedOn" />
 
@@ -140,7 +166,9 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
-            android:text="Updated On : "
+            android:text="Updated On    : "
+            android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/textViewUpdatedBy"
             app:layout_constraintTop_toBottomOf="@+id/textViewUpdatedBy" />
