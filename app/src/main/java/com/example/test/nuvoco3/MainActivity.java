@@ -18,6 +18,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.test.nuvoco3.fragments.FragmentCustomer;
@@ -25,16 +27,20 @@ import com.example.test.nuvoco3.fragments.FragmentLead;
 import com.example.test.nuvoco3.fragments.FragmentMarket;
 import com.example.test.nuvoco3.fragments.FragmentVisit;
 import com.example.test.nuvoco3.signup.LoginActivity;
+import com.example.test.nuvoco3.signup.ObjectSerializer;
 import com.example.test.nuvoco3.signup.UserAccountActivity;
+
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         FragmentMarket.OnFragmentInteractionListener,
         FragmentCustomer.OnFragmentInteractionListener,
         FragmentVisit.OnFragmentInteractionListener,
         FragmentLead.OnFragmentInteractionListener {
-
-
     public static final String TAG = "MAIN ACTIVITY";
+    String mName, mEmail;
+    TextView mTextViewName, mTextViewEmail;
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
 
@@ -46,7 +52,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (getSupportFragmentManager().getBackStackEntryCount() > 0)
                 getSupportFragmentManager().popBackStackImmediate("MESSAGE_TAG", 0);
         }
-
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -61,6 +66,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        View header = navigationView.getHeaderView(0);
+        getUserId(header);
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = findViewById(R.id.container);
@@ -111,6 +118,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.iconUsers:
                 startActivity(new Intent(this, UserAccountActivity.class));
                 break;
+            case R.id.startLead:
+                mViewPager.setCurrentItem(0);
+                break;
+            case R.id.startCustomer:
+                mViewPager.setCurrentItem(1);
+                break;
+            case R.id.startMarket:
+                mViewPager.setCurrentItem(2);
+                break;
+            case R.id.startVisit:
+                mViewPager.setCurrentItem(3);
+                break;
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -131,6 +150,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onFragmentInteraction(Uri uri) {
         //you can leave it empty
+    }
+
+    private void getUserId(View header) {
+        ArrayList<String> newArralist = new ArrayList<>();
+        // Creates a shared preferences variable to retrieve the logeed in users IDs and store it in Updated By Section
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.test.nuvoco3", Context.MODE_PRIVATE);
+
+        try {
+            newArralist = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("CustomerData", ObjectSerializer.serialize(new ArrayList<String>())));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        mTextViewName = header.findViewById(R.id.textViewName);
+        mTextViewEmail = header.findViewById(R.id.textViewEmail);
+
+        mName = newArralist.get(7);
+        mEmail = newArralist.get(5);
+
+        mTextViewName.setText(newArralist.get(7));
+        mTextViewEmail.setText(newArralist.get(5));
+
     }
 
     //Starts a Fragment Activity on Selecting One of The Fragments

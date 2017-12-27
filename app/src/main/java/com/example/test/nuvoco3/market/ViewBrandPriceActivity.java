@@ -3,12 +3,14 @@ package com.example.test.nuvoco3.market;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -36,6 +38,7 @@ public class ViewBrandPriceActivity extends AppCompatActivity {
     RequestQueue queue;
     SearchView mSearchView;
     String mSearchText = "0";
+    CardView mCardView;
     private String mCustomer, mDate, mProduct, mRSP, mStock, mWSP, mCounter, mCreatedBy, mCreatedOn, mUpdatedBy, mUpdatedOn, mRecordId, mRemarks, mRepresentative;
 
     @Override
@@ -72,14 +75,21 @@ public class ViewBrandPriceActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-
         Toolbar toolbar = findViewById(R.id.toolbar);
+
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         mRecyclerView = findViewById(R.id.recyclerView);
         mSwipeRefresh = findViewById(R.id.swipeRefreshLayout);
         mSearchView = findViewById(R.id.searchView);
+
+    }
+
+    public void enableSearch(View v) {
+
+        mSearchView.setIconified(false);
     }
 
     private void readData() {

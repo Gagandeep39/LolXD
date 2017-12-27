@@ -12,6 +12,28 @@
             android:id="@+id/iconSetting"
             android:icon="@drawable/ic_settings_black_24dp"
             android:title="Settings" />
+
     </group>
+
+    <item android:title="Tabs">
+        <menu>
+            <item
+                android:id="@+id/startLead"
+                android:icon="@drawable/ic_business_black_24dp"
+                android:title="Lead" />
+            <item
+                android:id="@+id/startCustomer"
+                android:icon="@drawable/ic_group_black_24dp"
+                android:title="Customer" />
+            <item
+                android:id="@+id/startMarket"
+                android:icon="@drawable/ic_trending_up_black_24dp"
+                android:title="Market" />
+            <item
+                android:id="@+id/startVisit"
+                android:icon="@drawable/ic_today"
+                android:title="Visit" />
+        </menu>
+    </item>
 
 </menu>
