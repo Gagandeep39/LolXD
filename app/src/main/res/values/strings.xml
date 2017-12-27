@@ -198,4 +198,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_view_complaint">ViewComplaintActivity</string>
+    <string name="visit">Visit</string>
+    <string name="market">Market</string>
+    <string name="customer">Customer</string>
+    <string name="lead">Lead</string>
 </resources>
