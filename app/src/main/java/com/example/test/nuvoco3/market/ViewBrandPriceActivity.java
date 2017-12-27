@@ -1,6 +1,5 @@
 package com.example.test.nuvoco3.market;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -18,7 +17,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.test.nuvoco3.MainActivity;
 import com.example.test.nuvoco3.R;
 
 import org.json.JSONArray;
@@ -62,6 +60,7 @@ public class ViewBrandPriceActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 mSearchText = query;
+                mBrandPriceAdapter.notifyDataSetChanged();
                 return true;
             }
 
@@ -94,12 +93,12 @@ public class ViewBrandPriceActivity extends AppCompatActivity {
                 Log.i("lol", "onResponse:  " + response);
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
-                    for (int i = 0; i < 20; i++) {
+                    for (int i = 0; i < 50; i++) {
 
                         JSONObject object = jsonArray.getJSONObject(i);
                         if (object.getString("Brand").toLowerCase().contains(mSearchText.toLowerCase())
                                 || object.getString("record_id").toLowerCase().contains(mSearchText.toLowerCase())
-                                || object.getString("representative").toLowerCase().contains(mSearchText.toLowerCase())) {
+                                || object.getString("counter").toLowerCase().contains(mSearchText.toLowerCase())) {
                             mCustomer = object.getString("Brand") + "";
                             mDate = object.getString("Date") + "";
                             mProduct = object.getString("Product") + "";
@@ -139,17 +138,14 @@ public class ViewBrandPriceActivity extends AppCompatActivity {
         queue.add(jsonObjReq);
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        item.getItemId();
         if (item.getItemId() == android.R.id.home) {
-            Log.i("Test", "onOptionsItemSelected: " + "Button Pressed");
-            startActivity(new Intent(this, MainActivity.class).putExtra("fragmentNumber", "2"));
-//            FragmentManager transaction = getFragmentManager();
-//            transaction.beginTransaction()
-//                    .replace(R.id.container, Fragment.instantiate(this, "LOL")) //<---replace a view in your layout (id: container) with the newFragment
-//                    .commit();
+            finish();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

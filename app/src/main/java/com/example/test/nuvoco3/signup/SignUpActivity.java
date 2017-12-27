@@ -126,11 +126,11 @@ public class SignUpActivity extends AppCompatActivity {
         } else {
             mPin = Integer.parseInt(mPinString);
         }
-        if (TextUtils.isEmpty(mAgeString)) {
-            mTextInputEditTextAge.setError("Enter Age");
-        } else {
-            mAge = Integer.parseInt(mAgeString);
-        }
+//        if (TextUtils.isEmpty(mAgeString)) {
+//            mTextInputEditTextAge.setError("Enter Age");
+//        } else {
+//            mAge = Integer.parseInt(mAgeString);
+//        }
         if (TextUtils.isEmpty(mName))
             mTextInputEditTextName.setError("Enter Name");
         if (TextUtils.isEmpty(mPhone))
@@ -164,7 +164,7 @@ public class SignUpActivity extends AppCompatActivity {
             Toast.makeText(this, "Select Department", Toast.LENGTH_SHORT).show();
 
 
-        if (!TextUtils.isEmpty(mName) && !TextUtils.isEmpty(mAge + "") && !TextUtils.isEmpty(mPhone) && isEmailValid(mEmail) && !TextUtils.isEmpty(mEmail) && !TextUtils.isEmpty(mAddress) && !TextUtils.isEmpty(mPassword1) && TextUtils.equals(mPassword1, mPassword2) && !TextUtils.equals(mArea, getString(R.string.default_name)) && !TextUtils.equals(mCity, getString(R.string.default_name)) && !TextUtils.equals(mDepartment, getString(R.string.default_name)))
+        if (!TextUtils.isEmpty(mName) && !TextUtils.isEmpty(mPhone) && isEmailValid(mEmail) && !TextUtils.isEmpty(mEmail) && !TextUtils.isEmpty(mAddress) && !TextUtils.isEmpty(mPassword1) && TextUtils.equals(mPassword1, mPassword2) && !TextUtils.equals(mArea, getString(R.string.default_name)) && !TextUtils.equals(mCity, getString(R.string.default_name)) && !TextUtils.equals(mDepartment, getString(R.string.default_name)))
             makeJsonObjReq();
     }
 
@@ -243,7 +243,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
-        return email.contains("@") && email.contains(".com");
+        return email.contains("@");
     }
 
 

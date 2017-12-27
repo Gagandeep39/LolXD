@@ -1,6 +1,5 @@
 package com.example.test.nuvoco3.lead;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -17,7 +17,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.test.nuvoco3.MainActivity;
 import com.example.test.nuvoco3.R;
 
 import org.json.JSONArray;
@@ -106,7 +105,7 @@ public class ViewCustomerActivity extends AppCompatActivity {
                 Log.i("lol", "onResponse:  " + response);
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
-                    for (int i = 0; i < 20; i++) {
+                    for (int i = 0; i < 50; i++) {
 
                         JSONObject object = jsonArray.getJSONObject(i);
                         if (object.getString("c_email").toLowerCase().contains(mSearchText.toLowerCase())
@@ -154,12 +153,14 @@ public class ViewCustomerActivity extends AppCompatActivity {
         queue.add(jsonObjReq);
     }
 
+
     @Override
-    public void onBackPressed() {
-        Intent intent = new Intent(ViewCustomerActivity.this, MainActivity.class);
-
-        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-
-        startActivity(intent);
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
+
 }
