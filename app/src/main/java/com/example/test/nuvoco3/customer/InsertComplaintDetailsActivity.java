@@ -1,11 +1,15 @@
 package com.example.test.nuvoco3.customer;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -55,6 +59,8 @@ public class InsertComplaintDetailsActivity extends AppCompatActivity {
     ImageView mImageViewCalendar;
     String mStatusArray[] = {"In Progress", "Resolved"};
     RequestQueue queue;
+    CoordinatorLayout mCoordinaterLayout;
+    ProgressDialog progressDialog;
 
 
     @Override
@@ -62,6 +68,7 @@ public class InsertComplaintDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_complaint_details);
         queue = Volley.newRequestQueue(this);
+        progressDialog = new ProgressDialog(this);
         initializeViews();
         populateSpinners();
         fab.setOnClickListener(new View.OnClickListener() {
@@ -109,6 +116,25 @@ public class InsertComplaintDetailsActivity extends AppCompatActivity {
     }
 
     private void saveDataToServer() {
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                progressDialog.dismiss();
+                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        validateData();
+                    }
+                });
+                snackbar.show();
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, 20000);
+
         Map<String, String> postParam = new HashMap<>();
 
 //
@@ -134,6 +160,8 @@ public class InsertComplaintDetailsActivity extends AppCompatActivity {
                         Log.i(TAG, response.toString());
                         try {
                             if (response.getString("status").equals("updated")) {
+
+                                progressDialog.dismiss();
                                 Toast.makeText(InsertComplaintDetailsActivity.this, "Successfully Inserted Data", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(InsertComplaintDetailsActivity.this, MainActivity.class));
                             }
@@ -204,6 +232,7 @@ public class InsertComplaintDetailsActivity extends AppCompatActivity {
         mEditTextComplaintRemark = findViewById(R.id.textInputEditRemark);
         mSearchCustomer = findViewById(R.id.searchCustomer);
         mSearchStatus = findViewById(R.id.searchStatus);
+        mCoordinaterLayout = findViewById(R.id.coordinator);
 
 
         if (getIntent().getStringExtra("date") != null) {

@@ -1,9 +1,13 @@
 package com.example.test.nuvoco3.market;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -53,6 +57,8 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
     String mProductArray[] = {"Product 1", "Product 2", "Product 3"};
     RequestQueue queue;
     ArrayList<String> mBrandArrayList, mProductArrayList;
+    CoordinatorLayout mCoordinaterLayout;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +66,7 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
         setContentView(R.layout.activity_brand_price);
         initializeViews();
         // Initialize Queue
+        progressDialog = new ProgressDialog(this);
         mBrandArrayList = new ArrayList<>();
         mProductArrayList = new ArrayList<>();
 
@@ -113,6 +120,23 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
 
     // All fields are Validated and now the data will be saved into the server
     private void sendDataToServer() {
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                progressDialog.dismiss();
+                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                    }
+                });
+                snackbar.show();
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, 20000);
 
 
         Map<String, String> postParam = new HashMap<>();
@@ -140,6 +164,7 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
                         Log.i(TAG, response.toString());
                         try {
                             if (response.getString("status").equals("updated")) {
+                                progressDialog.dismiss();
                                 Toast.makeText(InsertBrandPriceActivity.this, "Successfully Inserted Data", Toast.LENGTH_SHORT).show();
                                 finish();
 
@@ -225,6 +250,7 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
         mEditTextStocks = findViewById(R.id.textInputEditStocks);
         mEditTextRemarks = findViewById(R.id.editTextRemark);
         mSearchBrand = findViewById(R.id.searchCategoryBrand);
+        mCoordinaterLayout = findViewById(R.id.coordinator);
         mSearchProduct = findViewById(R.id.searchCategoryProduct);
         mEditTextRepresentative.setText(getUserId());
         mEditTextRepresentative.setKeyListener(null);

@@ -1,9 +1,13 @@
 package com.example.test.nuvoco3.market;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -27,6 +31,7 @@ import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.signup.ObjectSerializer;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -49,13 +54,18 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
     SearchableSpinner mSearchCustomer;
     String mCustomerArray[] = {"Customer 1", "Customer 2", "Customer 3"};
     RequestQueue queue;
+    ArrayList<String> mCustomerList, mIdList;
+    CoordinatorLayout mCoordinaterLayout;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert_general_market);
         initializeViews();
+        progressDialog = new ProgressDialog(this);
         queue = Volley.newRequestQueue(this);
+        populateCustomers();
         populateSpinner();
 
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -103,6 +113,25 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
     }
 
     private void sendDataToServer() {
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                progressDialog.dismiss();
+                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        validateData();
+                    }
+                });
+                snackbar.show();
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, 20000);
+
 
         Map<String, String> postParam = new HashMap<>();
 
@@ -128,6 +157,7 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
                         Log.i(TAG, response.toString());
                         try {
                             if (response.getString("status").equals("updated")) {
+                                progressDialog.dismiss();
                                 Toast.makeText(InsertGeneralMarketActivity.this, "Successfully Inserted Data", Toast.LENGTH_SHORT).show();
                                 finish();
 
@@ -166,12 +196,13 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
     }
 
     private void populateSpinner() {
-        ArrayAdapter mCustomerAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mCustomerArray);
+        ArrayAdapter<String> mCustomerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mCustomerList);
         mSearchCustomer.setAdapter(mCustomerAdapter);
         mSearchCustomer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mCustomer = mCustomerArray[position];
+                mCustomer = mCustomerList.get(position);
+//                mCustomerId = mIdList.get(position);
             }
 
             @Override
@@ -191,6 +222,7 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
         mEditTextMSP = findViewById(R.id.textInputEditMSP);
         mEditTextPrice = findViewById(R.id.textInputEditPrice);
         mEditTextMarketDetails = findViewById(R.id.editTextDetails);
+        mCoordinaterLayout = findViewById(R.id.coordinator);
         mEditTextDemands = findViewById(R.id.editTextDemand);
         mSearchCustomer = findViewById(R.id.searchCategoryBrand);
         mEditTextRepresentative.setText(getUserId());
@@ -230,6 +262,46 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    public void populateCustomers() {
+        ArrayAdapter<String> mCustomerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mCustomerList);
+
+        mCustomerList = new ArrayList<String>();
+        mIdList = new ArrayList<>();
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
+                DATABASE_URL + "/dispCust", null, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONArray jsonArray = response.getJSONArray("message");
+                    for (int i = 0; i < 50; i++) {
+
+                        JSONObject object = jsonArray.getJSONObject(i);
+                        mIdList.add(object.getString("record_id"));   //primary key
+                        mCustomerList.add(object.getString("name"));
+                    }
+
+
+                } catch (JSONException e1) {
+                    e1.printStackTrace();
+                    e1.printStackTrace();
+                }
+            }
+
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("lol", "Error with Internet : " + error.getMessage());
+                // hide the progress dialog
+            }
+        });
+
+        // Adding request to request queue
+        queue.add(jsonObjReq);
     }
 
 

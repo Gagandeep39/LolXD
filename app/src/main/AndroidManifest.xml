@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.test.nuvoco3">
 
-
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -112,6 +111,14 @@
         <activity
             android:name=".customer.ViewComplaintActivity"
             android:label="@string/title_activity_view_complaint"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".InsertActivity"
+            android:label="@string/title_activity_insert"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ComplaintStatusActivity"
+            android:label="@string/title_activity_complaint_status"
             android:theme="@style/AppTheme"></activity>
     </application>
 

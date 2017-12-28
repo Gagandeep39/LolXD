@@ -7,4 +7,9 @@
         android:orderInCategory="200"
         android:title="@string/log_out"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_product"
+        android:orderInCategory="200"
+        android:title="Add Product"
+        app:showAsAction="never" />
 </menu>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16sp"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".InsertActivity"
+    tools:showIn="@layout/activity_insert">
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/textInputType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/textInputLayoutCategory"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textInputLayoutCategory"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutCategory">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/textInputEditType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Type"
+            android:inputType="number"
+            android:maxLength="4"
+            android:maxLines="1" />
+
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/textInputCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/textInputLayoutCategory"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textInputLayoutCategory"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutCategory">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/textInputEditCategory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Category"
+            android:inputType="number"
+            android:maxLength="4"
+            android:maxLines="1" />
+
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/textInputName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/textInputLayoutCategory"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textInputLayoutCategory"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutCategory">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/textInputEditName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Name"
+            android:inputType="number"
+            android:maxLength="4"
+            android:maxLines="1" />
+
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/textInputStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/textInputLayoutCategory"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textInputLayoutCategory"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutCategory">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/textInputEditStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Status"
+            android:inputType="number"
+            android:maxLength="4"
+            android:maxLines="1"
+            android:visibility="gone" />
+
+
+    </android.support.design.widget.TextInputLayout>
+
+</LinearLayout>

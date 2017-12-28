@@ -1,7 +1,11 @@
 package com.example.test.nuvoco3.signup;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -41,11 +45,14 @@ public class SignUpActivity extends AppCompatActivity {
     String areaTypes[] = {"Area 1", "Area 2", "Area 3", "Area 4"};
     String cityTypes[] = {"Mumbai", "Pune", "Thane", "Chandigarh"};
     RequestQueue queue;
+    CoordinatorLayout mCoordinaterLayout;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+        progressDialog = new ProgressDialog(this);
         queue = Volley.newRequestQueue(this);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -58,7 +65,7 @@ public class SignUpActivity extends AppCompatActivity {
     //  Populates Spinners
     private void initializeOnClicks() {
         ArrayAdapter mDepartmentAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, departmentTypes);
-        final ArrayAdapter mCityAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, cityTypes);
+        ArrayAdapter mCityAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, cityTypes);
         ArrayAdapter mAreaAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, areaTypes);
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -180,6 +187,7 @@ public class SignUpActivity extends AppCompatActivity {
         mTextInputEditTextAge = findViewById(R.id.textInputEditAge);
         mTextInputEditTextPin = findViewById(R.id.textInputEditPin);
         mSearchableSpinnerDepartment = findViewById(R.id.searchDepartment);
+        mCoordinaterLayout = findViewById(R.id.coordinator);
         mSearchableSpinnerArea = findViewById(R.id.searchArea);
         mSearchableSpinnerCity = findViewById(R.id.searchCity);
     }
@@ -187,6 +195,25 @@ public class SignUpActivity extends AppCompatActivity {
 
     //  Stores User data on Server on Successful Account Creation
     private void makeJsonObjReq() {
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                progressDialog.dismiss();
+                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                });
+                snackbar.show();
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, 20000);
+
 
 
         Map<String, String> postParam = new HashMap<String, String>();
@@ -211,6 +238,7 @@ public class SignUpActivity extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             if (response.getString("status").equals("updated")) {
+                                progressDialog.dismiss();
                                 Toast.makeText(SignUpActivity.this, "Successfully Signed Up", Toast.LENGTH_SHORT).show();
                                 finish();
                             }

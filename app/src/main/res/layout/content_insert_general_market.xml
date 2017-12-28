@@ -14,10 +14,31 @@
         android:orientation="vertical"
         android:padding="16sp">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8sp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select Customer" />
+
+            <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+
+                android:id="@+id/searchCategoryBrand"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintText="Default" />
+        </LinearLayout>
+
+
         <android.support.design.widget.TextInputLayout
             android:id="@+id/textInputLayoutRepresentative"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="@+id/textInputLayoutCategory"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/textInputLayoutCategory"
@@ -51,25 +72,6 @@
 
         </android.support.design.widget.TextInputLayout>
 
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="8sp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Select Customer" />
-
-            <com.toptoche.searchablespinnerlibrary.SearchableSpinner
-
-                android:id="@+id/searchCategoryBrand"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:hintText="Default" />
-        </LinearLayout>
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/textInputLayoutMSP"

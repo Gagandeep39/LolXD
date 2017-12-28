@@ -1,10 +1,14 @@
 package com.example.test.nuvoco3.lead;
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -58,6 +62,9 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
     SearchableSpinner mSearchCustomer;
     LinearLayout mLinearLayout;
     ArrayList<String> mCustomerList, mIdList;
+    CoordinatorLayout mCoordinaterLayout;
+    ProgressDialog progressDialog;
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +79,12 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
         queue = Volley.newRequestQueue(this);
         populatingSpinner();
         populatingDataFields();
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                insertData();
+            }
+        });
     }
 
     private void populatingSpinner() {
@@ -100,14 +113,14 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
         if (getIntent().getStringExtra("customerName") != null) {
             mCustomerId = bundle.getString("customerId");
             mCustomerName = bundle.getString("customerName");
+
             editTextCustomerName.setText(mCustomerName);
-            editTextCustomerId.setText(mCustomerId);
+//            editTextCustomerId.setText(mCustomerId);
+
+
             editTextCustomerId.setKeyListener(null);
             editTextCustomerName.setKeyListener(null);
 
-        } else {
-
-            mCustomerName = editTextCustomerName.getText().toString();
         }
 
         mCreatedBy = getUserId();
@@ -119,12 +132,12 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
     private void insertDataInFields() {
 
         mContactName = editTextContactName.getText().toString();
-        mCustomerName = editTextCustomerName.getText().toString();
+//        mCustomerName = editTextCustomerName.getText().toString();
         mContactPhone = editTextContactPhone.getText().toString();
         mContactEmail = editTextContactEmail.getText().toString();
         mContactDOB = textViewDOB.getText().toString();
         mContactDOA = textViewDOA.getText().toString();
-        mCustomerId = editTextCustomerId.getText().toString();
+//        mCustomerId = editTextCustomerId.getText().toString();
         if (TextUtils.isEmpty(mContactName)) {
             editTextContactName.setError("Enter Contact's Name");
         }
@@ -140,12 +153,6 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(mContactDOA)) {
             textViewDOA.setError("Enter Contact's Date of Anniversary");
         }
-        if (TextUtils.isEmpty(mCustomerId)) {
-            editTextCustomerId.setError("Enter Customer's ID");
-        }
-        if (TextUtils.isEmpty(mCustomerName)) {
-            editTextCustomerName.setError("Enter Customer's Name");
-        }
 
         if (!TextUtils.isEmpty(mContactName) && !TextUtils.isEmpty(mContactPhone) && !TextUtils.isEmpty(mContactEmail) && !TextUtils.isEmpty(mContactDOB) && !TextUtils.isEmpty(mContactDOA) && !TextUtils.isEmpty(mCustomerId) && !TextUtils.isEmpty(mCustomerName))
             storeData();
@@ -157,15 +164,20 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
         editTextCustomerName = findViewById(R.id.textInputEditCustomerName);
         editTextContactPhone = findViewById(R.id.textInputEditContactPhone);
         editTextContactEmail = findViewById(R.id.textInputEditContactEmail);
-        editTextCustomerId = findViewById(R.id.textInputEditCustomerId);
+//        editTextCustomerId = findViewById(R.id.textInputEditCustomerId);
+        fab = findViewById(R.id.fabAddData);
         textViewDOA = findViewById(R.id.textViewSelectDOA);
         textViewDOB = findViewById(R.id.textViewSelectDOB);
         mSearchCustomer = findViewById(R.id.searchCustomer);
         mLinearLayout = findViewById(R.id.linearLayout);
+        mCoordinaterLayout = findViewById(R.id.coordinator);
+        progressDialog = new ProgressDialog(this);
 
-        if (getIntent().getStringExtra("needSearch").equals("Need")) {
+        if (getIntent().getStringExtra("needSearch") != null && getIntent().getStringExtra("needSearch").equals("Need")) {
             editTextCustomerName.setVisibility(View.GONE);
             mLinearLayout.setVisibility(View.VISIBLE);
+        } else {
+
         }
     }
 
@@ -198,7 +210,7 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
     }
 
     // Stores data in strings and calls storeData() to store dta in server
-    public void insertData(View v) {
+    public void insertData() {
         insertDataInFields();
     }
 
@@ -212,6 +224,25 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
 
     // Stores data in server
     private void storeData() {
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                progressDialog.dismiss();
+                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        insertData();
+                    }
+                });
+                snackbar.show();
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, 20000);
+
 
 
         Map<String, String> postParam = new HashMap<>();
@@ -237,6 +268,7 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
                         Log.i(TAG, response.toString());
                         try {
                             if (response.getString("status").equals("updated")) {
+                                progressDialog.dismiss();
                                 Toast.makeText(InsertCustomerContactActivity.this, "Successfully Inserted New Contact", Toast.LENGTH_SHORT).show();
                                 finish();
                             }

@@ -1,11 +1,15 @@
 package com.example.test.nuvoco3.customer;
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -56,6 +60,8 @@ public class InsertComplaintActivity extends AppCompatActivity {
     ImageView imageViewCalendar;
     ArrayList<String> mCustomerList, mIdList;
     RequestQueue queue;
+    CoordinatorLayout mCoordinaterLayout;
+    ProgressDialog progressDialog;
     FloatingActionButton fab;
     String mCustomerArray[] = {"Customer 1", "Customer 2", "Customer 3"};
     String mTypeArray[] = {"Type 1", "Type 2"};
@@ -64,6 +70,7 @@ public class InsertComplaintActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert_complaint);
         initializeViews();
+        progressDialog = new ProgressDialog(this);
         mCustomerList = new ArrayList<>();
         mIdList = new ArrayList<>();
         queue = Volley.newRequestQueue(this);
@@ -106,6 +113,24 @@ public class InsertComplaintActivity extends AppCompatActivity {
     }
 
     private void storeDataToServer() {
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                progressDialog.dismiss();
+                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        validateData();
+                    }
+                });
+                snackbar.show();
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, 20000);
 
 
         Map<String, String> postParam = new HashMap<>();
@@ -129,6 +154,7 @@ public class InsertComplaintActivity extends AppCompatActivity {
                         Log.i(TAG, response.toString());
                         try {
                             if (response.getString("status").equals("updated")) {
+                                progressDialog.dismiss();
                                 Toast.makeText(InsertComplaintActivity.this, "Successfully Inserted Data", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(InsertComplaintActivity.this, InsertComplaintDetailsActivity.class);
                                 intent.putExtra("date", mDate);
@@ -217,6 +243,7 @@ public class InsertComplaintActivity extends AppCompatActivity {
         mEditTextDate = findViewById(R.id.editTextDate);
         mEditTextCustomerId = findViewById(R.id.textInputEditCustomerId);
         mEditTextComplaintDetails = findViewById(R.id.editTextDetails);
+        mCoordinaterLayout = findViewById(R.id.coordinator);
         mSearchCustomer = findViewById(R.id.searchCustomer);
         mSearchType = findViewById(R.id.searchType);
         mEditTextDate.setKeyListener(null);

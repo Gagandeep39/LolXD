@@ -1,11 +1,15 @@
 
 package com.example.test.nuvoco3.lead;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -55,6 +59,8 @@ public class InsertCustomerActivity extends AppCompatActivity {
     String district[] = {"Mumbai", "Pune", "Aurangabad", "Nagpur"};
     String state[] = {"Maharashtra", "Gujrat", "Rajasthan", "Madhya Pradesh", "Chattissgarh"};
     String type[] = {"Old", "Prospect"};
+    CoordinatorLayout mCoordinaterLayout;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +70,7 @@ public class InsertCustomerActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        progressDialog = new ProgressDialog(this);
         initializeViews();
         queue = Volley.newRequestQueue(this);
         floatingActionButtonAddData.setOnClickListener(new View.OnClickListener() {
@@ -169,6 +176,7 @@ public class InsertCustomerActivity extends AppCompatActivity {
         searchableSpinnerDistrict = findViewById(R.id.searchDistrict);
         searchableSpinnerState = findViewById(R.id.searchState);
         searchableSpinnerType = findViewById(R.id.searchType);
+        mCoordinaterLayout = findViewById(R.id.coordinator);
 
     }
 
@@ -223,6 +231,26 @@ public class InsertCustomerActivity extends AppCompatActivity {
     //  Stores data to Server
     private void storeData() {
 
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                progressDialog.dismiss();
+                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        validateData();
+                    }
+                });
+                snackbar.show();
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, 20000);
+
+
 
         Map<String, String> postParam = new HashMap<>();
 
@@ -251,6 +279,7 @@ public class InsertCustomerActivity extends AppCompatActivity {
                         try {
                             if (response.getString("status").equals("updated")) {
 
+                                progressDialog.dismiss();
                                 Toast.makeText(InsertCustomerActivity.this, "Successfully Inserted data", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(InsertCustomerActivity.this, InsertCustomerContactActivity.class);
                                 intent.putExtra("customerId", response.getString("allot_id"));

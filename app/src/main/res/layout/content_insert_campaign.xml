@@ -89,7 +89,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="start"
                 android:hint="Campaign Details"
-                android:minLines="2" />
+                android:minLines="3" />
 
 
         </android.support.design.widget.TextInputLayout>

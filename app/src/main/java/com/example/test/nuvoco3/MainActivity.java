@@ -99,6 +99,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 break;
+            case R.id.action_product:
+                startActivity(new Intent(getApplicationContext(), InsertActivity.class));
+                break;
             default:
                 Toast.makeText(this, "Invalid", Toast.LENGTH_SHORT).show();
         }

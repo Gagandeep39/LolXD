@@ -18,6 +18,7 @@
             android:id="@+id/textInputLayoutRepresentative"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="@+id/textInputLayoutCategory"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/textInputLayoutCategory"
