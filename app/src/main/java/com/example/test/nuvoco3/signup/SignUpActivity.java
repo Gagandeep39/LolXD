@@ -15,7 +15,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -23,12 +22,14 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.test.nuvoco3.MasterHelper;
 import com.example.test.nuvoco3.R;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,25 +49,19 @@ public class SignUpActivity extends AppCompatActivity {
     CoordinatorLayout mCoordinaterLayout;
     ProgressDialog progressDialog;
 
+    //MasterClass
+    MasterHelper mCityHelper, mDepartmentHelper, mAreaHelper;
+    ArrayList<String> mCityArray, mDepartmentArray, mAreaArray;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-        progressDialog = new ProgressDialog(this);
-        queue = Volley.newRequestQueue(this);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         initializeViews();
-        initializeOnClicks();
+        initializeVariables();
+        initializeSpinners();
 
-
-    }
-
-    //  Populates Spinners
-    private void initializeOnClicks() {
-        ArrayAdapter mDepartmentAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, departmentTypes);
-        ArrayAdapter mCityAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, cityTypes);
-        ArrayAdapter mAreaAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, areaTypes);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,6 +69,14 @@ public class SignUpActivity extends AppCompatActivity {
                 insertData();
             }
         });
+    }
+
+    //  Populates Spinners
+    private void initializeSpinners() {
+        ArrayAdapter mDepartmentAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mDepartmentArray);
+        ArrayAdapter mCityAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mCityArray);
+        ArrayAdapter mAreaAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mAreaArray);
+
 
         mSearchableSpinnerDepartment.setAdapter(mDepartmentAdapter);
         mSearchableSpinnerCity.setAdapter(mCityAdapter);
@@ -82,7 +85,7 @@ public class SignUpActivity extends AppCompatActivity {
         mSearchableSpinnerDepartment.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mDepartment = departmentTypes[position];
+                mDepartment = mDepartmentArray.get(position);
             }
 
             @Override
@@ -94,7 +97,7 @@ public class SignUpActivity extends AppCompatActivity {
         mSearchableSpinnerArea.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mArea = areaTypes[position];
+                mArea = mAreaArray.get(position);
             }
 
             @Override
@@ -106,7 +109,7 @@ public class SignUpActivity extends AppCompatActivity {
         mSearchableSpinnerCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mCity = cityTypes[position];
+                mCity = mCityArray.get(position);
             }
 
             @Override
@@ -133,11 +136,6 @@ public class SignUpActivity extends AppCompatActivity {
         } else {
             mPin = Integer.parseInt(mPinString);
         }
-//        if (TextUtils.isEmpty(mAgeString)) {
-//            mTextInputEditTextAge.setError("Enter Age");
-//        } else {
-//            mAge = Integer.parseInt(mAgeString);
-//        }
         if (TextUtils.isEmpty(mName))
             mTextInputEditTextName.setError("Enter Name");
         if (TextUtils.isEmpty(mPhone))
@@ -190,6 +188,10 @@ public class SignUpActivity extends AppCompatActivity {
         mCoordinaterLayout = findViewById(R.id.coordinator);
         mSearchableSpinnerArea = findViewById(R.id.searchArea);
         mSearchableSpinnerCity = findViewById(R.id.searchCity);
+
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
     }
 
 
@@ -255,7 +257,7 @@ public class SignUpActivity extends AppCompatActivity {
             }
         }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json; charset=utf-8");
                 return headers;
@@ -270,8 +272,23 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
         return email.contains("@");
+    }
+
+    private void initializeVariables() {
+        queue = Volley.newRequestQueue(this);
+        progressDialog = new ProgressDialog(this);
+
+        //Initializing helper class for different spinners
+        mCityHelper = new MasterHelper(this, "District");
+        mDepartmentHelper = new MasterHelper(this, "Department");
+        mAreaHelper = new MasterHelper(this, "Area");
+
+        //Initializing their Arrays
+        mAreaArray = mAreaHelper.getRecordName();
+        mDepartmentArray = mDepartmentHelper.getRecordName();
+        mCityArray = mCityHelper.getRecordName();
+
     }
 
 

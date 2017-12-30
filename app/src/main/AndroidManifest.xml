@@ -22,7 +22,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".lead.InsertCustomerActivity"
             android:parentActivityName=".MainActivity" />
@@ -52,10 +51,6 @@
         <activity
             android:name=".signup.SignUpActivity"
             android:label="@string/title_activity_sign_up"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".customer.ComplaintStatusActivity"
-            android:label="@string/title_activity_complaint_status"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".lead.CustomerDetailsActivity"
@@ -113,6 +108,10 @@
         <activity
             android:name=".ComplaintStatusActivity"
             android:label="@string/title_activity_complaint_status"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".customer.UpdateStatusActivity"
+            android:label="@string/title_activity_update_status"
             android:theme="@style/AppTheme"></activity>
     </application>
 

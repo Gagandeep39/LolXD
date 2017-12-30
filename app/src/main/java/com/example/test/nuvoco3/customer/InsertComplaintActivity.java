@@ -167,6 +167,7 @@ public class InsertComplaintActivity extends AppCompatActivity {
                                 intent.putExtra("complaintDetails", mComplaintDetails);
                                 intent.putExtra("complaintId", response.getString("complaint_ID"));
                                 startActivity(intent);
+                                finish();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -367,6 +368,8 @@ public class InsertComplaintActivity extends AppCompatActivity {
         mTypeArrayList = new ArrayList<>();
         //Storing return Value in Array List
         mTypeArrayList = mTypeHelper.getRecordName();
+        mIdList = new ArrayList<>();
+        mCustomerList = new ArrayList<>();
 
     }
 

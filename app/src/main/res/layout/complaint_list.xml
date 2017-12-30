@@ -98,17 +98,27 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="8sp"
-            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView2">
 
-            <TextView
-                android:id="@+id/textViewComplaintDetails"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Details : " />
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/textViewDetails"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:text="UpdatedStatus"
+                    android:textAllCaps="true"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </FrameLayout>
 
         </LinearLayout>
 

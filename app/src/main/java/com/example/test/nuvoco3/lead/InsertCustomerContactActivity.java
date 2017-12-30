@@ -64,6 +64,7 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
     CoordinatorLayout mCoordinaterLayout;
     ProgressDialog progressDialog;
     FloatingActionButton fab;
+    int size = 50;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -359,7 +360,14 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
                 progressDialog.dismiss();
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
-                    for (int i = 0; i < 50; i++) {
+
+                    if (mCustomerName.equals("0"))
+                        size = 50;
+                    else
+                        size = jsonArray.length();
+
+
+                    for (int i = 0; i < size; i++) {
 
                         JSONObject object = jsonArray.getJSONObject(i);
                         mIdList.add(object.getString("record_id"));   //primary key

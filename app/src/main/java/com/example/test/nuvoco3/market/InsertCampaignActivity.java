@@ -50,8 +50,6 @@ public class InsertCampaignActivity extends AppCompatActivity {
     String mRepresentative, mCounter, mDate, mCompany, mCampaignDetail, mCreatedOn, mCreatedBy, mUpdatedBy, mUpdatedOn;
     TextInputEditText mEditTextRepresentative, mEditTextDetails;
     SearchableSpinner mSearchContact, mSearchCompany;
-    String mCustomerArray[] = {"Customer 1", "Customer 2", "Customer 3"};
-    String mContactArray[] = {"Contact 1", "Contact 2", "Contact 3"};
     RequestQueue queue;
     CoordinatorLayout mCoordinaterLayout;
     ProgressDialog progressDialog;
@@ -67,6 +65,7 @@ public class InsertCampaignActivity extends AppCompatActivity {
         setContentView(R.layout.activity_insert_campaign);
         initializeViews();
         initializeVariables();
+        populateCustomers();
         populateSpinners();
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -83,23 +82,29 @@ public class InsertCampaignActivity extends AppCompatActivity {
         queue = Volley.newRequestQueue(this);
         mCustomerList = new ArrayList<>();
         mContactList = new ArrayList<>();
+
+
     }
 
     private void populateSpinners() {
         mCustomerAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mCustomerList);
         mContactAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mContactList);
+
         mSearchCompany.setAdapter(mCustomerAdapter);
         mSearchContact.setAdapter(mContactAdapter);
         mSearchCompany.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mCompany = mCustomerList.get(position);
+                Log.i(TAG, "onItemSelected: " + mCompany);
                 populateContacts();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 mCompany = getString(R.string.default_name);
+
             }
         });
         mSearchContact.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -137,8 +142,6 @@ public class InsertCampaignActivity extends AppCompatActivity {
         handler.postDelayed(runnable, 20000);
 
 
-        Map<String, String> postParam = new HashMap<>();
-
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 DATABASE_URL + "/dispCust", null, new Response.Listener<JSONObject>() {
@@ -147,14 +150,15 @@ public class InsertCampaignActivity extends AppCompatActivity {
             public void onResponse(JSONObject response) {
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
-                    for (int i = 0; i < 50; i++) {
+
+                    for (int i = 0; i < jsonArray.length(); i++) {
 
                         JSONObject object = jsonArray.getJSONObject(i);
-                        if (object.getString("c_name").equals(mCompany)) {
+//                        if (object.getString("name").equals(mCompany)) {
 
-                            mCustomerList.add(object.getString("contactPerson"));
+                        mCustomerList.add(object.getString("name"));
                         }
-                    }
+//                    }
                     progressDialog.dismiss();
                     mContactAdapter.notifyDataSetChanged();
 
@@ -200,7 +204,6 @@ public class InsertCampaignActivity extends AppCompatActivity {
         handler.postDelayed(runnable, 20000);
 
 
-        Map<String, String> postParam = new HashMap<>();
 
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
@@ -210,10 +213,13 @@ public class InsertCampaignActivity extends AppCompatActivity {
             public void onResponse(JSONObject response) {
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
-                    for (int i = 0; i < 50; i++) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
 
                         JSONObject object = jsonArray.getJSONObject(i);
-                        mCustomerList.add(object.getString("name"));
+                        if (object.getString("c_name").toLowerCase().equals(mCompany)) {
+                            Log.i(TAG, "onResponse: " + object.getString("contactPerson"));
+                            mContactList.add(object.getString("contactPerson"));
+                        }
                     }
                     progressDialog.dismiss();
 

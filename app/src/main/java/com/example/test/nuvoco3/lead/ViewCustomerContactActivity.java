@@ -42,7 +42,7 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
     CoordinatorLayout mCoordinaterLayout;
     ProgressDialog progressDialog;
     String mContactId, mCustomerId, mCustomerName, mContactName, mContactPhone, mContactEmail, mContactDOB, mContactDOA, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy;
-
+    int size = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,8 +95,14 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
 
+                    if (mSearchText.equals("0"))
+                        size = 50;
+                    else
+                        size = jsonArray.length();
+
+
                     progressDialog.dismiss();
-                    for (int i = 0; i < 20; i++) {
+                    for (int i = 0; i < size; i++) {
 
                         JSONObject object = jsonArray.getJSONObject(i);
                         if (object.getString("record_id").toLowerCase().contains(mSearchText.toLowerCase())

@@ -44,6 +44,7 @@ public class ViewCustomerActivity extends AppCompatActivity {
     String mSearchText = "0";
     ProgressDialog progressDialog;
     CoordinatorLayout mCoordinatorLayout;
+    int size = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,7 +116,13 @@ public class ViewCustomerActivity extends AppCompatActivity {
                 Log.i("lol", "onResponse:  " + response);
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
-                    for (int i = 0; i < 50; i++) {
+                    for (int i = 0; i < size; i++) {
+
+                        if (mSearchText.equals("0"))
+                            size = 50;
+                        else
+                            size = jsonArray.length();
+
 
                         JSONObject object = jsonArray.getJSONObject(i);
                         if (object.getString("c_email").toLowerCase().contains(mSearchText.toLowerCase())

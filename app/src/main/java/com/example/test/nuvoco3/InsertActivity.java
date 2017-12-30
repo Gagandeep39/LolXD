@@ -10,6 +10,8 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -20,6 +22,7 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.signup.ObjectSerializer;
+import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,18 +40,20 @@ import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 public class InsertActivity extends AppCompatActivity {
     public static final String URL_INSERT_PRODUCT = "/insertMaster";
     private static final String TAG = "Insert Activity";
-    TextInputEditText mEditTextType, mEditTextCategory, mEditTextName, mEditTextStatus;
+    TextInputEditText mEditTextCategory, mEditTextName, mEditTextStatus;
     FloatingActionButton fab;
     String mCategory, mType, mStatus, mName, mUpdatedOn, mCreatedOn, mCreatedBy, mUpdatedBy;
     RequestQueue queue;
+    SearchableSpinner mTypeSearch;
+    String mTypeArray[] = {"District", "Area", "State", "CustomerType", "Category", "ComplaintType", "Brand", "Product"};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert);
         initializeViews();
-        queue = Volley.newRequestQueue(this);
-
+        populateSpinner();
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,11 +63,28 @@ public class InsertActivity extends AppCompatActivity {
         });
     }
 
+    private void populateSpinner() {
+        ArrayAdapter mTypeAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mTypeArray);
+        mTypeSearch.setAdapter(mTypeAdapter);
+        mTypeSearch.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                mType = mTypeArray[i];
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                mType = getString(R.string.default_name);
+
+            }
+        });
+    }
+
+
     private void validateData() {
         mCategory = mEditTextCategory.getText().toString();
         mName = mEditTextName.getText().toString();
         mStatus = "1";
-        mType = mEditTextType.getText().toString();
         mCreatedBy = getUserId();
         mUpdatedBy = getUserId();
         mCreatedOn = getDateTime();
@@ -73,8 +95,8 @@ public class InsertActivity extends AppCompatActivity {
             mEditTextCategory.setError("Category field Cannot Be Empty");
         if (TextUtils.isEmpty(mName))
             mEditTextName.setError("name field Cannot Be Empty");
-        if (TextUtils.isEmpty(mType))
-            mEditTextType.setError("Type field Cannot Be Empty");
+        if (TextUtils.equals(mType, getString(R.string.default_name)))
+            Toast.makeText(this, "Select Type", Toast.LENGTH_SHORT).show();
 
         if (!TextUtils.isEmpty(mCategory) && !TextUtils.isEmpty(mName) && !TextUtils.isEmpty(mType)) {
             sendDataToServer();
@@ -149,7 +171,9 @@ public class InsertActivity extends AppCompatActivity {
         mEditTextCategory = findViewById(R.id.textInputEditCategory);
         mEditTextName = findViewById(R.id.textInputEditName);
         mEditTextStatus = findViewById(R.id.textInputEditStatus);
-        mEditTextType = findViewById(R.id.textInputEditType);
+//        mEditTextType = findViewById(R.id.textInputEditType);
+        mTypeSearch = findViewById(R.id.searchType);
+        queue = Volley.newRequestQueue(this);
     }
 
 

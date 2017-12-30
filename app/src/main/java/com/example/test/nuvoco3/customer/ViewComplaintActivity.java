@@ -44,6 +44,7 @@ public class ViewComplaintActivity extends AppCompatActivity {
     String mSearchText = "0";
     ProgressDialog progressDialog;
     CoordinatorLayout mCoordinatorLayout;
+    int size = 50;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +71,13 @@ public class ViewComplaintActivity extends AppCompatActivity {
                 progressDialog.dismiss();
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
-                    for (int i = 0; i < 50; i++) {
+                    if (mSearchText.equals("0"))
+                        size = 50;
+                    else
+                        size = jsonArray.length();
+
+
+                    for (int i = 0; i < size; i++) {
 
                         JSONObject object = jsonArray.getJSONObject(i);
                         if (object.getString("record_id").toLowerCase().contains(mSearchText.toLowerCase())

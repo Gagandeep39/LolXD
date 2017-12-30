@@ -1,6 +1,7 @@
 package com.example.test.nuvoco3.customer;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -35,14 +36,13 @@ public class ComplaintAdapter extends RecyclerView.Adapter<ComplaintAdapter.View
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        Complaints mCurrentComplaint = mComplaintList.get(position);
+        final Complaints mCurrentComplaint = mComplaintList.get(position);
         holder.setIsRecyclable(false);
 
         holder.mTextViewDate.append(mCurrentComplaint.getmDate());
         holder.mTextViewType.append(mCurrentComplaint.getType());
         holder.mTextViewComplaintId.append(mCurrentComplaint.getComplaintId());
         holder.mTextViewCustomerName.append(mCurrentComplaint.getCustomerName());
-        holder.mTextViewDetails.append(mCurrentComplaint.getDetails());
         holder.mConstraintLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,6 +56,12 @@ public class ComplaintAdapter extends RecyclerView.Adapter<ComplaintAdapter.View
                     holder.mImageExpandMore.setVisibility(View.VISIBLE);
 
                 }
+            }
+        });
+        holder.mTextViewDetails.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mContext.startActivity(new Intent(mContext, UpdateStatusActivity.class).putExtra("ComplaintId", mCurrentComplaint.getComplaintId()));
             }
         });
 
@@ -79,7 +85,7 @@ public class ComplaintAdapter extends RecyclerView.Adapter<ComplaintAdapter.View
             mTextViewType = itemView.findViewById(R.id.textViewType);
             mTextViewDate = itemView.findViewById(R.id.textViewDate);
             mConstraintLayout = itemView.findViewById(R.id.constraintLayout);
-            mTextViewDetails = itemView.findViewById(R.id.textViewComplaintDetails);
+            mTextViewDetails = itemView.findViewById(R.id.textViewDetails);
             mLinearLayout = itemView.findViewById(R.id.linearLayout2);
             mImageExpandLess = itemView.findViewById(R.id.imageViewExpandLess);
             mImageExpandMore = itemView.findViewById(R.id.imageViewExpand);

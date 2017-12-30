@@ -22,7 +22,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -31,6 +30,7 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.MainActivity;
+import com.example.test.nuvoco3.MasterHelper;
 import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.signup.ObjectSerializer;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
@@ -62,14 +62,18 @@ public class InsertComplaintDetailsActivity extends AppCompatActivity {
     CoordinatorLayout mCoordinaterLayout;
     ProgressDialog progressDialog;
 
+    //Master Helper
+    MasterHelper mComplaintTypeHelper;
+    ArrayList<String> mComplaintTypeArray;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_complaint_details);
-        queue = Volley.newRequestQueue(this);
-        progressDialog = new ProgressDialog(this);
+        showProgress();
         initializeViews();
+        initializeVariables();
         populateSpinners();
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,6 +81,17 @@ public class InsertComplaintDetailsActivity extends AppCompatActivity {
                 validateData();
             }
         });
+    }
+
+    private void initializeVariables() {
+
+        queue = Volley.newRequestQueue(this);
+        progressDialog = new ProgressDialog(this);
+
+        mComplaintTypeHelper = new MasterHelper(this, "ComplaintType");
+        mComplaintTypeArray = mComplaintTypeHelper.getRecordName();
+
+        progressDialog.dismiss();
     }
 
     private void validateData() {
@@ -183,7 +198,7 @@ public class InsertComplaintDetailsActivity extends AppCompatActivity {
              * Passing some request headers
              * */
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json; charset=utf-8");
                 return headers;
@@ -298,5 +313,26 @@ public class InsertComplaintDetailsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    private void showProgress() {
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                progressDialog.dismiss();
+                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                });
+                snackbar.show();
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, 20000);
+    }
 
 }

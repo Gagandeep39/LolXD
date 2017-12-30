@@ -124,7 +124,7 @@ public class LoginActivity extends AppCompatActivity {
         mTextInputEditTextEmail = findViewById(R.id.textInputEditEmail);
         mTextInputEditTextPassword = findViewById(R.id.textInputEditPassword);
         mCheckBoxLogin = findViewById(R.id.checkbox);
-        mConstraintLayout = findViewById(R.id.coordinator);
+        mConstraintLayout = findViewById(R.id.constraintLayout);
     }
 
     //    If user doesn't have an account then he can Sign Up

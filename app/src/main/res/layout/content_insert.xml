@@ -10,23 +10,44 @@
     tools:context=".InsertActivity"
     tools:showIn="@layout/activity_insert">
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/textInputType"
+    <!--<android.support.design.widget.TextInputLayout-->
+    <!--android:id="@+id/textInputType"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--app:layout_constraintEnd_toEndOf="@+id/textInputLayoutCategory"-->
+    <!--app:layout_constraintHorizontal_bias="0.0"-->
+    <!--app:layout_constraintStart_toStartOf="@+id/textInputLayoutCategory"-->
+    <!--app:layout_constraintTop_toBottomOf="@+id/textInputLayoutCategory">-->
+
+    <!--<android.support.design.widget.TextInputEditText-->
+    <!--android:id="@+id/textInputEditType"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:hint="Type" />-->
+
+
+    <!--</android.support.design.widget.TextInputLayout>-->
+
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="@+id/textInputLayoutCategory"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/textInputLayoutCategory"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutCategory">
+        android:orientation="vertical"
+        android:padding="8sp">
 
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/textInputEditType"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Type" />
+            android:text="Select Type" />
 
+        <com.toptoche.searchablespinnerlibrary.SearchableSpinner
 
-    </android.support.design.widget.TextInputLayout>
+            android:id="@+id/searchType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:hintText="Default" />
+    </LinearLayout>
+
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/textInputCategory"

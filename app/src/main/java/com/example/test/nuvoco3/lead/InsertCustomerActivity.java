@@ -48,107 +48,122 @@ import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 
 public class InsertCustomerActivity extends AppCompatActivity {
     public static final String TAG = "InsertCustomer Activity";
-    String categoryPosition = null, areaPosition = null, districtPosition = null, statePosition = null;
     SearchableSpinner searchableSpinnerCategory, searchableSpinnerDistrict, searchableSpinnerArea, searchableSpinnerState, searchableSpinnerType;
     FloatingActionButton floatingActionButtonAddData;
     TextInputEditText editTextName, editTextAddress, editTextPhone, editTextEmail;
     String mName, mType, mCategory, mAddress, mArea, mDistrict, mState, mPhone, mEmail, mStatus, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy;
     RequestQueue queue;
-    String area[] = {"Area 1", "Area 2", "Area 3", "Area 4"};
-    String district[] = {"Mumbai", "Pune", "Aurangabad", "Nagpur"};
-    String state[] = {"Maharashtra", "Gujrat", "Rajasthan", "Madhya Pradesh", "Chattissgarh"};
     CoordinatorLayout mCoordinaterLayout;
     ProgressDialog progressDialog;
-    MasterHelper mHelperCategory, mHelperType;
-    ArrayList<String> mCategoryArray, mCustomerTypeArray;
+
+    //Master Helper
+    MasterHelper mTypeHelper, mCategoryHelper, mAreaHelper, mDistrictHelper, mStateHelper;
+    ArrayList<String> mTypeArray, mCategoryArray, mAreaArray, mDistrictArray, mStateArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert_customer);
-        mCategoryArray = new ArrayList<>();
-        mCustomerTypeArray = new ArrayList<>();
-        progressDialog = new ProgressDialog(this);
 
-
-        mHelperCategory = new MasterHelper(this, "Category");
-        mHelperType = new MasterHelper(this, "CustomerType");
-
-
-        mCategoryArray = mHelperCategory.getRecordName();
-        mCustomerTypeArray = mHelperType.getRecordName();
+        showProgress();
 
 
         initializeViews();
-        queue = Volley.newRequestQueue(this);
+        initializeVariables();
+        initializeSpinners();
         floatingActionButtonAddData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 validateData();
             }
         });
-        initializeSpinners();
+    }
+
+    private void initializeVariables() {
+
+        queue = Volley.newRequestQueue(this);
+        progressDialog = new ProgressDialog(this);
+
+        //initialize Helpers
+        mAreaHelper = new MasterHelper(this, "Area");
+        mStateHelper = new MasterHelper(this, "State");
+        mTypeHelper = new MasterHelper(this, "CustomerType");
+        mCategoryHelper = new MasterHelper(this, "Category");
+        mDistrictHelper = new MasterHelper(this, "District");
+
+        //initialize Arrays
+        mAreaArray = mAreaHelper.getRecordName();
+        mStateArray = mStateHelper.getRecordName();
+        mTypeArray = mTypeHelper.getRecordName();
+        mCategoryArray = mCategoryHelper.getRecordName();
+        mDistrictArray = mDistrictHelper.getRecordName();
+
+
+        progressDialog.dismiss();
     }
 
     //  Populates the spinners
     private void initializeSpinners() {
-        ArrayAdapter<String> areaArrayAdapter = new ArrayAdapter<String>(InsertCustomerActivity.this, android.R.layout.simple_dropdown_item_1line, area);
-        ArrayAdapter<String> districtArrayAdapter = new ArrayAdapter<String>(InsertCustomerActivity.this, android.R.layout.simple_dropdown_item_1line, district);
-        ArrayAdapter<String> stateArrayAdapter = new ArrayAdapter<String>(InsertCustomerActivity.this, android.R.layout.simple_dropdown_item_1line, state);
+        ArrayAdapter mAreaAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mAreaArray);
+        ArrayAdapter mStateAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mStateArray);
+        ArrayAdapter mTypeAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mTypeArray);
+        ArrayAdapter mCategoryAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mCategoryArray);
+        ArrayAdapter mDistrictAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mDistrictArray);
 
-        // Showing from Master Table
-        ArrayAdapter<String> categoryArrayAdapter = new ArrayAdapter<String>(InsertCustomerActivity.this, android.R.layout.simple_dropdown_item_1line, mCategoryArray);
-        ArrayAdapter<String> typeArrayAdapter = new ArrayAdapter<>(InsertCustomerActivity.this, android.R.layout.simple_list_item_1, mCustomerTypeArray);
+        //Seting Adapter
+        searchableSpinnerArea.setAdapter(mAreaAdapter);
+        searchableSpinnerType.setAdapter(mTypeAdapter);
+        searchableSpinnerState.setAdapter(mStateAdapter);
+        searchableSpinnerCategory.setAdapter(mCategoryAdapter);
+        searchableSpinnerDistrict.setAdapter(mDistrictAdapter);
+
+
 
 
         //Area Spinner
-        searchableSpinnerArea.setAdapter(areaArrayAdapter);
         searchableSpinnerArea.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mArea = area[position];
+                mArea = mAreaArray.get(position);
 
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                mArea = "default";
+                mArea = getString(R.string.default_name);
             }
         });
 
         //District Spinner
-        searchableSpinnerDistrict.setAdapter(districtArrayAdapter);
         searchableSpinnerDistrict.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mDistrict = district[position];
+                mDistrict = mDistrictArray.get(position);
 
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                mDistrict = "default";
+                mArea = getString(R.string.default_name);
             }
         });
 
         //State Spinner
-        searchableSpinnerState.setAdapter(stateArrayAdapter);
         searchableSpinnerState.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mState = state[position];
+                mState = mStateArray.get(position);
 
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                mState = "default";
+                mArea = getString(R.string.default_name);
             }
         });
 
 
         //Category Spinner
-        searchableSpinnerCategory.setAdapter(categoryArrayAdapter);
         searchableSpinnerCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -157,20 +172,19 @@ public class InsertCustomerActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                mCategory = "default";
+                mArea = getString(R.string.default_name);
             }
         });
         //Type Spinner
-        searchableSpinnerType.setAdapter(typeArrayAdapter);
         searchableSpinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mType = mCustomerTypeArray.get(position);
+                mType = mTypeArray.get(position);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                mType = "default";
+                mArea = getString(R.string.default_name);
             }
         });
 
