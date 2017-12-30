@@ -23,12 +23,6 @@
             </intent-filter>
         </activity>
 
-        <!-- Main activity -->
-        <!-- <activity -->
-        <!-- android:name="com.example.test.nuvoco3.MainActivity" -->
-        <!-- android:label="@string/app_name" > -->
-        <!-- </activity> -->
-
         <activity
             android:name=".lead.InsertCustomerActivity"
             android:parentActivityName=".MainActivity" />

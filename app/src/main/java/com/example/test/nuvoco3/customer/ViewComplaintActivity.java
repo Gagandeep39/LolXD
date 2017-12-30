@@ -1,6 +1,10 @@
 package com.example.test.nuvoco3.customer;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,62 +33,61 @@ import java.util.ArrayList;
 import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 
 public class ViewComplaintActivity extends AppCompatActivity {
-    public static final String URL_DISPLAY_COMPLAINT_DTLS = "/dispCmpDetails/0";
-    String mComplaintId, mCustomerId, mCustomerName, mCreatedBy, mCreatedOn, mUpdatedBy, mUpdatedOn, mRepresentative, mDetails, mClosedOn, mDate, mStatus, mRemark, mRecordId;
+    public static final String URL_DISPLAY_COMPLAINT_DTLS = "/dispComplaint";
+    String mComplaintId, mCustomerId, mCustomerName, mCreatedBy, mCreatedOn, mUpdatedBy, mUpdatedOn, mDetails, mType, mDate;
     RecyclerView mRecyclerView;
     SwipeRefreshLayout mSwipeRefresh;
-    ArrayList<ComplaintDetails> mComplaintArrayList;
-    ComplaintDetailsAdapter mComplaintAdapter;
+    ArrayList<Complaints> mComplaintArrayList;
+    ComplaintAdapter mComplaintAdapter;
     RequestQueue queue;
     SearchView mSearchView;
     String mSearchText = "0";
+    ProgressDialog progressDialog;
+    CoordinatorLayout mCoordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_complaint);
         initializeViews();
-        mComplaintArrayList = new ArrayList<>();
         queue = Volley.newRequestQueue(this);
         initializeSearch();
         readData();
-        mComplaintAdapter = new ComplaintDetailsAdapter(this, mComplaintArrayList);
+        mComplaintAdapter = new ComplaintAdapter(this, mComplaintArrayList);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mComplaintAdapter);
     }
 
     private void readData() {
-
+        startProgressDialog();
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 DATABASE_URL + URL_DISPLAY_COMPLAINT_DTLS, null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
                 Log.i("lol", "onResponse:  " + response);
+                progressDialog.dismiss();
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
                     for (int i = 0; i < 50; i++) {
 
                         JSONObject object = jsonArray.getJSONObject(i);
-                        if (object.getString("Complaint_id").toLowerCase().contains(mSearchText.toLowerCase())
-                                || object.getString("Customer_name").toLowerCase().contains(mSearchText.toLowerCase())
-                                || object.getString("Customer_id").toLowerCase().contains(mSearchText.toLowerCase())) {
-                            mComplaintId = object.getString("Complaint_id") + "";
+                        if (object.getString("record_id").toLowerCase().contains(mSearchText.toLowerCase())
+                                || object.getString("Type_Ofcomplaint").toLowerCase().contains(mSearchText.toLowerCase())
+                                || object.getString("Customer_name").toLowerCase().contains(mSearchText.toLowerCase())) {
+                            mComplaintId = object.getString("record_id") + "";
                             mCustomerId = object.getString("Customer_id") + "";
                             mCustomerName = object.getString("Customer_name") + "";
                             mDate = object.getString("Date") + "";
-                            mRepresentative = object.getString("Representative") + "";
-                            mClosedOn = object.getString("complaint_closedOn") + "";
+                            mType = object.getString("Type_Ofcomplaint") + "";
                             mDetails = object.getString("complaint_details") + "";
-                            mStatus = object.getString("complaint_status") + "";
+
                             mCreatedOn = object.getString("createdOn") + "";
-                            mCreatedBy = object.getString("creayedBy") + "";
-                            mRecordId = object.getString("record_id") + "";
-                            mRemark = object.getString("resolution_remark") + "";
-                            mUpdatedBy = object.getString("updatedBy") + "";
-                            mUpdatedOn = object.getString("updatedOn") + "";
-                            mComplaintArrayList.add(new ComplaintDetails(mRecordId, mComplaintId, mDate, mRepresentative, mCustomerId, mCustomerName, mStatus, mDetails, mRemark, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy, mClosedOn));
+                            mCreatedBy = object.getString("createdBy") + "";
+                            mUpdatedBy = object.getString("upatedBy") + "";
+                            mUpdatedOn = object.getString("upatedOn") + "";
+                            mComplaintArrayList.add(new Complaints(mCustomerId, mCustomerName, mType, mDetails, mComplaintId, mDate, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy));
                             mComplaintAdapter.notifyDataSetChanged();
                         }
 
@@ -115,6 +118,7 @@ public class ViewComplaintActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 mSearchText = query;
+                readData();
                 return true;
             }
 
@@ -140,6 +144,9 @@ public class ViewComplaintActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.recyclerView);
         mSwipeRefresh = findViewById(R.id.swipeRefreshLayout);
         mSearchView = findViewById(R.id.searchView);
+        mCoordinatorLayout = findViewById(R.id.coordinator);
+        progressDialog = new ProgressDialog(this);
+        mComplaintArrayList = new ArrayList<>();
     }
 
     @Override
@@ -155,6 +162,29 @@ public class ViewComplaintActivity extends AppCompatActivity {
 
         mSearchView.setIconified(false);
     }
+
+    private void startProgressDialog() {
+
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                progressDialog.dismiss();
+                Snackbar snackbar = Snackbar.make(mCoordinatorLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        readData();
+                    }
+                });
+                snackbar.show();
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, 20000);
+    }
+
 
 
 }

@@ -9,23 +9,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.lead.InsertCustomerActivity;
 import com.example.test.nuvoco3.lead.InsertCustomerContactActivity;
 import com.example.test.nuvoco3.lead.ViewCustomerActivity;
 import com.example.test.nuvoco3.lead.ViewCustomerContactActivity;
-
-
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link FragmentLead.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link FragmentLead#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class FragmentLead extends Fragment {
 
     private static final String TAG = "LEAD FRAGMENT";
@@ -33,8 +22,7 @@ public class FragmentLead extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    Button mButtonContact, mButtonViewContact;
-    ConstraintLayout button, button2;
+    ConstraintLayout button, button2, mButtonContact, mButtonViewContact;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -42,18 +30,7 @@ public class FragmentLead extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     public FragmentLead() {
-        // Required empty public constructor
     }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FragmentLead.
-     */
-    // TODO: Rename and change types and number of parameters
     public static FragmentLead newInstance(String param1, String param2) {
         FragmentLead fragment = new FragmentLead();
         Bundle args = new Bundle();

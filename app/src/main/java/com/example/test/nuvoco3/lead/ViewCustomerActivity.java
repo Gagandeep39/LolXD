@@ -1,6 +1,10 @@
 package com.example.test.nuvoco3.lead;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -38,6 +42,8 @@ public class ViewCustomerActivity extends AppCompatActivity {
     RequestQueue queue;
     SearchView mSearchView;
     String mSearchText = "0";
+    ProgressDialog progressDialog;
+    CoordinatorLayout mCoordinatorLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +53,7 @@ public class ViewCustomerActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         queue = Volley.newRequestQueue(this);
+        progressDialog = new ProgressDialog(this);
         initializeViews();
         mCustomerArrayList = new ArrayList<>();
         readData();
@@ -92,10 +99,12 @@ public class ViewCustomerActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.recyclerView);
         mSwipeRefresh = findViewById(R.id.swipeRefreshLayout);
         mSearchView = findViewById(R.id.searchView);
+        mCoordinatorLayout = findViewById(R.id.coordinator);
     }
 
 
     private void readData() {
+        startProgressDialog();
 
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
@@ -131,6 +140,7 @@ public class ViewCustomerActivity extends AppCompatActivity {
                             Log.i(TAG, "onResponse: " + mAddress);
                             mCustomerArrayList.add(new Customer(mName, mId, mCategory, mAddress, mArea, mDistrict, mState, mPhone, mEmail, mStatus, mCreatedBy, mCreatedOn, mUpdatedBy, mUpdatedOn));
                             mAdapter.notifyDataSetChanged();
+                            progressDialog.dismiss();
                         }
 
                     }
@@ -167,6 +177,28 @@ public class ViewCustomerActivity extends AppCompatActivity {
     public void enableSearch(View v) {
 
         mSearchView.setIconified(false);
+    }
+
+    private void startProgressDialog() {
+
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                progressDialog.dismiss();
+                Snackbar snackbar = Snackbar.make(mCoordinatorLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                });
+                snackbar.show();
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, 20000);
     }
 
 

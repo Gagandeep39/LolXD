@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
@@ -23,7 +24,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -118,8 +118,9 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
 //            editTextCustomerId.setText(mCustomerId);
 
 
-            editTextCustomerId.setKeyListener(null);
+//            editTextCustomerId.setKeyListener(null);
             editTextCustomerName.setKeyListener(null);
+            editTextCustomerName.getBackground().mutate().setColorFilter(getResources().getColor(R.color.light_grey), PorterDuff.Mode.SRC_ATOP);
 
         }
 
@@ -290,7 +291,7 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
              * Passing some request headers
              */
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json; charset=utf-8");
                 return headers;

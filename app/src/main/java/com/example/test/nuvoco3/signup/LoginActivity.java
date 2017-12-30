@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.CoordinatorLayout;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
@@ -18,7 +18,6 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -48,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
     TextInputEditText mTextInputEditTextEmail, mTextInputEditTextPassword;
     RequestQueue queue;
     ProgressDialog progressDialog;
-    CoordinatorLayout mCoordinaterLayout;
+    ConstraintLayout mConstraintLayout;
     CheckBox mCheckBoxLogin;
 
     @Override
@@ -125,7 +124,7 @@ public class LoginActivity extends AppCompatActivity {
         mTextInputEditTextEmail = findViewById(R.id.textInputEditEmail);
         mTextInputEditTextPassword = findViewById(R.id.textInputEditPassword);
         mCheckBoxLogin = findViewById(R.id.checkbox);
-        mCoordinaterLayout = findViewById(R.id.coordinator);
+        mConstraintLayout = findViewById(R.id.coordinator);
     }
 
     //    If user doesn't have an account then he can Sign Up
@@ -142,7 +141,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void run() {
                 progressDialog.dismiss();
-                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                Snackbar snackbar = Snackbar.make(mConstraintLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
 
@@ -217,7 +216,7 @@ public class LoginActivity extends AppCompatActivity {
              * Passing some request headers
              * */
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json; charset=utf-8");
                 return headers;

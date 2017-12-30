@@ -1,6 +1,10 @@
 package com.example.test.nuvoco3.market;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -39,6 +43,8 @@ public class ViewBrandPriceActivity extends AppCompatActivity {
     SearchView mSearchView;
     String mSearchText = "0";
     CardView mCardView;
+    CoordinatorLayout mCoordinaterLayout;
+    ProgressDialog progressDialog;
     private String mCustomer, mDate, mProduct, mRSP, mStock, mWSP, mCounter, mCreatedBy, mCreatedOn, mUpdatedBy, mUpdatedOn, mRecordId, mRemarks, mRepresentative;
 
     @Override
@@ -46,6 +52,7 @@ public class ViewBrandPriceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_brand_price);
         initializeViews();
+        progressDialog = new ProgressDialog(this);
         mBrandPriceArrayList = new ArrayList<>();
         queue = Volley.newRequestQueue(this);
         initializeSearch();
@@ -84,6 +91,7 @@ public class ViewBrandPriceActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.recyclerView);
         mSwipeRefresh = findViewById(R.id.swipeRefreshLayout);
         mSearchView = findViewById(R.id.searchView);
+        mCoordinaterLayout = findViewById(R.id.coordinator);
 
     }
 
@@ -93,7 +101,7 @@ public class ViewBrandPriceActivity extends AppCompatActivity {
     }
 
     private void readData() {
-
+        showProgress();
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 DATABASE_URL + URL_DISPLAY_MARKET, null, new Response.Listener<JSONObject>() {
@@ -101,6 +109,7 @@ public class ViewBrandPriceActivity extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
                 Log.i("lol", "onResponse:  " + response);
+                progressDialog.dismiss();
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
                     for (int i = 0; i < 50; i++) {
@@ -156,6 +165,28 @@ public class ViewBrandPriceActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showProgress() {
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                progressDialog.dismiss();
+                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        readData();
+                    }
+                });
+                snackbar.show();
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, 20000);
+
     }
 
 }

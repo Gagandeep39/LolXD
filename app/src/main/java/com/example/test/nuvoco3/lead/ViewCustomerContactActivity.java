@@ -1,6 +1,10 @@
 package com.example.test.nuvoco3.lead;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -35,6 +39,8 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
     SearchView mSearchView;
     String mSearchText = "0";
     RecyclerView mRecyclerView;
+    CoordinatorLayout mCoordinaterLayout;
+    ProgressDialog progressDialog;
     String mContactId, mCustomerId, mCustomerName, mContactName, mContactPhone, mContactEmail, mContactDOB, mContactDOA, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy;
 
     @Override
@@ -42,6 +48,7 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_customer_contact);
         initializeViews();
+        progressDialog = new ProgressDialog(this);
         populateActivity();
 
 
@@ -79,7 +86,7 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
 
     private void readData() {
 
-
+        showProgress();
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 DATABASE_URL + "/dispCon/0", null, new Response.Listener<JSONObject>() {
 
@@ -87,6 +94,8 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
             public void onResponse(JSONObject response) {
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
+
+                    progressDialog.dismiss();
                     for (int i = 0; i < 20; i++) {
 
                         JSONObject object = jsonArray.getJSONObject(i);
@@ -113,6 +122,7 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
 
                     }
 
+
                 } catch (JSONException e1) {
                     e1.printStackTrace();
                     e1.printStackTrace();
@@ -136,6 +146,7 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
     private void initializeViews() {
         mSearchView = findViewById(R.id.searchView);
         mRecyclerView = findViewById(R.id.recyclerView);
+        mCoordinaterLayout = findViewById(R.id.coordinator);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -156,5 +167,31 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
         mSearchView.setIconified(false);
     }
 
+    private void showProgress() {
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                progressDialog.dismiss();
+                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        readData();
+                    }
+                });
+                snackbar.show();
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, 20000);
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }

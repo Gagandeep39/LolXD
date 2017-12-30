@@ -23,7 +23,6 @@ import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -31,6 +30,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.test.nuvoco3.CustomerHelper;
 import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.signup.ObjectSerializer;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
@@ -51,6 +51,15 @@ import java.util.Map;
 import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 
 public class InsertComplaintActivity extends AppCompatActivity {
+
+
+    ArrayList<String> mTestArrayList;
+
+
+
+
+
+
     private static final String TAG = "InsertComplaints Activity";
     private static final String URL_INSERT_COMPLAINT = "/insertComplaint";
     String mDate, mCustomerId, mCustomerName, mComplaintType, mComplaintDetails, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy;
@@ -69,6 +78,9 @@ public class InsertComplaintActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert_complaint);
+
+        mTestArrayList = new ArrayList<>();
+
         initializeViews();
         progressDialog = new ProgressDialog(this);
         mCustomerList = new ArrayList<>();
@@ -182,7 +194,7 @@ public class InsertComplaintActivity extends AppCompatActivity {
              * Passing some request headers
              * */
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json; charset=utf-8");
                 return headers;
@@ -199,7 +211,9 @@ public class InsertComplaintActivity extends AppCompatActivity {
 
 
     private void populateSpinners() {
-        ArrayAdapter<String> mCustomerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mCustomerList);
+        CustomerHelper helper = new CustomerHelper(this);
+        mTestArrayList = helper.getCustomerList();
+        ArrayAdapter<String> mCustomerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mTestArrayList);
         ArrayAdapter<String> mTypeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mTypeArray);
         mSearchCustomer.setAdapter(mCustomerAdapter);
         mSearchType.setAdapter(mTypeAdapter);
@@ -312,6 +326,27 @@ public class InsertComplaintActivity extends AppCompatActivity {
     }
 
     public void populateCustomers() {
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                progressDialog.dismiss();
+                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        populateCustomers();
+                    }
+                });
+                snackbar.show();
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, 20000);
+
+
+        Map<String, String> postParam = new HashMap<>();
 
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
@@ -327,6 +362,7 @@ public class InsertComplaintActivity extends AppCompatActivity {
                         mIdList.add(object.getString("record_id"));   //primary key
                         mCustomerList.add(object.getString("name"));
                     }
+                    progressDialog.dismiss();
 
 
                 } catch (JSONException e1) {

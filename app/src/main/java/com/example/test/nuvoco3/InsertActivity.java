@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -48,7 +47,7 @@ public class InsertActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert);
         initializeViews();
-        Volley.newRequestQueue(this);
+        queue = Volley.newRequestQueue(this);
 
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -86,14 +85,25 @@ public class InsertActivity extends AppCompatActivity {
         Map<String, String> postParam = new HashMap<>();
 
 //
-        postParam.put("2", mType);
-        postParam.put("3", mCategory);
-        postParam.put("4", mName);
-        postParam.put("5", mStatus);
-        postParam.put("6", mCreatedOn);
-        postParam.put("7", mCreatedBy);
-        postParam.put("8", mUpdatedOn);
-        postParam.put("8", mUpdatedBy);
+//        postParam.put("2", mType);
+//        postParam.put("3", mCategory);
+//        postParam.put("4", mName);
+//        postParam.put("5", mStatus);
+//        postParam.put("6", mCreatedOn);
+//        postParam.put("7", mCreatedBy);
+//        postParam.put("8", mUpdatedOn);
+//        postParam.put("9", mUpdatedBy);
+
+//
+        postParam.put("2", "Category");
+        postParam.put("3", "CAT");
+        postParam.put("4", "Dealer");
+        postParam.put("5", "1");
+        postParam.put("6", "2017-12-12");
+        postParam.put("7", "101");
+        postParam.put("8", "2017-12-12");
+        postParam.put("9", "101");
+
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, DATABASE_URL + URL_INSERT_PRODUCT, new JSONObject(postParam),
                 new Response.Listener<JSONObject>() {
@@ -125,7 +135,7 @@ public class InsertActivity extends AppCompatActivity {
              * Passing some request headers
              * */
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json; charset=utf-8");
                 return headers;

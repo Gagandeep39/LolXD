@@ -19,7 +19,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -52,7 +51,6 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
     TextInputEditText mEditTextRepresentative, mEditTextCounter, mEditTextMSP, mEditTextPrice;
     TextInputEditText mEditTextMarketDetails, mEditTextDemands;
     SearchableSpinner mSearchCustomer;
-    String mCustomerArray[] = {"Customer 1", "Customer 2", "Customer 3"};
     RequestQueue queue;
     ArrayList<String> mCustomerList, mIdList;
     CoordinatorLayout mCoordinaterLayout;
@@ -112,26 +110,9 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
             sendDataToServer();
     }
 
+    //Saves Data to Server
     private void sendDataToServer() {
-        progressDialog.setMessage("Please Wait...");
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                progressDialog.dismiss();
-                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        validateData();
-                    }
-                });
-                snackbar.show();
-            }
-        };
-        Handler handler = new Handler();
-        handler.postDelayed(runnable, 20000);
-
+        showValidationDialogue();
 
         Map<String, String> postParam = new HashMap<>();
 
@@ -180,7 +161,7 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
              * Passing some request headers
              * */
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json; charset=utf-8");
                 return headers;
@@ -195,6 +176,33 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
 
     }
 
+    //Shows Dialogue to Populate Customer
+
+
+    //Shows dialogue to Send Data to server
+    private void showValidationDialogue() {
+
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                progressDialog.dismiss();
+                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        validateData();
+                    }
+                });
+                snackbar.show();
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, 20000);
+    }
+
+    //Adds data to Spinner
     private void populateSpinner() {
         ArrayAdapter<String> mCustomerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mCustomerList);
         mSearchCustomer.setAdapter(mCustomerAdapter);
@@ -212,6 +220,7 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
         });
     }
 
+    //Get References for Views
     private void initializeViews() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -266,6 +275,24 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
 
 
     public void populateCustomers() {
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                progressDialog.dismiss();
+                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        populateCustomers();
+                    }
+                });
+                snackbar.show();
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, 20000);
         ArrayAdapter<String> mCustomerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mCustomerList);
 
         mCustomerList = new ArrayList<String>();
@@ -275,6 +302,8 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(JSONObject response) {
+
+                progressDialog.dismiss();
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
                     for (int i = 0; i < 50; i++) {
@@ -303,7 +332,6 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
         // Adding request to request queue
         queue.add(jsonObjReq);
     }
-
 
 
 }
