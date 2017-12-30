@@ -15,7 +15,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 
@@ -24,18 +24,23 @@ import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
  */
 
 public class CustomerHelper {
-    ArrayList<String> mCustomerArray;
-    RequestQueue queue;
-    private String mCustomer;
-    private Context mContext;
+    private HashMap<String, String> mCustomerArray;
+    private RequestQueue queue;
+    private String mCustomer, mId;
+
 
     public CustomerHelper(Context mContext) {
         this.mContext = mContext;
     }
 
-    public ArrayList<String> getCustomerList() {
+    private Context mContext;
+
+    //Makes an Array Based on This (Customer Name or ID)
+    private String mType;
+
+    public HashMap<String, String> getCustomerList() {
         queue = Volley.newRequestQueue(mContext);
-        mCustomerArray = new ArrayList<>();
+        mCustomerArray = new HashMap<>();
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 DATABASE_URL + "/dispCust", null, new Response.Listener<JSONObject>() {
@@ -49,7 +54,8 @@ public class CustomerHelper {
 
                         JSONObject object = jsonArray.getJSONObject(i);
                         mCustomer = object.getString("name");
-                        mCustomerArray.add(mCustomer);
+                        mId = object.getString("record_id");
+                        mCustomerArray.put(mId, mCustomer);
                     }
 
                 } catch (JSONException e1) {

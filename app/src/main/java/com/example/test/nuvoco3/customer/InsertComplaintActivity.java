@@ -30,7 +30,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.test.nuvoco3.CustomerHelper;
+import com.example.test.nuvoco3.MasterHelper;
 import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.signup.ObjectSerializer;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
@@ -53,43 +53,34 @@ import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 public class InsertComplaintActivity extends AppCompatActivity {
 
 
-    ArrayList<String> mTestArrayList;
-
-
-
-
-
-
-    private static final String TAG = "InsertComplaints Activity";
+    private static final String TAG = "InsertComplaintActivity";
     private static final String URL_INSERT_COMPLAINT = "/insertComplaint";
     String mDate, mCustomerId, mCustomerName, mComplaintType, mComplaintDetails, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy;
     SearchableSpinner mSearchType, mSearchCustomer;
     TextInputEditText mEditTextDate, mEditTextCustomerId, mEditTextComplaintDetails;
     int mYear, mMonth, mDay;
     ImageView imageViewCalendar;
-    ArrayList<String> mCustomerList, mIdList;
     RequestQueue queue;
     CoordinatorLayout mCoordinaterLayout;
     ProgressDialog progressDialog;
     FloatingActionButton fab;
-    String mCustomerArray[] = {"Customer 1", "Customer 2", "Customer 3"};
-    String mTypeArray[] = {"Type 1", "Type 2"};
+
+
+    MasterHelper mTypeHelper;
+    //Arrray list returned from Helper class
+    ArrayList<String> mTypeArrayList;
+    ArrayList<String> mCustomerList, mIdList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert_complaint);
 
-        mTestArrayList = new ArrayList<>();
 
         initializeViews();
-        progressDialog = new ProgressDialog(this);
-        mCustomerList = new ArrayList<>();
-        mIdList = new ArrayList<>();
-        queue = Volley.newRequestQueue(this);
+        initializeVariables();
         populateCustomers();
         populateSpinners();
-
-
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,6 +89,7 @@ public class InsertComplaintActivity extends AppCompatActivity {
         });
 
     }
+
 
     private void validateData() {
         mDate = mEditTextDate.getText().toString();
@@ -211,10 +203,10 @@ public class InsertComplaintActivity extends AppCompatActivity {
 
 
     private void populateSpinners() {
-        CustomerHelper helper = new CustomerHelper(this);
-        mTestArrayList = helper.getCustomerList();
-        ArrayAdapter<String> mCustomerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mTestArrayList);
-        ArrayAdapter<String> mTypeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mTypeArray);
+        ArrayAdapter<String> mCustomerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mCustomerList);
+        ArrayAdapter<String> mTypeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mTypeArrayList);
+
+
         mSearchCustomer.setAdapter(mCustomerAdapter);
         mSearchType.setAdapter(mTypeAdapter);
         mCustomerAdapter.notifyDataSetChanged();
@@ -234,7 +226,7 @@ public class InsertComplaintActivity extends AppCompatActivity {
         mSearchType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mComplaintType = mTypeArray[position];
+                mComplaintType = mTypeArrayList.get(position);
             }
 
             @Override
@@ -246,23 +238,6 @@ public class InsertComplaintActivity extends AppCompatActivity {
 
     }
 
-    private void initializeViews() {
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        fab = findViewById(R.id.fab);
-        imageViewCalendar = findViewById(R.id.imageViewCalendar);
-        mEditTextDate = findViewById(R.id.editTextDate);
-        mEditTextCustomerId = findViewById(R.id.textInputEditCustomerId);
-        mEditTextComplaintDetails = findViewById(R.id.editTextDetails);
-        mCoordinaterLayout = findViewById(R.id.coordinator);
-        mSearchCustomer = findViewById(R.id.searchCustomer);
-        mSearchType = findViewById(R.id.searchType);
-        mEditTextDate.setKeyListener(null);
-        mEditTextDate.setText(getDateTime());
-    }
 
     public void datePickerFunction(View v) {
         final View buttonClicked = v;
@@ -384,5 +359,33 @@ public class InsertComplaintActivity extends AppCompatActivity {
         queue.add(jsonObjReq);
     }
 
+    private void initializeVariables() {
+        progressDialog = new ProgressDialog(this);
+        queue = Volley.newRequestQueue(this);
+        //Initializing Helper class and its Array list
+        mTypeHelper = new MasterHelper(this, "ComplaintType");
+        mTypeArrayList = new ArrayList<>();
+        //Storing return Value in Array List
+        mTypeArrayList = mTypeHelper.getRecordName();
+
+    }
+
+    private void initializeViews() {
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        fab = findViewById(R.id.fab);
+        imageViewCalendar = findViewById(R.id.imageViewCalendar);
+        mEditTextDate = findViewById(R.id.editTextDate);
+        mEditTextCustomerId = findViewById(R.id.textInputEditCustomerId);
+        mEditTextComplaintDetails = findViewById(R.id.editTextDetails);
+        mCoordinaterLayout = findViewById(R.id.coordinator);
+        mSearchCustomer = findViewById(R.id.searchCustomer);
+        mSearchType = findViewById(R.id.searchType);
+        mEditTextDate.setKeyListener(null);
+        mEditTextDate.setText(getDateTime());
+    }
 
 }

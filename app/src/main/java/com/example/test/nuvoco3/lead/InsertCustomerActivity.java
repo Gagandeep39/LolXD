@@ -28,6 +28,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.test.nuvoco3.MasterHelper;
 import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.signup.ObjectSerializer;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
@@ -46,30 +47,38 @@ import java.util.Map;
 import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 
 public class InsertCustomerActivity extends AppCompatActivity {
-    public static final String TAG = "Insert Customer Activity";
+    public static final String TAG = "InsertCustomer Activity";
     String categoryPosition = null, areaPosition = null, districtPosition = null, statePosition = null;
     SearchableSpinner searchableSpinnerCategory, searchableSpinnerDistrict, searchableSpinnerArea, searchableSpinnerState, searchableSpinnerType;
     FloatingActionButton floatingActionButtonAddData;
     TextInputEditText editTextName, editTextAddress, editTextPhone, editTextEmail;
     String mName, mType, mCategory, mAddress, mArea, mDistrict, mState, mPhone, mEmail, mStatus, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy;
     RequestQueue queue;
-    String category[] = {"Dealer", "Subdealer", "Individual"};
     String area[] = {"Area 1", "Area 2", "Area 3", "Area 4"};
     String district[] = {"Mumbai", "Pune", "Aurangabad", "Nagpur"};
     String state[] = {"Maharashtra", "Gujrat", "Rajasthan", "Madhya Pradesh", "Chattissgarh"};
-    String type[] = {"Old", "Prospect"};
     CoordinatorLayout mCoordinaterLayout;
     ProgressDialog progressDialog;
+    MasterHelper mHelperCategory, mHelperType;
+    ArrayList<String> mCategoryArray, mCustomerTypeArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert_customer);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        mCategoryArray = new ArrayList<>();
+        mCustomerTypeArray = new ArrayList<>();
         progressDialog = new ProgressDialog(this);
+
+
+        mHelperCategory = new MasterHelper(this, "Category");
+        mHelperType = new MasterHelper(this, "CustomerType");
+
+
+        mCategoryArray = mHelperCategory.getRecordName();
+        mCustomerTypeArray = mHelperType.getRecordName();
+
+
         initializeViews();
         queue = Volley.newRequestQueue(this);
         floatingActionButtonAddData.setOnClickListener(new View.OnClickListener() {
@@ -83,28 +92,16 @@ public class InsertCustomerActivity extends AppCompatActivity {
 
     //  Populates the spinners
     private void initializeSpinners() {
-        ArrayAdapter<String> categoryArrayAdapter = new ArrayAdapter<String>(InsertCustomerActivity.this, android.R.layout.simple_dropdown_item_1line, category);
         ArrayAdapter<String> areaArrayAdapter = new ArrayAdapter<String>(InsertCustomerActivity.this, android.R.layout.simple_dropdown_item_1line, area);
         ArrayAdapter<String> districtArrayAdapter = new ArrayAdapter<String>(InsertCustomerActivity.this, android.R.layout.simple_dropdown_item_1line, district);
         ArrayAdapter<String> stateArrayAdapter = new ArrayAdapter<String>(InsertCustomerActivity.this, android.R.layout.simple_dropdown_item_1line, state);
-        ArrayAdapter<String> typeArrayAdapter = new ArrayAdapter<>(InsertCustomerActivity.this, android.R.layout.simple_list_item_1, type);
-        searchableSpinnerCategory.setPositiveButton("Ok");
-        searchableSpinnerCategory.setTitle("Select Item");
-        searchableSpinnerCategory.setAdapter(categoryArrayAdapter);
-        searchableSpinnerCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mCategory = category[position];
 
-            }
+        // Showing from Master Table
+        ArrayAdapter<String> categoryArrayAdapter = new ArrayAdapter<String>(InsertCustomerActivity.this, android.R.layout.simple_dropdown_item_1line, mCategoryArray);
+        ArrayAdapter<String> typeArrayAdapter = new ArrayAdapter<>(InsertCustomerActivity.this, android.R.layout.simple_list_item_1, mCustomerTypeArray);
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                mCategory = "default";
-            }
-        });
-        searchableSpinnerArea.setPositiveButton("Ok");
-        searchableSpinnerArea.setTitle("Select Item");
+
+        //Area Spinner
         searchableSpinnerArea.setAdapter(areaArrayAdapter);
         searchableSpinnerArea.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -118,8 +115,8 @@ public class InsertCustomerActivity extends AppCompatActivity {
                 mArea = "default";
             }
         });
-        searchableSpinnerDistrict.setPositiveButton("Ok");
-        searchableSpinnerDistrict.setTitle("Select Item");
+
+        //District Spinner
         searchableSpinnerDistrict.setAdapter(districtArrayAdapter);
         searchableSpinnerDistrict.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -133,8 +130,8 @@ public class InsertCustomerActivity extends AppCompatActivity {
                 mDistrict = "default";
             }
         });
-        searchableSpinnerState.setPositiveButton("Ok");
-        searchableSpinnerState.setTitle("Select Item");
+
+        //State Spinner
         searchableSpinnerState.setAdapter(stateArrayAdapter);
         searchableSpinnerState.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -148,11 +145,27 @@ public class InsertCustomerActivity extends AppCompatActivity {
                 mState = "default";
             }
         });
+
+
+        //Category Spinner
+        searchableSpinnerCategory.setAdapter(categoryArrayAdapter);
+        searchableSpinnerCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mCategory = mCategoryArray.get(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                mCategory = "default";
+            }
+        });
+        //Type Spinner
         searchableSpinnerType.setAdapter(typeArrayAdapter);
         searchableSpinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mType = type[position];
+                mType = mCustomerTypeArray.get(position);
             }
 
             @Override
@@ -176,6 +189,10 @@ public class InsertCustomerActivity extends AppCompatActivity {
         searchableSpinnerState = findViewById(R.id.searchState);
         searchableSpinnerType = findViewById(R.id.searchType);
         mCoordinaterLayout = findViewById(R.id.coordinator);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
     }
 

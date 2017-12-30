@@ -40,7 +40,7 @@ public class MasterHelper {
 
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
-                DATABASE_URL + URL_VIEW_RECORD_MASTER, null, new Response.Listener<JSONObject>() {
+                DATABASE_URL + URL_VIEW_RECORD_MASTER + "/" + mType, null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
@@ -48,13 +48,13 @@ public class MasterHelper {
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
                     for (int i = 0; i < 50; i++) {
-                        if (response.getString("r_type").equals(mType)) {
+//                        if (response.getString("r_type").equals(mType)) {
 
                             JSONObject object = jsonArray.getJSONObject(i);
                             mRecordName = object.getString("r_name");
                             mRecordNameList.add(mRecordName);
 
-                        }
+//                        }
                     }
 
                 } catch (JSONException e1) {

@@ -58,25 +58,19 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
     Bundle bundle;      //Data from another activity
     String mContactName, mCustomerName, mCreatedBy, mCreatedOn, mUpdatedBy, mUpdatedOn, mContactEmail, mContactDOB, mContactDOA, mContactPhone, mCustomerId;  //Customer=>Brand, CustomerContact=>Human
     RequestQueue queue;
-    FloatingActionButton mInsertData;
     SearchableSpinner mSearchCustomer;
     LinearLayout mLinearLayout;
     ArrayList<String> mCustomerList, mIdList;
     CoordinatorLayout mCoordinaterLayout;
     ProgressDialog progressDialog;
     FloatingActionButton fab;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert_customer_contact);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
         getReferences();
-
         queue = Volley.newRequestQueue(this);
+        populateCustomers();
         populatingSpinner();
         populatingDataFields();
         fab.setOnClickListener(new View.OnClickListener() {
@@ -88,7 +82,6 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
     }
 
     private void populatingSpinner() {
-        populateCustomers();
         ArrayAdapter<String> mCustomerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mCustomerList);
 
         mSearchCustomer.setAdapter(mCustomerAdapter);
@@ -115,10 +108,6 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
             mCustomerName = bundle.getString("customerName");
 
             editTextCustomerName.setText(mCustomerName);
-//            editTextCustomerId.setText(mCustomerId);
-
-
-//            editTextCustomerId.setKeyListener(null);
             editTextCustomerName.setKeyListener(null);
             editTextCustomerName.getBackground().mutate().setColorFilter(getResources().getColor(R.color.light_grey), PorterDuff.Mode.SRC_ATOP);
 
@@ -133,12 +122,10 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
     private void insertDataInFields() {
 
         mContactName = editTextContactName.getText().toString();
-//        mCustomerName = editTextCustomerName.getText().toString();
         mContactPhone = editTextContactPhone.getText().toString();
         mContactEmail = editTextContactEmail.getText().toString();
         mContactDOB = textViewDOB.getText().toString();
         mContactDOA = textViewDOA.getText().toString();
-//        mCustomerId = editTextCustomerId.getText().toString();
         if (TextUtils.isEmpty(mContactName)) {
             editTextContactName.setError("Enter Contact's Name");
         }
@@ -165,20 +152,23 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
         editTextCustomerName = findViewById(R.id.textInputEditCustomerName);
         editTextContactPhone = findViewById(R.id.textInputEditContactPhone);
         editTextContactEmail = findViewById(R.id.textInputEditContactEmail);
-//        editTextCustomerId = findViewById(R.id.textInputEditCustomerId);
         fab = findViewById(R.id.fabAddData);
         textViewDOA = findViewById(R.id.textViewSelectDOA);
         textViewDOB = findViewById(R.id.textViewSelectDOB);
         mSearchCustomer = findViewById(R.id.searchCustomer);
         mLinearLayout = findViewById(R.id.linearLayout);
         mCoordinaterLayout = findViewById(R.id.coordinator);
+
+        //Set Up Toolbar and Back Button
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         progressDialog = new ProgressDialog(this);
 
         if (getIntent().getStringExtra("needSearch") != null && getIntent().getStringExtra("needSearch").equals("Need")) {
             editTextCustomerName.setVisibility(View.GONE);
             mLinearLayout.setVisibility(View.VISIBLE);
-        } else {
-
         }
     }
 
@@ -225,24 +215,7 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
 
     // Stores data in server
     private void storeData() {
-        progressDialog.setMessage("Please Wait...");
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                progressDialog.dismiss();
-                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        insertData();
-                    }
-                });
-                snackbar.show();
-            }
-        };
-        Handler handler = new Handler();
-        handler.postDelayed(runnable, 20000);
+        showProgress();
 
 
 
@@ -306,6 +279,27 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
 
     }
 
+    private void showProgress() {
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                progressDialog.dismiss();
+                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        insertData();
+                    }
+                });
+                snackbar.show();
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, 20000);
+    }
+
 
     private String getUserId() {
         ArrayList<String> newArralist = new ArrayList<>();
@@ -333,8 +327,26 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
     public void populateCustomers() {
-        ArrayAdapter<String> mCustomerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mCustomerList);
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                progressDialog.dismiss();
+                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        populateCustomers();
+                    }
+                });
+                snackbar.show();
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, 20000);
 
         mCustomerList = new ArrayList<String>();
         mIdList = new ArrayList<>();
@@ -343,6 +355,8 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(JSONObject response) {
+
+                progressDialog.dismiss();
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
                     for (int i = 0; i < 50; i++) {

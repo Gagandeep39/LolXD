@@ -27,6 +27,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.test.nuvoco3.MasterHelper;
 import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.signup.ObjectSerializer;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
@@ -58,18 +59,14 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
     ArrayList<String> mBrandArrayList, mProductArrayList;
     CoordinatorLayout mCoordinaterLayout;
     ProgressDialog progressDialog;
+    MasterHelper mBrandHelper, mProductHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_brand_price);
         initializeViews();
-        // Initialize Queue
-        progressDialog = new ProgressDialog(this);
-        mBrandArrayList = new ArrayList<>();
-        mProductArrayList = new ArrayList<>();
-
-        queue = Volley.newRequestQueue(this);
+        initializeVariables();
         populateSpinners();
 
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -79,6 +76,21 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
                 validateDate();
             }
         });
+
+    }
+
+    private void initializeVariables() {
+        queue = Volley.newRequestQueue(this);
+        progressDialog = new ProgressDialog(this);
+        mBrandArrayList = new ArrayList<>();
+        mProductArrayList = new ArrayList<>();
+
+        mBrandHelper = new MasterHelper(this, "Brand");
+        mProductHelper = new MasterHelper(this, "Product");
+
+        mBrandArrayList = mBrandHelper.getRecordName();
+        mProductArrayList = mProductHelper.getRecordName();
+
 
     }
 
@@ -206,14 +218,15 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
     // Populates Spinner with Data and allows Selection of Items
     private void populateSpinners() {
 
-        ArrayAdapter<String> mProductAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mProductArray);
-        ArrayAdapter<String> mBrandAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mBrandArray);
+        ArrayAdapter<String> mProductAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mProductArrayList);
+        ArrayAdapter<String> mBrandAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mBrandArrayList);
+        progressDialog.dismiss();
         mSearchProduct.setAdapter(mProductAdapter);
         mSearchBrand.setAdapter(mBrandAdapter);
         mSearchBrand.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mBrand = mBrandArray[position];
+                mBrand = mBrandArrayList.get(position);
             }
 
             @Override
@@ -225,7 +238,7 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
         mSearchProduct.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mProduct = mProductArray[position];
+                mProduct = mProductArrayList.get(position);
             }
 
             @Override

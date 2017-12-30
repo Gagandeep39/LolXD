@@ -84,25 +84,16 @@ public class InsertActivity extends AppCompatActivity {
     private void sendDataToServer() {
         Map<String, String> postParam = new HashMap<>();
 
-//
-//        postParam.put("2", mType);
-//        postParam.put("3", mCategory);
-//        postParam.put("4", mName);
-//        postParam.put("5", mStatus);
-//        postParam.put("6", mCreatedOn);
-//        postParam.put("7", mCreatedBy);
-//        postParam.put("8", mUpdatedOn);
-//        postParam.put("9", mUpdatedBy);
+        postParam.put("1", "101");
+        postParam.put("2", mType);
+        postParam.put("3", mCategory);
+        postParam.put("4", mName);
+        postParam.put("5", mStatus);
+        postParam.put("6", mCreatedOn);
+        postParam.put("7", mCreatedBy);
+        postParam.put("8", mUpdatedOn);
+        postParam.put("9", mUpdatedBy);
 
-//
-        postParam.put("2", "Category");
-        postParam.put("3", "CAT");
-        postParam.put("4", "Dealer");
-        postParam.put("5", "1");
-        postParam.put("6", "2017-12-12");
-        postParam.put("7", "101");
-        postParam.put("8", "2017-12-12");
-        postParam.put("9", "101");
 
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, DATABASE_URL + URL_INSERT_PRODUCT, new JSONObject(postParam),

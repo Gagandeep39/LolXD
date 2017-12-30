@@ -30,6 +30,7 @@ import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.signup.ObjectSerializer;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -54,17 +55,20 @@ public class InsertCampaignActivity extends AppCompatActivity {
     RequestQueue queue;
     CoordinatorLayout mCoordinaterLayout;
     ProgressDialog progressDialog;
+    FloatingActionButton fab;
+    ArrayAdapter mCustomerAdapter, mContactAdapter;
+
+    //Spinners
+    ArrayList<String> mContactList, mCustomerList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert_campaign);
         initializeViews();
-        progressDialog = new ProgressDialog(this);
-        queue = Volley.newRequestQueue(this);
+        initializeVariables();
         populateSpinners();
 
-        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -73,16 +77,24 @@ public class InsertCampaignActivity extends AppCompatActivity {
         });
     }
 
+    private void initializeVariables() {
+
+        progressDialog = new ProgressDialog(this);
+        queue = Volley.newRequestQueue(this);
+        mCustomerList = new ArrayList<>();
+        mContactList = new ArrayList<>();
+    }
+
     private void populateSpinners() {
-        ArrayAdapter mCustomerAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mCustomerArray);
-        final ArrayAdapter mContactAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mContactArray);
+        mCustomerAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mCustomerList);
+        mContactAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mContactList);
         mSearchCompany.setAdapter(mCustomerAdapter);
         mSearchContact.setAdapter(mContactAdapter);
         mSearchCompany.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mCompany = mCustomerArray[position];
-                mSearchCompany.setPadding(0, 0, 0, 0);
+                mCompany = mCustomerList.get(position);
+                populateContacts();
             }
 
             @Override
@@ -93,7 +105,7 @@ public class InsertCampaignActivity extends AppCompatActivity {
         mSearchContact.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mCounter = mContactArray[position];
+                mCounter = mContactList.get(position);
             }
 
             @Override
@@ -102,6 +114,129 @@ public class InsertCampaignActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    public void populateCustomers() {
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                progressDialog.dismiss();
+                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        populateCustomers();
+                    }
+                });
+                snackbar.show();
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, 20000);
+
+
+        Map<String, String> postParam = new HashMap<>();
+
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
+                DATABASE_URL + "/dispCust", null, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONArray jsonArray = response.getJSONArray("message");
+                    for (int i = 0; i < 50; i++) {
+
+                        JSONObject object = jsonArray.getJSONObject(i);
+                        if (object.getString("c_name").equals(mCompany)) {
+
+                            mCustomerList.add(object.getString("contactPerson"));
+                        }
+                    }
+                    progressDialog.dismiss();
+                    mContactAdapter.notifyDataSetChanged();
+
+
+                } catch (JSONException e1) {
+                    e1.printStackTrace();
+                    e1.printStackTrace();
+                }
+            }
+
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("lol", "Error with Internet : " + error.getMessage());
+                // hide the progress dialog
+            }
+        });
+
+        // Adding request to request queue
+        queue.add(jsonObjReq);
+    }
+
+
+    public void populateContacts() {
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                progressDialog.dismiss();
+                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        populateCustomers();
+                    }
+                });
+                snackbar.show();
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, 20000);
+
+
+        Map<String, String> postParam = new HashMap<>();
+
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
+                DATABASE_URL + "/dispCon/0", null, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONArray jsonArray = response.getJSONArray("message");
+                    for (int i = 0; i < 50; i++) {
+
+                        JSONObject object = jsonArray.getJSONObject(i);
+                        mCustomerList.add(object.getString("name"));
+                    }
+                    progressDialog.dismiss();
+
+
+                } catch (JSONException e1) {
+                    e1.printStackTrace();
+                    e1.printStackTrace();
+                }
+            }
+
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("lol", "Error with Internet : " + error.getMessage());
+                // hide the progress dialog
+            }
+        });
+
+        // Adding request to request queue
+        queue.add(jsonObjReq);
+    }
+
 
     private void validateData() {
         mRepresentative = mEditTextRepresentative.getText().toString();
@@ -217,6 +352,7 @@ public class InsertCampaignActivity extends AppCompatActivity {
         mSearchCompany = findViewById(R.id.searchCompany);
         mCoordinaterLayout = findViewById(R.id.coordinator);
         mSearchContact = findViewById(R.id.searchContact);
+        fab = findViewById(R.id.fab);
         mEditTextRepresentative.setText(getUserId());
         mEditTextRepresentative.setKeyListener(null);
 
@@ -257,5 +393,8 @@ public class InsertCampaignActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
+
 
 }
