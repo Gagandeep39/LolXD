@@ -44,9 +44,9 @@ public class InsertActivity extends AppCompatActivity {
     FloatingActionButton fab;
     String mCategory, mType, mStatus, mName, mUpdatedOn, mCreatedOn, mCreatedBy, mUpdatedBy;
     RequestQueue queue;
-    SearchableSpinner mTypeSearch;
+    SearchableSpinner mTypeSearch, mStatusSearch;
     String mTypeArray[] = {"District", "Area", "State", "CustomerType", "Category", "ComplaintType", "Brand", "Product"};
-
+    String mStatusArray[] = {"True", "False"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +78,26 @@ public class InsertActivity extends AppCompatActivity {
 
             }
         });
+
+
+        ArrayAdapter mStatusAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mStatusArray);
+        mStatusSearch.setAdapter(mStatusAdapter);
+        mStatusSearch.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (i == 0)
+                    mStatus = "0";
+                else if (i == 1)
+                    mStatus = "1";
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                mStatus = getString(R.string.default_name);
+
+            }
+        });
     }
 
 
@@ -97,8 +117,10 @@ public class InsertActivity extends AppCompatActivity {
             mEditTextName.setError("name field Cannot Be Empty");
         if (TextUtils.equals(mType, getString(R.string.default_name)))
             Toast.makeText(this, "Select Type", Toast.LENGTH_SHORT).show();
+        if (TextUtils.equals(mStatus, getString(R.string.default_name)))
+            Toast.makeText(this, "Select Status", Toast.LENGTH_SHORT).show();
 
-        if (!TextUtils.isEmpty(mCategory) && !TextUtils.isEmpty(mName) && !TextUtils.isEmpty(mType)) {
+        if (!TextUtils.isEmpty(mCategory) && !TextUtils.isEmpty(mName) && !TextUtils.isEmpty(mType) && !TextUtils.equals(mStatus, getString(R.string.default_name))) {
             sendDataToServer();
         }
     }
@@ -170,9 +192,10 @@ public class InsertActivity extends AppCompatActivity {
         fab = findViewById(R.id.fab);
         mEditTextCategory = findViewById(R.id.textInputEditCategory);
         mEditTextName = findViewById(R.id.textInputEditName);
-        mEditTextStatus = findViewById(R.id.textInputEditStatus);
+//        mEditTextStatus = findViewById(R.id.textInputEditStatus);
 //        mEditTextType = findViewById(R.id.textInputEditType);
         mTypeSearch = findViewById(R.id.searchType);
+        mStatusSearch = findViewById(R.id.searchStatus);
         queue = Volley.newRequestQueue(this);
     }
 

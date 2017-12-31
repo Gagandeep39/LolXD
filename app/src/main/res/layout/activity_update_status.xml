@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:id="@+id/coordinator"
     tools:context=".customer.UpdateStatusActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -25,6 +26,7 @@
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
+                app:title="Update Status"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
@@ -40,8 +42,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
-        app:layout_anchor="@id/app_bar"
-        app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        android:layout_gravity="end|bottom"
+        app:srcCompat="@drawable/ic_done_black_24dp" />
 
 </android.support.design.widget.CoordinatorLayout>

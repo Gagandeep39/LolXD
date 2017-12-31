@@ -47,7 +47,7 @@ public class MasterHelper {
                 Log.i("lol", "onResponse:  " + response);
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
-                    for (int i = 0; i < 50; i++) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
 //                        if (response.getString("r_type").equals(mType)) {
 
                             JSONObject object = jsonArray.getJSONObject(i);

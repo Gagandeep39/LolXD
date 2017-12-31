@@ -106,7 +106,7 @@
             android:label="@string/title_activity_insert"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".ComplaintStatusActivity"
+            android:name=".customer.ComplaintStatusActivity"
             android:label="@string/title_activity_complaint_status"
             android:theme="@style/AppTheme" />
         <activity

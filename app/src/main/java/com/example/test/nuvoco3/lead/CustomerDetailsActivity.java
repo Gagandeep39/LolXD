@@ -9,6 +9,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.test.nuvoco3.R;
+import com.example.test.nuvoco3.customer.InsertComplaintActivity;
+import com.example.test.nuvoco3.market.InsertBrandPriceActivity;
+import com.example.test.nuvoco3.market.InsertCampaignActivity;
 
 import static com.example.test.nuvoco3.lead.ViewCustomerActivity.mCustomerArrayList;
 
@@ -35,6 +38,28 @@ public class CustomerDetailsActivity extends AppCompatActivity {
                 intent.putExtra("customerId", mCustomerArrayList.get(position).getCustomerId());
                 intent.putExtra("customerName", mCustomerArrayList.get(position).getCustomerName());
                 startActivity(intent);
+            }
+        });
+
+
+        mNewComplaint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(CustomerDetailsActivity.this, InsertComplaintActivity.class).putExtra("CustomerName", mCustomerArrayList.get(position).getCustomerName()).putExtra("CustomerId", mCustomerArrayList.get(position).getCustomerId()));
+            }
+        });
+
+        mNewCampaign.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(CustomerDetailsActivity.this, InsertCampaignActivity.class).putExtra("CustomerDetails", "true").putExtra("CustomerName", mCustomerArrayList.get(position).getCustomerName()));
+            }
+        });
+
+        mNewPrice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(CustomerDetailsActivity.this, InsertBrandPriceActivity.class));
             }
         });
 

@@ -11,6 +11,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -21,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -57,7 +59,10 @@ public class InsertComplaintActivity extends AppCompatActivity {
     private static final String URL_INSERT_COMPLAINT = "/insertComplaint";
     String mDate, mCustomerId, mCustomerName, mComplaintType, mComplaintDetails, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy;
     SearchableSpinner mSearchType, mSearchCustomer;
-    TextInputEditText mEditTextDate, mEditTextCustomerId, mEditTextComplaintDetails;
+    TextInputEditText mEditTextDate, mEditTextCustomerId, mEditTextComplaintDetails, mEditTextCustomer;
+    TextInputLayout mEditTextLayout;
+    LinearLayout mSearchCustomerLayout;
+
     int mYear, mMonth, mDay;
     ImageView imageViewCalendar;
     RequestQueue queue;
@@ -361,6 +366,17 @@ public class InsertComplaintActivity extends AppCompatActivity {
     }
 
     private void initializeVariables() {
+        if (getIntent().getStringExtra("CustomerName") != null) {
+            mSearchCustomerLayout.setVisibility(View.GONE);
+            mEditTextLayout.setVisibility(View.VISIBLE);
+            mEditTextCustomer.setText(getIntent().getStringExtra("CustomerName"));
+            mEditTextCustomer.setKeyListener(null);
+            mEditTextComplaintDetails.requestFocus();
+
+            mCustomerName = getIntent().getStringExtra("CustomerName");
+            mCustomerId = getIntent().getStringExtra("CustomerId");
+        }
+
         progressDialog = new ProgressDialog(this);
         queue = Volley.newRequestQueue(this);
         //Initializing Helper class and its Array list
@@ -386,6 +402,9 @@ public class InsertComplaintActivity extends AppCompatActivity {
         mEditTextComplaintDetails = findViewById(R.id.editTextDetails);
         mCoordinaterLayout = findViewById(R.id.coordinator);
         mSearchCustomer = findViewById(R.id.searchCustomer);
+        mEditTextCustomer = findViewById(R.id.textInputEditName);
+        mEditTextLayout = findViewById(R.id.editTextLayoutName);
+        mSearchCustomerLayout = findViewById(R.id.searchCustomerLayout);
         mSearchType = findViewById(R.id.searchType);
         mEditTextDate.setKeyListener(null);
         mEditTextDate.setText(getDateTime());

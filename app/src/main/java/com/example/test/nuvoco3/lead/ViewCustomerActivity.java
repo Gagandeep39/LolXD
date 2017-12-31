@@ -49,10 +49,6 @@ public class ViewCustomerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_customer);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
         queue = Volley.newRequestQueue(this);
         progressDialog = new ProgressDialog(this);
         initializeViews();
@@ -97,6 +93,10 @@ public class ViewCustomerActivity extends AppCompatActivity {
 
     private void initializeViews() {
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         mRecyclerView = findViewById(R.id.recyclerView);
         mSwipeRefresh = findViewById(R.id.swipeRefreshLayout);
         mSearchView = findViewById(R.id.searchView);
@@ -114,14 +114,16 @@ public class ViewCustomerActivity extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
                 Log.i("lol", "onResponse:  " + response);
+
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
+                    if (mSearchText.equals("0"))
+                        size = 50;
+                    else
+                        size = jsonArray.length();
                     for (int i = 0; i < size; i++) {
 
-                        if (mSearchText.equals("0"))
-                            size = 50;
-                        else
-                            size = jsonArray.length();
+
 
 
                         JSONObject object = jsonArray.getJSONObject(i);
@@ -198,6 +200,7 @@ public class ViewCustomerActivity extends AppCompatActivity {
                 Snackbar snackbar = Snackbar.make(mCoordinatorLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        readData();
 
                     }
                 });

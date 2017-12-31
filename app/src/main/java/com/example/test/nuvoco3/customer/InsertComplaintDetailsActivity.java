@@ -57,7 +57,6 @@ public class InsertComplaintDetailsActivity extends AppCompatActivity {
     TextInputEditText mEditTextComplaintId, mEditTextDate, mEditTextRepresentative, mEditTextCustomerName, mEditTextCustomerId, mEditTextComplaintDetails, mEditTextComplaintRemark;
     FloatingActionButton fab;
     ImageView mImageViewCalendar;
-    String mStatusArray[] = {"In Progress", "Resolved"};
     RequestQueue queue;
     CoordinatorLayout mCoordinaterLayout;
     ProgressDialog progressDialog;
@@ -71,7 +70,6 @@ public class InsertComplaintDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_complaint_details);
-        showProgress();
         initializeViews();
         initializeVariables();
         populateSpinners();
@@ -88,10 +86,8 @@ public class InsertComplaintDetailsActivity extends AppCompatActivity {
         queue = Volley.newRequestQueue(this);
         progressDialog = new ProgressDialog(this);
 
-        mComplaintTypeHelper = new MasterHelper(this, "ComplaintType");
+        mComplaintTypeHelper = new MasterHelper(this, "ComplaintStatus");
         mComplaintTypeArray = mComplaintTypeHelper.getRecordName();
-
-        progressDialog.dismiss();
     }
 
     private void validateData() {
@@ -165,7 +161,7 @@ public class InsertComplaintDetailsActivity extends AppCompatActivity {
         postParam.put("11", mCreatedBy);
         postParam.put("12", mUpdatedOn);
         postParam.put("13", mUpdatedBy);
-        postParam.put("14", "2017-04-04");
+        postParam.put("14", "2017-01-01");
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, DATABASE_URL + URL_INSERT_COMPLAINT_DETAILS, new JSONObject(postParam),
                 new Response.Listener<JSONObject>() {
@@ -213,12 +209,12 @@ public class InsertComplaintDetailsActivity extends AppCompatActivity {
     }
 
     private void populateSpinners() {
-        ArrayAdapter mStatusAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mStatusArray);
+        ArrayAdapter mStatusAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mComplaintTypeArray);
         mSearchStatus.setAdapter(mStatusAdapter);
         mSearchStatus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mStatus = mStatusArray[position];
+                mStatus = mComplaintTypeArray.get(position);
             }
 
             @Override
@@ -257,6 +253,7 @@ public class InsertComplaintDetailsActivity extends AppCompatActivity {
             mEditTextComplaintDetails.setText(getIntent().getStringExtra("complaintDetails"));
             mEditTextComplaintId.setText(getIntent().getStringExtra("complaintId"));
             mEditTextRepresentative.setText(getUserId());
+            mEditTextComplaintDetails.requestFocus();
 
 
             mEditTextDate.setKeyListener(null);

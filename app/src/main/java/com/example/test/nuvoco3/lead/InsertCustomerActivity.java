@@ -65,11 +65,11 @@ public class InsertCustomerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert_customer);
 
-        showProgress();
 
 
         initializeViews();
         initializeVariables();
+        showProgress();
         initializeSpinners();
         floatingActionButtonAddData.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,8 +81,8 @@ public class InsertCustomerActivity extends AppCompatActivity {
 
     private void initializeVariables() {
 
-        queue = Volley.newRequestQueue(this);
         progressDialog = new ProgressDialog(this);
+        queue = Volley.newRequestQueue(this);
 
         //initialize Helpers
         mAreaHelper = new MasterHelper(this, "Area");
@@ -98,8 +98,6 @@ public class InsertCustomerActivity extends AppCompatActivity {
         mCategoryArray = mCategoryHelper.getRecordName();
         mDistrictArray = mDistrictHelper.getRecordName();
 
-
-        progressDialog.dismiss();
     }
 
     //  Populates the spinners
@@ -131,6 +129,7 @@ public class InsertCustomerActivity extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 mArea = getString(R.string.default_name);
+                progressDialog.dismiss();
             }
         });
 

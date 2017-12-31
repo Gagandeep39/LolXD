@@ -1,7 +1,9 @@
 package com.example.test.nuvoco3.customer;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
@@ -11,6 +13,7 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -26,12 +29,14 @@ import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.MainActivity;
 import com.example.test.nuvoco3.MasterHelper;
 import com.example.test.nuvoco3.R;
+import com.example.test.nuvoco3.signup.ObjectSerializer;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -66,7 +71,7 @@ public class UpdateStatusActivity extends AppCompatActivity {
         setContentView(R.layout.activity_update_status);
         initializeViews();
         initializeVariables();
-        populateTextFields();
+        readData();
         populateSpinner();
 
 
@@ -77,9 +82,8 @@ public class UpdateStatusActivity extends AppCompatActivity {
                     mClosedOn = getDateTime();
 
                 } else {
-                    mClosedOn = "0000-00-00";
+                    mClosedOn = "2017-01-01";
                 }
-
 
                 updateData();
             }
@@ -104,18 +108,21 @@ public class UpdateStatusActivity extends AppCompatActivity {
     }
 
     private void populateTextFields() {
+
         mEditTextComplaintId.setText(mComplaintId);
         mEditTextCustomerId.setText(mCustomerId);
         mEditTextCustomerName.setText(mCustomerName);
         mEditTextRemark.setText(mRemark);
         mEditTextDetails.setText(mDetails);
+        mUpdatedOn = getDateTime();
+        mUpdatedBy = getUserId();
 
     }
 
     private void initializeVariables() {
         progressDialog = new ProgressDialog(this);
         queue = Volley.newRequestQueue(this);
-        mComplaintTypeHelper = new MasterHelper(this, "ComplaintType");
+        mComplaintTypeHelper = new MasterHelper(this, "ComplaintStatus");
         mComplaintList = mComplaintTypeHelper.getRecordName();
 
     }
@@ -123,6 +130,8 @@ public class UpdateStatusActivity extends AppCompatActivity {
     private void initializeViews() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         fab = findViewById(R.id.fab);
         mComplaintId = getIntent().getStringExtra("ComplaintId");
         mCoordinatorLayout = findViewById(R.id.coordinator);
@@ -138,7 +147,7 @@ public class UpdateStatusActivity extends AppCompatActivity {
     private void readData() {
         startProgressDialog();
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
-                DATABASE_URL + "/dispCmpD", null, new Response.Listener<JSONObject>() {
+                DATABASE_URL + "/dispCmpDetails/0", null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
@@ -152,20 +161,24 @@ public class UpdateStatusActivity extends AppCompatActivity {
                     for (int i = 0; i < size; i++) {
 
                         JSONObject object = jsonArray.getJSONObject(i);
-                        if (object.getString("complaint_id").toLowerCase().contains(mComplaintId)) {
-                            mRecordId = object.getString("record_id") + "";
+                        if (object.getString("Complaint_id").toLowerCase().equals(mComplaintId)) {
                             mCustomerId = object.getString("Customer_id") + "";
                             mCustomerName = object.getString("Customer_name") + "";
+                            mRepresentative = object.getString("Representative");
                             mDate = object.getString("Date") + "";
                             mDetails = object.getString("complaint_details") + "";
-                            mRemark = object.getString("complaint_remark");
+                            mRemark = object.getString("resolution_remark");
                             mCreatedOn = object.getString("createdOn") + "";
-                            mCreatedBy = object.getString("createdBy") + "";
+                            mCreatedBy = object.getString("creayedBy") + "";
                             mUpdatedBy = object.getString("updatedBy") + "";
                             mUpdatedOn = object.getString("updatedOn") + "";
+                            mClosedOn = object.getString("complaint_closedOn") + "";
+                            mStatus = object.getString("complaint_status") + "";
                         }
 
                     }
+
+                    populateTextFields();
 
                 } catch (JSONException e1) {
                     e1.printStackTrace();
@@ -298,6 +311,34 @@ public class UpdateStatusActivity extends AppCompatActivity {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         return dateFormat.format(date);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    // Get LoggedIn users ID
+    private String getUserId() {
+        ArrayList<String> newArralist = new ArrayList<>();
+        // Creates a shared preferences variable to retrieve the logeed in users IDs and store it in Updated By Section
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.test.nuvoco3", Context.MODE_PRIVATE);
+
+        try {
+            newArralist = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("CustomerData", ObjectSerializer.serialize(new ArrayList<String>())));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (newArralist.size() > 0)
+            return newArralist.get(6);
+
+        return "Invalid User";
+
     }
 
 

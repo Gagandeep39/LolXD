@@ -1,4 +1,4 @@
-package com.example.test.nuvoco3;
+package com.example.test.nuvoco3.customer;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -21,8 +22,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.test.nuvoco3.customer.ComplaintAdapter;
-import com.example.test.nuvoco3.customer.Complaints;
+import com.example.test.nuvoco3.R;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import org.json.JSONArray;
@@ -46,6 +46,7 @@ public class ComplaintStatusActivity extends AppCompatActivity {
     String mComplaintId, mCustomerId, mCustomerName, mCreatedOn, mCreatedBy, mUpdatedBy, mUpdatedOn, mDetails, mType, mDate;
     RecyclerView mRecyclerView;
     ComplaintAdapter mComplaintRecyclerAdapter;
+    TextView mTextViewHelp;
 
 
     @Override
@@ -56,11 +57,10 @@ public class ComplaintStatusActivity extends AppCompatActivity {
         initializeVariables();
         populateCustomers();
         populateSpinner();
-
-        mComplaintRecyclerAdapter = new ComplaintAdapter(this, mComplaintArrayList);
-        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setAdapter(mComplaintRecyclerAdapter);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.getItemAnimator();
+
 
 
 
@@ -68,9 +68,10 @@ public class ComplaintStatusActivity extends AppCompatActivity {
 
     private void initializeVariables() {
 
-        queue = Volley.newRequestQueue(this);
         progressDialog = new ProgressDialog(this);
+        queue = Volley.newRequestQueue(this);
         mCustomerArrayList = new ArrayList<>();
+        mComplaintArrayList = new ArrayList<>();
         mComplaintAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mComplaintArrayList);
     }
 
@@ -82,6 +83,13 @@ public class ComplaintStatusActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 mCustomer = mCustomerArrayList.get(position);
                 readData();
+//                mRecyclerView.setLayoutManager(new LinearLayoutManager(ComplaintStatusActivity.this));
+//                mRecyclerView.setHasFixedSize(true);
+//                mComplaintRecyclerAdapter = new ComplaintAdapter(ComplaintStatusActivity.this, mComplaintArrayList);
+//                mRecyclerView.setAdapter(mComplaintRecyclerAdapter);
+//                mComplaintRecyclerAdapter.notifyDataSetChanged();
+
+
             }
 
             @Override
@@ -96,6 +104,8 @@ public class ComplaintStatusActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         mSearchCustomer = findViewById(R.id.searchCustomer);
         mCoordinatorLayout = findViewById(R.id.coordinator);
+        mRecyclerView = findViewById(R.id.recyclerView);
+        mTextViewHelp = findViewById(R.id.textViewHelp);
 
     }
 
@@ -127,7 +137,7 @@ public class ComplaintStatusActivity extends AppCompatActivity {
                 progressDialog.dismiss();
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
-                    for (int i = 0; i < 50; i++) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
 
                         JSONObject object = jsonArray.getJSONObject(i);
                         mCustomerArrayList.add(object.getString("name"));
@@ -164,7 +174,7 @@ public class ComplaintStatusActivity extends AppCompatActivity {
                 progressDialog.dismiss();
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
-                    for (int i = 0; i < 50; i++) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
 
                         JSONObject object = jsonArray.getJSONObject(i);
                         if (object.getString("Customer_name").toLowerCase().contains(mCustomer)) {
@@ -180,10 +190,16 @@ public class ComplaintStatusActivity extends AppCompatActivity {
                             mUpdatedBy = object.getString("upatedBy") + "";
                             mUpdatedOn = object.getString("upatedOn") + "";
                             mComplaintArrayList.add(new Complaints(mCustomerId, mCustomerName, mType, mDetails, mComplaintId, mDate, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy));
-                            mComplaintAdapter.notifyDataSetChanged();
+
                         }
 
                     }
+                    mComplaintRecyclerAdapter = new ComplaintAdapter(ComplaintStatusActivity.this, mComplaintArrayList);
+                    mTextViewHelp.setVisibility(View.GONE);
+                    mRecyclerView.setAdapter(mComplaintRecyclerAdapter);
+                    Log.i("test", "onResponse: " + "sdfrgthj");
+
+
 
                 } catch (JSONException e1) {
                     e1.printStackTrace();

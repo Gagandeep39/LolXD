@@ -9,6 +9,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -17,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -48,13 +50,15 @@ public class InsertCampaignActivity extends AppCompatActivity {
     public static final String URL_ADD_CAMPAIGN = "/insertCamp";
     private static final String TAG = "InsertCampaign Activity";
     String mRepresentative, mCounter, mDate, mCompany, mCampaignDetail, mCreatedOn, mCreatedBy, mUpdatedBy, mUpdatedOn;
-    TextInputEditText mEditTextRepresentative, mEditTextDetails;
+    TextInputEditText mEditTextRepresentative, mEditTextDetails, mEditTextCustomerName;
+    TextInputLayout mEditTextLayout;
     SearchableSpinner mSearchContact, mSearchCompany;
     RequestQueue queue;
     CoordinatorLayout mCoordinaterLayout;
     ProgressDialog progressDialog;
     FloatingActionButton fab;
     ArrayAdapter mCustomerAdapter, mContactAdapter;
+    LinearLayout mSearchCompanyLayout;
 
     //Spinners
     ArrayList<String> mContactList, mCustomerList;
@@ -77,11 +81,21 @@ public class InsertCampaignActivity extends AppCompatActivity {
     }
 
     private void initializeVariables() {
-
         progressDialog = new ProgressDialog(this);
         queue = Volley.newRequestQueue(this);
         mCustomerList = new ArrayList<>();
         mContactList = new ArrayList<>();
+        if (getIntent().getStringExtra("CustomerDetails") != null) {
+            mEditTextLayout.setVisibility(View.VISIBLE);
+            mEditTextLayout.setOnKeyListener(null);
+            mSearchCompanyLayout.setVisibility(View.GONE);
+            mEditTextDetails.requestFocus();
+
+            mEditTextCustomerName.setText(getIntent().getStringExtra("CustomerName"));
+            mCompany = getIntent().getStringExtra("CustomerName");
+            populateContacts();
+        }
+
 
 
     }
@@ -99,11 +113,16 @@ public class InsertCampaignActivity extends AppCompatActivity {
                 mCompany = mCustomerList.get(position);
                 Log.i(TAG, "onItemSelected: " + mCompany);
                 populateContacts();
+                mContactList.clear();
+                mContactAdapter.notifyDataSetChanged();
+                mSearchContact.setAdapter(mContactAdapter);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 mCompany = getString(R.string.default_name);
+                mContactList.clear();
+                mContactAdapter.notifyDataSetChanged();
 
             }
         });
@@ -184,24 +203,24 @@ public class InsertCampaignActivity extends AppCompatActivity {
 
 
     public void populateContacts() {
-        progressDialog.setMessage("Please Wait...");
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                progressDialog.dismiss();
-                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        populateCustomers();
-                    }
-                });
-                snackbar.show();
-            }
-        };
-        Handler handler = new Handler();
-        handler.postDelayed(runnable, 20000);
+//        progressDialog.setMessage("Please Wait...");
+//        progressDialog.setCancelable(false);
+//        progressDialog.show();
+//        Runnable runnable = new Runnable() {
+//            @Override
+//            public void run() {
+//                progressDialog.dismiss();
+//                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        populateCustomers();
+//                    }
+//                });
+//                snackbar.show();
+//            }
+//        };
+//        Handler handler = new Handler();
+//        handler.postDelayed(runnable, 20000);
 
 
 
@@ -358,6 +377,10 @@ public class InsertCampaignActivity extends AppCompatActivity {
         mSearchCompany = findViewById(R.id.searchCompany);
         mCoordinaterLayout = findViewById(R.id.coordinator);
         mSearchContact = findViewById(R.id.searchContact);
+        mEditTextCustomerName = findViewById(R.id.textInputEditCustomerName);
+        mSearchCompanyLayout = findViewById(R.id.searchCompanyLayout);
+        mEditTextLayout = findViewById(R.id.textInputLayoutCustomerName);
+
         fab = findViewById(R.id.fab);
         mEditTextRepresentative.setText(getUserId());
         mEditTextRepresentative.setKeyListener(null);

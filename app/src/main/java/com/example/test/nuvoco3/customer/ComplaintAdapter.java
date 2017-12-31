@@ -69,6 +69,7 @@ public class ComplaintAdapter extends RecyclerView.Adapter<ComplaintAdapter.View
 
     @Override
     public int getItemCount() {
+
         return mComplaintList.size();
     }
 
