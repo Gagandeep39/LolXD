@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static final String TAG = "MAIN ACTIVITY";
     String mName, mEmail;
     TextView mTextViewName, mTextViewEmail;
+    String mUserDepartment;
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
 
@@ -85,6 +86,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        if (mUserDepartment.equals(getString(R.string.technical_verify))) {
+
+            menu.getItem(1).setVisible(false);
+        }
         return true;
     }
 
@@ -174,6 +179,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         mTextViewName.setText(newArralist.get(7));
         mTextViewEmail.setText(newArralist.get(5));
+        mUserDepartment = newArralist.get(4);
+        if (mUserDepartment.equals(getString(R.string.technical_verify))) {
+            invalidateOptionsMenu();
+        }
 
     }
 

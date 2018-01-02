@@ -56,6 +56,7 @@
             android:parentActivityName=".lead.ViewCustomerActivity"
             android:theme="@style/AppTheme" />
         <activity
+            android:parentActivityName=".signup.LoginActivity"
             android:name=".signup.RegisterActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_sign_up"

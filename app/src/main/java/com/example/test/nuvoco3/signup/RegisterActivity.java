@@ -176,6 +176,10 @@ public class RegisterActivity extends AppCompatActivity {
 
     //  Initialize Views
     private void initializeViews() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         fab = findViewById(R.id.fab);
         mTextInputEditTextName = findViewById(R.id.textInputEditName);
         mTextInputEditTextPhone = findViewById(R.id.textInputEditPhone);
@@ -190,9 +194,6 @@ public class RegisterActivity extends AppCompatActivity {
         mSearchableSpinnerArea = findViewById(R.id.searchArea);
         mSearchableSpinnerCity = findViewById(R.id.searchCity);
 
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
     }
 
 
@@ -273,7 +274,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private boolean isEmailValid(String email) {
-        return email.contains("@");
+        return email.contains("@nuvoco.in");
     }
 
     private void initializeVariables() {
