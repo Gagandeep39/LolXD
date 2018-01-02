@@ -7,7 +7,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -42,7 +41,6 @@ public class ViewBrandPriceActivity extends AppCompatActivity {
     RequestQueue queue;
     SearchView mSearchView;
     String mSearchText = "0";
-    CardView mCardView;
     CoordinatorLayout mCoordinaterLayout;
     ProgressDialog progressDialog;
     int size = 0;
@@ -84,8 +82,6 @@ public class ViewBrandPriceActivity extends AppCompatActivity {
 
     private void initializeViews() {
         Toolbar toolbar = findViewById(R.id.toolbar);
-
-
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -196,11 +192,5 @@ public class ViewBrandPriceActivity extends AppCompatActivity {
 
     }
 
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        progressDialog.dismiss();
-    }
 
 }

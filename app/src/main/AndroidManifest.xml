@@ -56,7 +56,7 @@
             android:parentActivityName=".lead.ViewCustomerActivity"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".signup.SignUpActivity"
+            android:name=".signup.RegisterActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_sign_up"
             android:theme="@style/AppTheme" />
@@ -136,7 +136,7 @@
             android:label="@string/title_activity_update_status"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".market.BrandPriceDetailsActivity"
+            android:name=".market.ViewBrandPriceDetailsActivity"
             android:label="@string/title_activity_brand_price_details"
             android:theme="@style/AppTheme"></activity>
     </application>

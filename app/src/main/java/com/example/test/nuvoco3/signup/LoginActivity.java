@@ -129,7 +129,7 @@ public class LoginActivity extends AppCompatActivity {
 
     //    If user doesn't have an account then he can Sign Up
     public void signUpFunction(View v) {
-        startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
+        startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
     }
 
     //    Actual authentication function which gives us a response code on connection to server

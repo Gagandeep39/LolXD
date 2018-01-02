@@ -36,7 +36,7 @@ import java.util.Map;
 
 import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 
-public class SignUpActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity {
     private static final String TAG = "SignUp Activity";
     FloatingActionButton fab;
     TextInputEditText mTextInputEditTextName, mTextInputEditTextPhone, mTextInputEditTextEmail, mTextInputEditTextAddress, mTextInputEditTextPass1, mTextInputEditTextPass2, mTextInputEditTextAge, mTextInputEditTextPin;
@@ -58,7 +58,7 @@ public class SignUpActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_up);
+        setContentView(R.layout.activity_register);
         initializeViews();
         initializeVariables();
         initializeSpinners();
@@ -242,7 +242,7 @@ public class SignUpActivity extends AppCompatActivity {
                         try {
                             if (response.getString("status").equals("updated")) {
                                 progressDialog.dismiss();
-                                Toast.makeText(SignUpActivity.this, "Successfully Signed Up", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RegisterActivity.this, "Successfully Signed Up", Toast.LENGTH_SHORT).show();
                                 finish();
                             }
 

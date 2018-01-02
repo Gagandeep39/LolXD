@@ -337,7 +337,7 @@ public class InsertComplaintActivity extends AppCompatActivity {
             public void onResponse(JSONObject response) {
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
-                    for (int i = 0; i < 50; i++) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
 
                         JSONObject object = jsonArray.getJSONObject(i);
                         mIdList.add(object.getString("record_id"));   //primary key

@@ -94,28 +94,34 @@
         </LinearLayout>
 
         <LinearLayout
+            android:padding="@dimen/padding_smallest"
             android:id="@+id/linearLayoutExpanded"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="@dimen/padding_small"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView2">
 
-            <TextView
-                android:id="@+id/textViewDetails"
+            <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:background="?attr/selectableItemBackground"
-                android:padding="@dimen/padding_medium"
-                android:text="@string/details"
-                android:textAllCaps="true"
-                android:textColor="@color/colorAccent"
-                android:textSize="@dimen/text_medium"
-                android:textStyle="bold" />
+                android:layout_margin="@dimen/padding_smallest">
+
+                <TextView
+                    android:id="@+id/textViewDetails"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:background="?attr/selectableItemBackground"
+                    android:padding="@dimen/padding_medium"
+                    android:text="@string/details"
+                    android:textAllCaps="true"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="@dimen/text_medium"
+                    android:textStyle="bold" />
+            </FrameLayout>
 
 
         </LinearLayout>
