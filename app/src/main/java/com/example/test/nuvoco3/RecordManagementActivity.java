@@ -38,9 +38,9 @@ import java.util.Map;
 
 import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 
-public class InsertActivity extends AppCompatActivity {
+public class RecordManagementActivity extends AppCompatActivity {
     public static final String URL_INSERT_PRODUCT = "/insertMaster";
-    private static final String TAG = "Insert Activity";
+    private static final String TAG = "RecordManagement";
     TextInputEditText mEditTextCategory, mEditTextName, mEditTextStatus;
     FloatingActionButton fab;
     String mCategory, mType, mStatus, mName, mUpdatedOn, mCreatedOn, mCreatedBy, mUpdatedBy;
@@ -52,7 +52,7 @@ public class InsertActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_insert);
+        setContentView(R.layout.activity_record_management);
         initializeViews();
         populateSpinner();
 
@@ -81,24 +81,24 @@ public class InsertActivity extends AppCompatActivity {
         });
 
 
-        ArrayAdapter mStatusAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mStatusArray);
-        mStatusSearch.setAdapter(mStatusAdapter);
-        mStatusSearch.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i == 0)
-                    mStatus = "0";
-                else if (i == 1)
-                    mStatus = "1";
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                mStatus = getString(R.string.default_name);
-
-            }
-        });
+//        ArrayAdapter mStatusAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mStatusArray);
+//        mStatusSearch.setAdapter(mStatusAdapter);
+//        mStatusSearch.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                if (i == 0)
+//                    mStatus = "0";
+//                else if (i == 1)
+//                    mStatus = "1";
+//
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//                mStatus = getString(R.string.default_name);
+//
+//            }
+//        });
     }
 
 
@@ -149,7 +149,7 @@ public class InsertActivity extends AppCompatActivity {
                         Log.i(TAG, response.toString());
                         try {
                             if (response.getString("status").equals("updated")) {
-                                Toast.makeText(InsertActivity.this, "Successfully Inserted Data", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RecordManagementActivity.this, "Successfully Inserted Data", Toast.LENGTH_SHORT).show();
                                 finish();
 
                             }

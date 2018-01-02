@@ -125,8 +125,8 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
         mContactName = editTextContactName.getText().toString();
         mContactPhone = editTextContactPhone.getText().toString();
         mContactEmail = editTextContactEmail.getText().toString();
-        mContactDOB = textViewDOB.getText().toString();
-        mContactDOA = textViewDOA.getText().toString();
+//        mContactDOB = textViewDOB.getText().toString();
+//        mContactDOA = textViewDOA.getText().toString();
         if (TextUtils.isEmpty(mContactName)) {
             editTextContactName.setError("Enter Contact's Name");
         }
@@ -145,6 +145,9 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(mContactDOA)) {
             textViewDOA.setError("Enter Contact's Date of Anniversary");
         }
+
+        if (TextUtils.equals(mCustomerName, getString(R.string.default_name)))
+            Toast.makeText(this, "Select Customer", Toast.LENGTH_SHORT).show();
 
         if (!TextUtils.isEmpty(mContactName) && !TextUtils.isEmpty(mContactPhone) && !TextUtils.isEmpty(mContactEmail) && !TextUtils.isEmpty(mContactDOB) && !TextUtils.isEmpty(mContactDOA) && !TextUtils.isEmpty(mCustomerId) && !TextUtils.isEmpty(mCustomerName) && isEmailValid(mContactEmail))
             storeData();
@@ -194,10 +197,13 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
                     public void onDateSet(DatePicker view, int year,
                                           int monthOfYear, int dayOfMonth) {
 
-                        if (buttonClicked.getId() == R.id.textViewSelectDOB)
-                            textViewDOB.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
-                        else if (buttonClicked.getId() == R.id.textViewSelectDOA)
-                            textViewDOA.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
+                        if (buttonClicked.getId() == R.id.textViewSelectDOB) {
+                            mContactDOB = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
+                            textViewDOB.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                        } else if (buttonClicked.getId() == R.id.textViewSelectDOA) {
+                            mContactDOA = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
+                            textViewDOA.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                        }
 
                     }
                 }, mYear, mMonth, mDay);
@@ -408,7 +414,6 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
     private boolean isEmailValid(String email) {
         return email.contains("@");
     }
-
 
 
 }

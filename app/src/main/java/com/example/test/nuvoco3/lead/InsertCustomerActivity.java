@@ -105,13 +105,13 @@ public class InsertCustomerActivity extends AppCompatActivity {
     private void initializeSpinners() {
         ArrayAdapter mAreaAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mAreaArray);
         ArrayAdapter mStateAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mStateArray);
-        ArrayAdapter mTypeAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mTypeArray);
+//        ArrayAdapter mTypeAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mTypeArray);
         ArrayAdapter mCategoryAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mCategoryArray);
         ArrayAdapter mDistrictAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mDistrictArray);
 
         //Seting Adapter
         searchableSpinnerArea.setAdapter(mAreaAdapter);
-        searchableSpinnerType.setAdapter(mTypeAdapter);
+//        searchableSpinnerType.setAdapter(mTypeAdapter);
         searchableSpinnerState.setAdapter(mStateAdapter);
         searchableSpinnerCategory.setAdapter(mCategoryAdapter);
         searchableSpinnerDistrict.setAdapter(mDistrictAdapter);
@@ -175,17 +175,17 @@ public class InsertCustomerActivity extends AppCompatActivity {
             }
         });
         //Type Spinner
-        searchableSpinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mType = mTypeArray.get(position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                mArea = getString(R.string.default_name);
-            }
-        });
+//        searchableSpinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                mType = mTypeArray.get(position);
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//                mArea = getString(R.string.default_name);
+//            }
+//        });
 
     }
 
@@ -221,6 +221,7 @@ public class InsertCustomerActivity extends AppCompatActivity {
     public void validateData() {
 
         //I edit the prefs and add my string set and label it as "List"
+        mType = "Prospect";
         mName = editTextName.getText().toString();
         mAddress = editTextAddress.getText().toString();
         mPhone = editTextPhone.getText().toString().trim();

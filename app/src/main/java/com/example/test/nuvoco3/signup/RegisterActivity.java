@@ -145,7 +145,7 @@ public class RegisterActivity extends AppCompatActivity {
 
             mTextInputEditTextEmail.setError("Enter Email");
         } else if (!isEmailValid(mEmail)) {
-            mTextInputEditTextEmail.setError("Invalid Email");
+            mTextInputEditTextEmail.setError("Invalid");
         }
         if (TextUtils.isEmpty(mAddress))
             mTextInputEditTextAddress.setError("Enter Address");

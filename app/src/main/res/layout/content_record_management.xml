@@ -7,8 +7,8 @@
     android:orientation="vertical"
     android:padding="16sp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".InsertActivity"
-    tools:showIn="@layout/activity_insert">
+    tools:context=".RecordManagementActivity"
+    tools:showIn="@layout/activity_record_management">
 
     <!--<android.support.design.widget.TextInputLayout-->
     <!--android:id="@+id/textInputType"-->
@@ -39,7 +39,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Select Type" />
+            android:text="Select Record Type" />
 
         <com.toptoche.searchablespinnerlibrary.SearchableSpinner
 
@@ -63,7 +63,7 @@
             android:id="@+id/textInputEditCategory"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Category" />
+            android:hint="Record Code" />
 
 
     </android.support.design.widget.TextInputLayout>
@@ -87,6 +87,7 @@
     </android.support.design.widget.TextInputLayout>
 
     <LinearLayout
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"

@@ -5,7 +5,7 @@
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".InsertActivity">
+    tools:context=".RecordManagementActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -18,11 +18,11 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:title="Insert Product" />
+            app:title="Add new Record" />
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_insert" />
+    <include layout="@layout/content_record_management" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

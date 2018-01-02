@@ -121,7 +121,7 @@
             android:label="@string/title_activity_view_complaint"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".InsertActivity"
+            android:name=".RecordManagementActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_insert"
             android:parentActivityName=".MainActivity"
