@@ -135,6 +135,9 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
         }
         if (TextUtils.isEmpty(mContactEmail)) {
             editTextContactEmail.setError("Enter Contact's Email ID");
+        } else {
+            if (!isEmailValid(mContactEmail))
+                editTextContactEmail.setError("Enter a Valid Email ID");
         }
         if (TextUtils.isEmpty(mContactDOB)) {
             textViewDOB.setError("Enter Contact's Date of Birth");
@@ -143,7 +146,7 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
             textViewDOA.setError("Enter Contact's Date of Anniversary");
         }
 
-        if (!TextUtils.isEmpty(mContactName) && !TextUtils.isEmpty(mContactPhone) && !TextUtils.isEmpty(mContactEmail) && !TextUtils.isEmpty(mContactDOB) && !TextUtils.isEmpty(mContactDOA) && !TextUtils.isEmpty(mCustomerId) && !TextUtils.isEmpty(mCustomerName))
+        if (!TextUtils.isEmpty(mContactName) && !TextUtils.isEmpty(mContactPhone) && !TextUtils.isEmpty(mContactEmail) && !TextUtils.isEmpty(mContactDOB) && !TextUtils.isEmpty(mContactDOA) && !TextUtils.isEmpty(mCustomerId) && !TextUtils.isEmpty(mCustomerName) && isEmailValid(mContactEmail))
             storeData();
     }
 
@@ -400,6 +403,12 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
         super.onBackPressed();
         progressDialog.dismiss();
     }
+
+
+    private boolean isEmailValid(String email) {
+        return email.contains("@");
+    }
+
 
 
 }

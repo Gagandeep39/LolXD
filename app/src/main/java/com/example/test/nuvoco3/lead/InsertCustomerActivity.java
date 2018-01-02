@@ -241,6 +241,10 @@ public class InsertCustomerActivity extends AppCompatActivity {
         }
         if (TextUtils.isEmpty(mEmail)) {
             editTextEmail.setError("Enter Email Address");
+        } else {
+
+            if (!isEmailValid(mEmail))
+                editTextEmail.setError("Enter a valid Email Address");
         }
         if (TextUtils.equals(mArea, "default"))
             Toast.makeText(this, "Select Area", Toast.LENGTH_SHORT).show();
@@ -252,7 +256,7 @@ public class InsertCustomerActivity extends AppCompatActivity {
             Toast.makeText(this, "Select Type", Toast.LENGTH_SHORT).show();
         if (TextUtils.equals(mCategory, "default"))
             Toast.makeText(this, "Select Category", Toast.LENGTH_SHORT).show();
-        if (!TextUtils.isEmpty(mName) && !TextUtils.isEmpty(mAddress) && !TextUtils.isEmpty(mPhone) && !TextUtils.isEmpty(mEmail) && !TextUtils.equals(mArea, "default") && !TextUtils.equals(mState, "default") && !TextUtils.equals(mDistrict, "default") && !TextUtils.equals(mType, "default") && !TextUtils.equals(mCategory, "default"))
+        if (!TextUtils.isEmpty(mName) && !TextUtils.isEmpty(mAddress) && !TextUtils.isEmpty(mPhone) && !TextUtils.isEmpty(mEmail) && !TextUtils.equals(mArea, "default") && !TextUtils.equals(mState, "default") && !TextUtils.equals(mDistrict, "default") && !TextUtils.equals(mType, "default") && !TextUtils.equals(mCategory, "default") && isEmailValid(mEmail))
         storeData();
 
     }
@@ -383,6 +387,11 @@ public class InsertCustomerActivity extends AppCompatActivity {
         Handler handler = new Handler();
         handler.postDelayed(runnable, 20000);
 
+    }
+
+
+    private boolean isEmailValid(String email) {
+        return email.contains("@");
     }
 
 
