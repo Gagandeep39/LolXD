@@ -2,8 +2,10 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardView"
+    android:animateLayoutChanges="true"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+
     android:layout_marginBottom="8sp"
     android:layout_marginLeft="8sp"
     android:layout_marginRight="8sp"
@@ -68,26 +70,30 @@
             <TextView
                 android:id="@+id/textViewCustomerName"
                 android:layout_width="match_parent"
+                android:text="@string/name"
                 android:layout_height="wrap_content"
-                android:text="Name : " />
+                android:textSize="@dimen/text_medium" />
 
             <TextView
+                android:text="@string/id"
                 android:id="@+id/textViewCustomerType"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="ID : " />
+                android:textSize="@dimen/text_small" />
 
             <TextView
+                android:text="@string/category"
                 android:id="@+id/textViewCustomerCategory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Category : " />
+                android:textSize="@dimen/text_small" />
 
             <TextView
+                android:text="@string/area"
                 android:id="@+id/textViewCustomerArea"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Area : " />
+                android:textSize="@dimen/text_small" />
 
 
         </LinearLayout>
@@ -116,10 +122,10 @@
                     android:background="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:padding="8sp"
-                    android:text="View Customer"
+                    android:text="@string/view_customer"
                     android:textAllCaps="true"
                     android:textColor="@color/colorAccent"
-                    android:textSize="16sp"
+                    android:textSize="@dimen/text_medium"
                     android:textStyle="bold" />
 
             </FrameLayout>
@@ -134,15 +140,13 @@
                     android:id="@+id/textViewContact"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_column="1"
-                    android:layout_row="0"
                     android:background="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:padding="8sp"
-                    android:text="View Contacts"
+                    android:text="@string/view_contacts"
                     android:textAllCaps="true"
                     android:textColor="@color/colorAccent"
-                    android:textSize="16sp"
+                    android:textSize="@dimen/text_medium"
                     android:textStyle="bold" />
 
             </FrameLayout>

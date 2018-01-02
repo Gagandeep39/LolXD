@@ -176,7 +176,7 @@ public class ViewBrandPriceActivity extends AppCompatActivity {
 
     private void showProgress() {
         progressDialog.setMessage("Please Wait...");
-        progressDialog.setCancelable(false);
+        progressDialog.setCancelable(true);
         progressDialog.show();
         Runnable runnable = new Runnable() {
             @Override
@@ -194,6 +194,13 @@ public class ViewBrandPriceActivity extends AppCompatActivity {
         Handler handler = new Handler();
         handler.postDelayed(runnable, 20000);
 
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        progressDialog.dismiss();
     }
 
 }

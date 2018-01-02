@@ -39,24 +39,28 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
+                android:textSize="@dimen/text_medium"
                 android:id="@+id/textViewContactId"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Customer ID  : " />
 
             <TextView
+                android:textSize="@dimen/text_small"
                 android:id="@+id/textViewContactName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Name                : " />
 
             <TextView
+                android:textSize="@dimen/text_small"
                 android:id="@+id/textViewContactPhone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Phone               : " />
 
             <TextView
+                android:textSize="@dimen/text_small"
                 android:id="@+id/textViewContactEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

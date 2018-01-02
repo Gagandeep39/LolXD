@@ -175,7 +175,7 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
 
     private void showProgress() {
         progressDialog.setMessage("Please Wait...");
-        progressDialog.setCancelable(false);
+        progressDialog.setCancelable(true);
         progressDialog.show();
         Runnable runnable = new Runnable() {
             @Override
@@ -200,4 +200,6 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
         super.onBackPressed();
         finish();
     }
+
+
 }

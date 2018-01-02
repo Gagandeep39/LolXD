@@ -114,12 +114,16 @@ public class ViewCustomerActivity extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
                 Log.i("lol", "onResponse:  " + response);
+                progressDialog.dismiss();
 
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
-                    if (mSearchText.equals("0"))
-                        size = 50;
-                    else
+                    if (mSearchText.equals("0")) {
+                        if (jsonArray.length() > 25)
+                            size = 25;
+                        else size = jsonArray.length();
+
+                    } else
                         size = jsonArray.length();
                     for (int i = 0; i < size; i++) {
 
@@ -191,7 +195,7 @@ public class ViewCustomerActivity extends AppCompatActivity {
     private void startProgressDialog() {
 
         progressDialog.setMessage("Please Wait...");
-        progressDialog.setCancelable(false);
+        progressDialog.setCancelable(true);
         progressDialog.show();
         Runnable runnable = new Runnable() {
             @Override
@@ -210,6 +214,5 @@ public class ViewCustomerActivity extends AppCompatActivity {
         Handler handler = new Handler();
         handler.postDelayed(runnable, 20000);
     }
-
 
 }

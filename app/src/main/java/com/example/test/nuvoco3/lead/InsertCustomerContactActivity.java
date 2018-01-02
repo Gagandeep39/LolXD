@@ -395,4 +395,11 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        progressDialog.dismiss();
+    }
+
+
 }

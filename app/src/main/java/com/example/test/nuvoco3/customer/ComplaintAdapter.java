@@ -46,18 +46,23 @@ public class ComplaintAdapter extends RecyclerView.Adapter<ComplaintAdapter.View
         holder.mConstraintLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (holder.mLinearLayout.getVisibility() == View.GONE) {
-                    holder.mLinearLayout.setVisibility(View.VISIBLE);
-                    holder.mImageExpandLess.setVisibility(View.VISIBLE);
-                    holder.mImageExpandMore.setVisibility(View.GONE);
-                } else {
-                    holder.mLinearLayout.setVisibility(View.GONE);
-                    holder.mImageExpandLess.setVisibility(View.GONE);
-                    holder.mImageExpandMore.setVisibility(View.VISIBLE);
-
-                }
+                expandOrNot(holder);
             }
         });
+        holder.mImageExpandMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                expandOrNot(holder);
+            }
+        });
+
+        holder.mImageExpandLess.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                expandOrNot(holder);
+            }
+        });
+
         holder.mTextViewDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -65,6 +70,19 @@ public class ComplaintAdapter extends RecyclerView.Adapter<ComplaintAdapter.View
             }
         });
 
+    }
+
+    private void expandOrNot(ViewHolder holder) {
+        if (holder.mLinearLayout.getVisibility() == View.GONE) {
+            holder.mLinearLayout.setVisibility(View.VISIBLE);
+            holder.mImageExpandLess.setVisibility(View.VISIBLE);
+            holder.mImageExpandMore.setVisibility(View.GONE);
+        } else {
+            holder.mLinearLayout.setVisibility(View.GONE);
+            holder.mImageExpandLess.setVisibility(View.GONE);
+            holder.mImageExpandMore.setVisibility(View.VISIBLE);
+
+        }
     }
 
     @Override

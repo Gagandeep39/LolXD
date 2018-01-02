@@ -49,6 +49,7 @@
                 android:id="@+id/textInputEditRepresentative"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:nextFocusForward="@+id/textInputEditCounter"
                 android:hint="User ID"
                 android:inputType="number"
                 android:maxLength="4" />
@@ -66,7 +67,9 @@
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/textInputEditCounter"
+                android:inputType="textPersonName"
                 android:layout_width="match_parent"
+                android:nextFocusForward="@+id/textInputEditMSP"
                 android:layout_height="wrap_content"
                 android:hint="Counter" />
 
@@ -86,6 +89,9 @@
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/textInputEditMSP"
                 android:layout_width="match_parent"
+                android:inputType="textPersonName"
+
+                android:nextFocusForward="@+id/textInputEditPrice"
                 android:layout_height="wrap_content"
                 android:hint="Major Selling Products" />
 
@@ -103,6 +109,7 @@
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/textInputEditPrice"
+                android:nextFocusForward="@+id/editTextDetails"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Price"
@@ -124,8 +131,10 @@
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/editTextDetails"
                 android:layout_width="match_parent"
+                android:inputType="text"
                 android:layout_height="wrap_content"
                 android:gravity="start"
+                android:nextFocusForward="@+id/editTextDemand"
                 android:hint="Market Details"
                 android:minLines="2" />
 

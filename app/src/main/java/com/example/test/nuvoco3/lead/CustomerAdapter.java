@@ -63,6 +63,12 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.ViewHo
 
             }
         });
+        holder.mImageExpand.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                expandOrReduce(holder);
+            }
+        });
         holder.mTextViewCustomer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

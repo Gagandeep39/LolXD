@@ -192,7 +192,7 @@ public class ViewNewCustomerActivity extends AppCompatActivity {
     private void startProgressDialog() {
 
         progressDialog.setMessage("Please Wait...");
-        progressDialog.setCancelable(false);
+        progressDialog.setCancelable(true);
         progressDialog.show();
         Runnable runnable = new Runnable() {
             @Override

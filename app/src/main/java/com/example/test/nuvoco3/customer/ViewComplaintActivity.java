@@ -134,13 +134,13 @@ public class ViewComplaintActivity extends AppCompatActivity {
                 return false;
             }
         });
-        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mSearchText = "0";
-                mRecyclerView.setAdapter(mComplaintAdapter);
-            }
-        });
+//        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                mSearchText = "0";
+//                mRecyclerView.setAdapter(mComplaintAdapter);
+//            }
+//        });
     }
 
     private void initializeViews() {
@@ -149,7 +149,7 @@ public class ViewComplaintActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         mRecyclerView = findViewById(R.id.recyclerView);
-        mSwipeRefresh = findViewById(R.id.swipeRefreshLayout);
+//        mSwipeRefresh = findViewById(R.id.swipeRefreshLayout);
         mSearchView = findViewById(R.id.searchView);
         mCoordinatorLayout = findViewById(R.id.coordinator);
         progressDialog = new ProgressDialog(this);
@@ -173,7 +173,7 @@ public class ViewComplaintActivity extends AppCompatActivity {
     private void startProgressDialog() {
 
         progressDialog.setMessage("Please Wait...");
-        progressDialog.setCancelable(false);
+        progressDialog.setCancelable(true);
         progressDialog.show();
         Runnable runnable = new Runnable() {
             @Override
@@ -190,6 +190,13 @@ public class ViewComplaintActivity extends AppCompatActivity {
         };
         Handler handler = new Handler();
         handler.postDelayed(runnable, 20000);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        progressDialog.dismiss();
     }
 
 

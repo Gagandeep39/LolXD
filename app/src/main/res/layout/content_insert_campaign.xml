@@ -49,6 +49,8 @@
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/textInputEditCustomerName"
                 android:layout_width="match_parent"
+                android:focusable="false"
+                android:longClickable="false"
                 android:layout_height="wrap_content"
                 android:hint="Customer Name" />
 

@@ -334,4 +334,11 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        progressDialog.dismiss();
+    }
+
+
 }

@@ -13,6 +13,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".signup.splashscreen.SplashScreenActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
@@ -24,94 +25,119 @@
         </activity>
         <activity
             android:name=".lead.InsertCustomerActivity"
+            android:configChanges="orientation|screenSize"
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".lead.ViewCustomerActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_view_customer"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <!-- <activity android:name=".splashscreen.SplashScreenActivity"></activity> -->
         <activity
             android:name=".MainActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_main2"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".lead.InsertCustomerContactActivity"
+            android:configChanges="orientation|screenSize"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".signup.LoginActivity" />
         <activity
             android:name=".customer.InsertComplaintActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_complaint"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".customer.InsertComplaintDetailsActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_complaint_details"
             android:parentActivityName=".lead.ViewCustomerActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".signup.SignUpActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_sign_up"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".lead.CustomerDetailsActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_customer_details"
             android:parentActivityName=".lead.ViewCustomerActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".lead.ViewCustomerContactActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_view_customer_contact"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".lead.CustomerContactDetailsActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_customer_contact_details"
             android:parentActivityName=".lead.ViewCustomerContactActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".signup.UserAccountActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_user_account"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".market.InsertBrandPriceActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_brand_price"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".market.InsertGeneralMarketActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_insert_general_market"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".customer.ViewNewCustomerActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_view_new_customer"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".market.ViewBrandPriceActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_view_general_market"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".market.InsertCampaignActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_insert_campaign"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".customer.ViewComplaintActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_view_complaint"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".InsertActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_insert"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".customer.ComplaintStatusActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_complaint_status"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".customer.UpdateStatusActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_update_status"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".market.BrandPriceDetailsActivity"
+            android:label="@string/title_activity_brand_price_details"
             android:theme="@style/AppTheme"></activity>
     </application>
 

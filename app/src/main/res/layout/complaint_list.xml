@@ -56,34 +56,39 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
+            android:padding="8sp"
             android:id="@+id/linearLayout"
+            android:textSize="@dimen/text_medium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="8sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imageView2"
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
+                android:textSize="@dimen/text_medium"
                 android:id="@+id/textViewCustomerName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Name : " />
 
             <TextView
+                android:textSize="@dimen/text_small"
                 android:id="@+id/textViewComplaintId"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="ID : " />
 
             <TextView
+                android:textSize="@dimen/text_small"
                 android:id="@+id/textViewDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Date : " />
 
             <TextView
+                android:textSize="@dimen/text_small"
                 android:id="@+id/textViewType"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -98,7 +103,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:visibility="gone"
-            android:padding="8sp"
+            android:padding="4sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -109,12 +114,13 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:padding="4sp"
                     android:id="@+id/textViewDetails"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="?attr/selectableItemBackground"
                     android:clickable="true"
-                    android:text="Update Status"
+                    android:text="@string/update_status"
                     android:textAllCaps="true"
                     android:textColor="@color/colorAccent"
                     android:textSize="16sp"

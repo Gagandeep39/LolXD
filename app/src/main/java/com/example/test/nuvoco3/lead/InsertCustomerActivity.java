@@ -69,7 +69,7 @@ public class InsertCustomerActivity extends AppCompatActivity {
 
         initializeViews();
         initializeVariables();
-        showProgress();
+//        showProgress();
         initializeSpinners();
         floatingActionButtonAddData.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,6 +97,7 @@ public class InsertCustomerActivity extends AppCompatActivity {
         mTypeArray = mTypeHelper.getRecordName();
         mCategoryArray = mCategoryHelper.getRecordName();
         mDistrictArray = mDistrictHelper.getRecordName();
+
 
     }
 
@@ -129,7 +130,6 @@ public class InsertCustomerActivity extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 mArea = getString(R.string.default_name);
-                progressDialog.dismiss();
             }
         });
 

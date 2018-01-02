@@ -111,15 +111,17 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(mRepresentative))
             Toast.makeText(this, "Enter Representative's ID", Toast.LENGTH_SHORT).show();
         if (TextUtils.isEmpty(mCounter))
-            Toast.makeText(this, "Enter Counter's Name", Toast.LENGTH_SHORT).show();
+            mEditTextCounter.setError("Enter Counter's name");
         if (TextUtils.isEmpty(mWSP))
-            Toast.makeText(this, "Enter WSP", Toast.LENGTH_SHORT).show();
+            mEditTextWSP.setError("Enter WSP");
         if (TextUtils.isEmpty(mRSP))
-            Toast.makeText(this, "Enter RSP", Toast.LENGTH_SHORT).show();
+            mEditTextRSP.setError("Enter RSP");
         if (TextUtils.isEmpty(mStock))
-            Toast.makeText(this, "Stocks cannot be Empty", Toast.LENGTH_SHORT).show();
+            mEditTextStocks.setError("Stocks cannot be Empty");
         if (TextUtils.isEmpty(mRemarks))
-            Toast.makeText(this, "Remarks Field cannot be Empty", Toast.LENGTH_SHORT).show();
+            mEditTextRemarks.setError("Remarks Field cannot be Empty");
+
+
         if (TextUtils.equals(mProduct, "default"))
             Toast.makeText(this, "Select a Product", Toast.LENGTH_SHORT).show();
         if (TextUtils.equals(mBrand, "default"))
@@ -305,5 +307,9 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        progressDialog.dismiss();
+    }
 }
