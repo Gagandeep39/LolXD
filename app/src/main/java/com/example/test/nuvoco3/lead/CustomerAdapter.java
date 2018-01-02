@@ -45,6 +45,9 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.ViewHo
         Customer currentCustomer = mCustomer.get(position);
         int id = Integer.parseInt(currentCustomer.getCustomerId());
         holder.setIsRecyclable(false);
+
+        String mCategory = currentCustomer.getCustomerCategory();
+        holder.mImageIcon.setBackgroundResource(chooseImage(mCategory));
         holder.mCustomerName.append(currentCustomer.getCustomerName());
         holder.mCustomerArea.append(currentCustomer.getCustomerArea());
         holder.mCustomerType.append(currentCustomer.getCustomerId());
@@ -69,19 +72,31 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.ViewHo
                 expandOrReduce(holder);
             }
         });
-        holder.mTextViewCustomer.setOnClickListener(new View.OnClickListener() {
+        holder.mImageCustomer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 mContext.startActivity(new Intent(mContext, CustomerDetailsActivity.class).putExtra("position", position));
             }
         });
-        holder.mTextViewContacts.setOnClickListener(new View.OnClickListener() {
+        holder.mImageContacts.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mContext.startActivity(new Intent(mContext, ViewCustomerContactActivity.class).putExtra("customerID", mCustomerArrayList.get(position).getCustomerId()));
             }
         });
+    }
+
+    private int chooseImage(String mCategory) {
+        switch (mCategory) {
+            case "Dealer":
+                return R.drawable.ic_dealer;
+            case "Subdealer":
+                return R.drawable.ic_sub_dealer;
+            case "Individual":
+                return R.drawable.ic_individual;
+        }
+        return R.drawable.ic_individual;
     }
 
     private void expandOrReduce(ViewHolder holder) {
@@ -114,7 +129,8 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.ViewHo
         CardView mCardView;
         ConstraintLayout mConstraintLayout;
         LinearLayout mLinearLayout;
-        ImageView mImageExpand, mImageExpandLess;
+        ImageView mImageExpand, mImageExpandLess, mImageCustomer, mImageContacts;
+        ImageView mImageIcon;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -127,8 +143,9 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.ViewHo
             mImageExpand = itemView.findViewById(R.id.imageViewExpand);
             mImageExpandLess = itemView.findViewById(R.id.imageViewExpandLess);
             mLinearLayout = itemView.findViewById(R.id.gridLayoutExpanded);
-            mTextViewCustomer = itemView.findViewById(R.id.textViewCustomer);
-            mTextViewContacts = itemView.findViewById(R.id.textViewContact);
+            mImageCustomer = itemView.findViewById(R.id.textViewCustomer);
+            mImageContacts = itemView.findViewById(R.id.textViewContact);
+            mImageIcon = itemView.findViewById(R.id.imageViewIcon);
         }
     }
 

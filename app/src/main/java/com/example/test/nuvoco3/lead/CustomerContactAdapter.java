@@ -38,9 +38,12 @@ public class CustomerContactAdapter extends RecyclerView.Adapter<CustomerContact
         CustomerContact mCurrentContact = mCustomerContactList.get(position);
         holder.setIsRecyclable(false);
         holder.mTextViewCustomerId.append(mCurrentContact.getCustomerId());
+        holder.mTextViewCustomerName.append(mCurrentContact.getCustomerName());
         holder.mTextViewName.append(mCurrentContact.getCustomerContactName());
         holder.mTextViewPhone.append(mCurrentContact.getCustomerContactPhone());
         holder.mTextViewEmail.append(mCurrentContact.getCustomerContactEmail());
+        holder.mTextViewDOB.append(mCurrentContact.getCustomerContactDOB());
+        holder.mTextViewDOA.append(mCurrentContact.getCustomerContactDOA());
     }
 
     //  Provides count of Items in The View
@@ -51,7 +54,7 @@ public class CustomerContactAdapter extends RecyclerView.Adapter<CustomerContact
 
     //  Initialize Items in a ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView mTextViewName, mTextViewPhone, mTextViewEmail, mTextViewCustomerId;
+        TextView mTextViewName, mTextViewPhone, mTextViewEmail, mTextViewCustomerId, mTextViewCustomerName, mTextViewDOB, mTextViewDOA;
         ConstraintLayout mConstraintLayout;
 
         //  Initialize Widgets in a single Item View
@@ -62,6 +65,9 @@ public class CustomerContactAdapter extends RecyclerView.Adapter<CustomerContact
             mTextViewPhone = itemView.findViewById(R.id.textViewContactPhone);
             mTextViewEmail = itemView.findViewById(R.id.textViewContactEmail);
             mConstraintLayout = itemView.findViewById(R.id.constraintLayout);
+            mTextViewCustomerName = itemView.findViewById(R.id.textViewCustomerName);
+            mTextViewDOB = itemView.findViewById(R.id.textViewDOB);
+            mTextViewDOA = itemView.findViewById(R.id.textViewDOA);
         }
     }
 }

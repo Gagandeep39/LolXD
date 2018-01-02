@@ -70,4 +70,8 @@
     <string name="login">Login</string>
     <string name="company_info">© 2017-18, Nuvoco Vistas Corp Ltd. All Rights reserved.</string>
     <string name="technical_verify">Technical</string>
+    <string name="dealer">Dealer</string>
+    <string name="sub_dealer">Sub Dealer</string>
+    <string name="individual">Individual</string>
+    <string name="view_my_customers">View My Customers</string>
 </resources>

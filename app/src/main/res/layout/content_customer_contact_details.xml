@@ -14,82 +14,210 @@
         android:orientation="vertical"
         android:padding="16sp">
 
-        <TextView
-            android:id="@+id/textViewCustomerId"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Customer ID : "
-            android:textSize="18sp" />
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/textViewCustomerName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Customer Name : "
-            android:textSize="18sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Customer ID : "
+                android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/textViewContactName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Contact Person Name : "
-            android:textSize="18sp" />
+            <TextView
+                android:id="@+id/textViewCustomerId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end" />
 
-        <TextView
-            android:id="@+id/textViewContactPhone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Phone No. : "
-            android:textSize="18sp" />
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/textViewContactEmail"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Email ID : "
-            android:textSize="18sp" />
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/textViewContactDOB"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Date Of Birth : "
-            android:textSize="18sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Customer Name : "
+                android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/textViewContactDOA"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Date Of Anniversary : "
-            android:textSize="18sp" />
+            <TextView
+                android:id="@+id/textViewCustomerName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end" />
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/textViewCreatedBy"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Created By : "
-            android:textSize="18sp" />
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/textViewCreatedOn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Created On : "
-            android:textSize="18sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Contact Person Name : "
+                android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/textViewUpdatedBy"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Updated By : "
-            android:textSize="18sp" />
+            <TextView
+                android:id="@+id/textViewContactName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end" />
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/textViewUpdatedOn"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Updated on : "
-            android:textSize="18sp" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Phone No. : "
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/textViewContactPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Email ID : "
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/textViewContactEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date Of Birth : "
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/textViewContactDOB"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date Of Anniversary : "
+                android:textSize="18sp" />
+
+
+            <TextView
+                android:id="@+id/textViewContactDOA"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Created By : "
+                android:textSize="18sp" />
+
+
+            <TextView
+                android:id="@+id/textViewCreatedBy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Created On : "
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/textViewCreatedOn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Updated By : "
+                android:textSize="18sp" />
+
+
+            <TextView
+                android:id="@+id/textViewUpdatedBy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Updated on : "
+                android:textSize="18sp" />
+
+
+            <TextView
+                android:id="@+id/textViewUpdatedOn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end" />
+        </LinearLayout>
+
 
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

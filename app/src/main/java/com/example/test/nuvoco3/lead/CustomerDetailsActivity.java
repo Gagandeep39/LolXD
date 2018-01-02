@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.test.nuvoco3.R;
@@ -17,7 +18,7 @@ import static com.example.test.nuvoco3.lead.ViewCustomerActivity.mCustomerArrayL
 
 public class CustomerDetailsActivity extends AppCompatActivity {
     TextView mName, mType, mCategory, mStatus, mPhone, mEmail, mArea, mDistrict, mState, mAddress, mCreatedBy, mCreatedOn, mUpdatedBy, mUpdatedOn;
-    TextView mNewContact, mNewComplaint, mNewCampaign, mNewPrice;
+    LinearLayout mNewContact, mNewComplaint, mNewCampaign, mNewPrice;
     int position;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

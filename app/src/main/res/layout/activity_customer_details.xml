@@ -11,18 +11,8 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/app_bar_height"
-        android:fitsSystemWindows="true"
+        android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
-
-        <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/toolbar_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
-            app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:toolbarId="@+id/toolbar">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -31,97 +21,207 @@
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/AppTheme.PopupOverlay"
                 app:title="Customer Details" />
-
-        </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
     <include layout="@layout/content_customer_details" />
+
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="?attr/selectableItemBackground"-->
+    <!--android:clickable="true"-->
+    <!--android:elevation="12sp"-->
+    <!--android:orientation="vertical">-->
+    <!---->
+    <!--<GridLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@color/colorAccent">-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/textViewContact"-->
+    <!--android:layout_width="0sp"-->
+    <!--android:layout_height="40sp"-->
+    <!--android:layout_columnWeight="1"-->
+    <!--android:layout_margin="2sp"-->
+    <!--android:layout_rowWeight="1"-->
+    <!--android:background="?attr/selectableItemBackground"-->
+    <!--android:clickable="true"-->
+    <!--android:gravity="center"-->
+    <!--android:text="Add New Contact"-->
+    <!--android:textColor="@color/nuvoco_white"-->
+    <!--android:textStyle="bold" />-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/textViewCampaign"-->
+    <!--android:layout_width="0sp"-->
+    <!--android:layout_height="40sp"-->
+
+    <!--android:layout_columnWeight="1"-->
+    <!--android:layout_margin="2sp"-->
+    <!--android:layout_rowWeight="1"-->
+    <!--android:background="?attr/selectableItemBackground"-->
+    <!--android:clickable="true"-->
+    <!--android:gravity="center"-->
+    <!--android:text="Add New Campaign"-->
+    <!--android:textColor="@color/nuvoco_white"-->
+    <!--android:textStyle="bold" />-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/textViewComplaint"-->
+    <!--android:layout_width="0sp"-->
+    <!--android:layout_height="40sp"-->
+    <!--android:layout_column="0"-->
+    <!--android:layout_columnWeight="1"-->
+    <!--android:layout_margin="2sp"-->
+    <!--android:layout_row="1"-->
+    <!--android:layout_rowWeight="1"-->
+    <!--android:background="?attr/selectableItemBackground"-->
+    <!--android:clickable="true"-->
+    <!--android:gravity="center"-->
+    <!--android:text="New Complaint"-->
+    <!--android:textColor="@color/nuvoco_white"-->
+    <!--android:textStyle="bold" />-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/textViewPrice"-->
+    <!--android:layout_width="0sp"-->
+    <!--android:layout_height="40sp"-->
+    <!--android:layout_column="1"-->
+    <!--android:layout_columnWeight="1"-->
+    <!--android:layout_margin="2sp"-->
+    <!--android:layout_row="1"-->
+    <!--android:layout_rowWeight="1"-->
+    <!--android:background="?attr/selectableItemBackground"-->
+    <!--android:clickable="true"-->
+    <!--android:gravity="center"-->
+    <!--android:text="Capture Price"-->
+    <!--android:textColor="@color/nuvoco_white"-->
+    <!--android:textStyle="bold" />-->
+
+    <!--</GridLayout>-->
+    <!--</LinearLayout>-->
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        android:elevation="8sp"
+
         android:background="?attr/selectableItemBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
-
-
         <LinearLayout
             android:layout_width="match_parent"
+            android:background="@color/colorAccent"
+            android:orientation="horizontal"
             android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:elevation="12sp"
-            android:orientation="vertical">
+            android:padding="4sp">
 
-            <GridLayout
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:id="@+id/textViewContact"
+                android:layout_width="0sp"
                 android:layout_height="wrap_content"
-                android:background="@color/colorAccent">
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:orientation="vertical"
+                android:padding="8sp">
 
-                <TextView
-                    android:id="@+id/textViewContact"
-                    android:layout_width="0sp"
+                <ImageView
+                    android:layout_width="40sp"
+                    android:layout_gravity="center"
                     android:layout_height="40sp"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="2sp"
-                    android:layout_rowWeight="1"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:gravity="center"
-                    android:text="Add New Contact"
-                    android:textColor="@color/nuvoco_white"
-                    android:textStyle="bold" />
-
+                    android:src="@drawable/ic_new_contact" />
                 <TextView
-                    android:id="@+id/textViewCampaign"
-                    android:layout_width="0sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="New Contact"
+                    android:textColor="#ffffff"
+                    android:textSize="12sp" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/textViewComplaint"
+                android:layout_width="0sp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:orientation="vertical"
+                android:padding="8sp">
+
+                <ImageView
+                    android:layout_width="40sp"
+                    android:layout_gravity="center"
                     android:layout_height="40sp"
-
-                    android:layout_columnWeight="1"
-                    android:layout_margin="2sp"
-                    android:layout_rowWeight="1"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:gravity="center"
-                    android:text="Add New Campaign"
-                    android:textColor="@color/nuvoco_white"
-                    android:textStyle="bold" />
-
+                    android:src="@drawable/ic_new_complaint" />
                 <TextView
-                    android:id="@+id/textViewComplaint"
-                    android:layout_width="0sp"
-                    android:layout_height="40sp"
-                    android:layout_column="0"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="2sp"
-                    android:layout_row="1"
-                    android:layout_rowWeight="1"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:text="New Complaint"
-                    android:textColor="@color/nuvoco_white"
-                    android:textStyle="bold" />
+                    android:textColor="#ffffff"
+                    android:textSize="12sp" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/textViewCampaign"
+                android:layout_width="0sp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:orientation="vertical"
+                android:padding="8sp">
+
+                <ImageView
+                    android:layout_width="40sp"
+                    android:layout_height="40sp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_add_campaign" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="New Campaign"
+                    android:textColor="#ffffff"
+                    android:textSize="12sp" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/textViewPrice"
+                android:layout_width="0sp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:orientation="vertical"
+                android:padding="8sp">
+
+                <ImageView
+                    android:layout_width="40sp"
+                    android:layout_gravity="center"
+                    android:layout_height="40sp"
+                    android:src="@drawable/ic_capture_price" />
 
                 <TextView
-                    android:id="@+id/textViewPrice"
-                    android:layout_width="0sp"
-                    android:layout_height="40sp"
-                    android:layout_column="1"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="2sp"
-                    android:layout_row="1"
-                    android:layout_rowWeight="1"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:gravity="center"
-                    android:text="Capture Price"
-                    android:textColor="@color/nuvoco_white"
-                    android:textStyle="bold" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Price"
+                    android:textColor="#ffffff"
+                    android:textSize="12sp" />
 
-            </GridLayout>
+
+            </LinearLayout>
+
+
         </LinearLayout>
 
     </android.support.v7.widget.CardView>

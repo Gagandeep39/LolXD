@@ -19,54 +19,158 @@
         android:clickable="true"
         android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/imageView2"
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imageViewIcon"
             android:layout_width="100sp"
             android:layout_height="100sp"
+            android:padding="@dimen/padding_medium"
             android:src="@color/colorAccent"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="8sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView2"
+            app:layout_constraintStart_toEndOf="@+id/imageViewIcon"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:textSize="@dimen/text_medium"
-                android:id="@+id/textViewContactId"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Customer ID  : " />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Customer ID: "
+                    android:textSize="@dimen/text_medium" />
+
+                <TextView
+                    android:id="@+id/textViewContactId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text="Customer Name : "
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_medium" />
+
+                <TextView
+                    android:id="@+id/textViewCustomerId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                    android:gravity="end" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
             <TextView
                 android:textSize="@dimen/text_small"
-                android:id="@+id/textViewContactName"
+                android:id="@+id/textViewCustomerName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Contact Name : " />
+
+                <TextView
+                    android:id="@+id/textViewContactName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Name                : " />
+                android:orientation="horizontal">
 
             <TextView
                 android:textSize="@dimen/text_small"
-                android:id="@+id/textViewContactPhone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Phone Number : " />
+
+                <TextView
+                    android:id="@+id/textViewContactPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Phone               : " />
+                android:orientation="horizontal">
 
             <TextView
                 android:textSize="@dimen/text_small"
-                android:id="@+id/textViewContactEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Email : " />
+
+                <TextView
+                    android:id="@+id/textViewContactEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Email                 : " />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Date of Birth : "
+                    android:textSize="@dimen/text_small" />
+
+                <TextView
+                    android:id="@+id/textViewDOB"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Date of Anniversary : "
+                    android:textSize="@dimen/text_small" />
+
+                <TextView
+                    android:id="@+id/textViewDOA"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end" />
 
 
+            </LinearLayout>
         </LinearLayout>
     </android.support.constraint.ConstraintLayout>
 

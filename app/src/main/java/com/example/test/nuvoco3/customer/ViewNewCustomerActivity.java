@@ -1,6 +1,8 @@
 package com.example.test.nuvoco3.customer;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
@@ -25,11 +27,13 @@ import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.lead.Customer;
 import com.example.test.nuvoco3.lead.CustomerAdapter;
+import com.example.test.nuvoco3.signup.ObjectSerializer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
@@ -44,6 +48,7 @@ public class ViewNewCustomerActivity extends AppCompatActivity {
     RequestQueue queue;
     SearchView mSearchView;
     String mSearchText = "0";
+    String mUserId;
     ProgressDialog progressDialog;
     CoordinatorLayout mCoordinatorLayout;
     int size = 0;
@@ -59,6 +64,7 @@ public class ViewNewCustomerActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         queue = Volley.newRequestQueue(this);
         initializeViews();
+
         mCustomerArrayList = new ArrayList<>();
         readData();
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -128,7 +134,7 @@ public class ViewNewCustomerActivity extends AppCompatActivity {
                         JSONObject object = jsonArray.getJSONObject(i);
 
 
-                        if (object.getString("c_type").equals("New")) {
+                        if (object.getString("createdBy").equals(getUserId())) {
                             if (object.getString("c_email").toLowerCase().contains(mSearchText.toLowerCase())
                                     || object.getString("c_phone").toLowerCase().contains(mSearchText.toLowerCase())
                                     || object.getString("c_state").toLowerCase().contains(mSearchText.toLowerCase())
@@ -210,6 +216,25 @@ public class ViewNewCustomerActivity extends AppCompatActivity {
         Handler handler = new Handler();
         handler.postDelayed(runnable, 20000);
     }
+
+
+    private String getUserId() {
+        ArrayList<String> newArralist = new ArrayList<>();
+        // Creates a shared preferences variable to retrieve the logeed in users IDs and store it in Updated By Section
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.test.nuvoco3", Context.MODE_PRIVATE);
+
+        try {
+            newArralist = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("CustomerData", ObjectSerializer.serialize(new ArrayList<String>())));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (newArralist.size() > 0)
+            return newArralist.get(6);
+
+        return "Invalid User";
+
+    }
+
 
 
 

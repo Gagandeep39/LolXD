@@ -47,8 +47,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ic_expand_more_black_24dp" />
 
-        <ImageView
-            android:id="@+id/imageView2"
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imageViewIcon"
+            android:padding="@dimen/padding_medium"
             android:layout_width="100sp"
             android:layout_height="100sp"
             android:src="@color/colorAccent"
@@ -63,7 +64,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView2"
+            app:layout_constraintStart_toEndOf="@+id/imageViewIcon"
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
@@ -107,7 +108,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView2">
+            app:layout_constraintTop_toBottomOf="@+id/imageViewIcon">
 
             <FrameLayout
                 android:layout_width="wrap_content"

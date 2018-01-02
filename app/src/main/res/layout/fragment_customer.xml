@@ -48,7 +48,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingBottom="8sp"
-                        android:text="View New Customers"
+                        android:text="@string/view_my_customers"
                         android:textColor="#ffffff"
                         android:textSize="16sp"
                         android:textStyle="bold"
