@@ -23,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -59,9 +60,10 @@ public class InsertComplaintActivity extends AppCompatActivity {
     private static final String URL_INSERT_COMPLAINT = "/insertComplaint";
     String mDate, mCustomerId, mCustomerName, mComplaintType, mComplaintDetails, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy;
     SearchableSpinner mSearchType, mSearchCustomer;
-    TextInputEditText mEditTextDate, mEditTextCustomerId, mEditTextComplaintDetails, mEditTextCustomer;
+    TextInputEditText mEditTextCustomerId, mEditTextComplaintDetails, mEditTextCustomer;
     TextInputLayout mEditTextLayout;
     LinearLayout mSearchCustomerLayout;
+    TextView mTextViewDate;
 
     int mYear, mMonth, mDay;
     ImageView imageViewCalendar;
@@ -97,15 +99,13 @@ public class InsertComplaintActivity extends AppCompatActivity {
 
 
     private void validateData() {
-        mDate = mEditTextDate.getText().toString();
+//        mDate = mEditTextDate.getText().toString();
         mComplaintDetails = mEditTextComplaintDetails.getText().toString();
         mCreatedBy = getUserId();
         mCreatedOn = getDateTime();
         mUpdatedBy = getUserId();
         mUpdatedOn = getDateTime();
 
-        if (TextUtils.isEmpty(mDate))
-            mEditTextDate.setError("Enter Date");
         if (TextUtils.isEmpty(mComplaintDetails))
             mEditTextComplaintDetails.setError("Enter Details");
         if (TextUtils.isEmpty(mCustomerId))
@@ -115,6 +115,7 @@ public class InsertComplaintActivity extends AppCompatActivity {
         if (TextUtils.equals(mComplaintType, getString(R.string.default_name)))
             Toast.makeText(this, "Select Complaint Type", Toast.LENGTH_SHORT).show();
 
+        Log.i(TAG, "onClick: " + mDate + mCreatedOn + mCreatedBy);
         if (!TextUtils.isEmpty(mDate) && !TextUtils.isEmpty(mComplaintDetails) && !TextUtils.isEmpty(mCustomerId) && !TextUtils.equals(mCustomerName, getString(R.string.default_name)) && !TextUtils.equals(mComplaintType, getString(R.string.default_name))) {
             Log.i("lol", "validateData: " + "test OnClicks");
             storeDataToServer();
@@ -154,6 +155,7 @@ public class InsertComplaintActivity extends AppCompatActivity {
         postParam.put("8", mCreatedBy);
         postParam.put("9", mUpdatedOn);
         postParam.put("10", mUpdatedBy);
+        postParam.put("11", "1");
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, DATABASE_URL + URL_INSERT_COMPLAINT, new JSONObject(postParam),
                 new Response.Listener<JSONObject>() {
@@ -245,6 +247,7 @@ public class InsertComplaintActivity extends AppCompatActivity {
     }
 
 
+
     public void datePickerFunction(View v) {
         final View buttonClicked = v;
 
@@ -263,12 +266,20 @@ public class InsertComplaintActivity extends AppCompatActivity {
                                           int monthOfYear, int dayOfMonth) {
 
 
-                        mEditTextDate.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
+                        mTextViewDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+//        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                        Date date = new Date();
+
+                        mDate = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth + " " + dateFormat.format(date);
+                        Log.i(TAG, "onDateSet: " + mDate);
 
                     }
                 }, mYear, mMonth, mDay);
         datePickerDialog.show();
+
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -282,8 +293,7 @@ public class InsertComplaintActivity extends AppCompatActivity {
 
     //  Function to provide current data and time
     private String getDateTime() {
-//        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date();
         return dateFormat.format(date);
     }
@@ -397,17 +407,15 @@ public class InsertComplaintActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         fab = findViewById(R.id.fab);
         imageViewCalendar = findViewById(R.id.imageViewCalendar);
-        mEditTextDate = findViewById(R.id.editTextDate);
         mEditTextCustomerId = findViewById(R.id.textInputEditCustomerId);
         mEditTextComplaintDetails = findViewById(R.id.editTextDetails);
         mCoordinaterLayout = findViewById(R.id.coordinator);
         mSearchCustomer = findViewById(R.id.searchCustomer);
         mEditTextCustomer = findViewById(R.id.textInputEditName);
         mEditTextLayout = findViewById(R.id.editTextLayoutName);
+        mTextViewDate = findViewById(R.id.textViewDate);
         mSearchCustomerLayout = findViewById(R.id.searchCustomerLayout);
         mSearchType = findViewById(R.id.searchType);
-        mEditTextDate.setKeyListener(null);
-        mEditTextDate.setText(getDateTime());
     }
 
 }

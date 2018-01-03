@@ -34,6 +34,7 @@ import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 
 public class ViewBrandPriceDetailsActivity extends AppCompatActivity {
     private static final String TAG = "ViewPriceDetails";
+    Toolbar toolbar;
     TextView mTextViewCustomer, mTextViewProduct, mTextViewRSP, mTextViewWSP, mTextViewStock, mTextViewDate, mTextViewCreatedBy, mTextViewCreatedOn;
     //Recycler view
     RecyclerView mRecyclerView;
@@ -62,7 +63,7 @@ public class ViewBrandPriceDetailsActivity extends AppCompatActivity {
         if (getIntent().getStringExtra("CustomerName") != null) {
             mSearchText = getIntent().getStringExtra("CustomerName");
             Log.i(TAG, "initializeVariables: " + mSearchText);
-            setTitle(mSearchText);
+            toolbar.setTitle(mSearchText);
             readData();
         }
         mPriceList = new ArrayList<>();
@@ -76,7 +77,7 @@ public class ViewBrandPriceDetailsActivity extends AppCompatActivity {
 
     private void initializeViews() {
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -190,4 +191,19 @@ public class ViewBrandPriceDetailsActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        } else if (item.getItemId() == R.id.checkable_menu) {
+            isChecked = !item.isChecked();
+            item.setChecked(isChecked);
+            mPriceList.clear();
+            mDetailsAdapter.notifyDataSetChanged();
+            readData();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
