@@ -60,7 +60,7 @@ public class CustomerContactAdapter extends RecyclerView.Adapter<CustomerContact
         //  Initialize Widgets in a single Item View
         public ViewHolder(View itemView) {
             super(itemView);
-            mTextViewCustomerId = itemView.findViewById(R.id.textViewContactId);
+            mTextViewCustomerId = itemView.findViewById(R.id.textViewCustomerId);
             mTextViewName = itemView.findViewById(R.id.textViewContactName);
             mTextViewPhone = itemView.findViewById(R.id.textViewContactPhone);
             mTextViewEmail = itemView.findViewById(R.id.textViewContactEmail);

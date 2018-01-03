@@ -72,6 +72,25 @@
                 app:hintText="Default" />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8sp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select Complaint Type" />
+
+            <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+
+                android:id="@+id/searchStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintText="Default" />
+        </LinearLayout>
+
 
         <TextView
             android:layout_width="match_parent"
@@ -85,6 +104,7 @@
             android:orientation="horizontal">
 
             <TextView
+                android:onClick="datePickerFunction"
                 android:id="@+id/textViewDate"
                 android:layout_width="0dp"
                 android:layout_marginEnd="8dp"

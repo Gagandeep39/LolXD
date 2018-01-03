@@ -4,7 +4,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -47,6 +49,7 @@ public class ViewCustomerActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     CoordinatorLayout mCoordinatorLayout;
     int size = 0;
+    int flag;
     private boolean isChecked = false;
 
     @Override
@@ -97,18 +100,18 @@ public class ViewCustomerActivity extends AppCompatActivity {
 
 
     private void readData() {
-
-
+        flag = 0;
+        startProgressDialog();
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 DATABASE_URL + "/dispCust", null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
-                progressDialog.dismiss();
-                progressDialog.dismiss();
 
                 try {
+                    progressDialog.dismiss();
+                    flag = 1;
                     JSONArray jsonArray = response.getJSONArray("message");
                     if (mSearchText.equals("0")) {
                         if (jsonArray.length() > 25)
@@ -213,9 +216,6 @@ public class ViewCustomerActivity extends AppCompatActivity {
         mSearchView.setIconified(false);
     }
 
-    private void startProgressDialog() {
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.view_customer_menu, menu);
@@ -247,6 +247,30 @@ public class ViewCustomerActivity extends AppCompatActivity {
 
         return "Invalid User";
 
+    }
+
+    private void startProgressDialog() {
+
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.setCancelable(true);
+        progressDialog.show();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (flag == 0) {
+                    progressDialog.dismiss();
+                    Snackbar snackbar = Snackbar.make(mCoordinatorLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            readData();
+                        }
+                    });
+                    snackbar.show();
+                }
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, 20000);
     }
 
 

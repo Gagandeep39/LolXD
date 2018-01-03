@@ -55,6 +55,7 @@ public class InsertCustomerActivity extends AppCompatActivity {
     RequestQueue queue;
     CoordinatorLayout mCoordinaterLayout;
     ProgressDialog progressDialog;
+    int flag;
 
     //Master Helper
     MasterHelper mTypeHelper, mCategoryHelper, mAreaHelper, mDistrictHelper, mStateHelper;
@@ -83,7 +84,8 @@ public class InsertCustomerActivity extends AppCompatActivity {
 
         progressDialog = new ProgressDialog(this);
         queue = Volley.newRequestQueue(this);
-
+        flag = 0;
+        startProgressDialog();
         //initialize Helpers
         mAreaHelper = new MasterHelper(this, "Area");
         mStateHelper = new MasterHelper(this, "State");
@@ -108,7 +110,7 @@ public class InsertCustomerActivity extends AppCompatActivity {
 //        ArrayAdapter mTypeAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mTypeArray);
         ArrayAdapter mCategoryAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mCategoryArray);
         ArrayAdapter mDistrictAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mDistrictArray);
-
+        progressDialog.dismiss();
         //Seting Adapter
         searchableSpinnerArea.setAdapter(mAreaAdapter);
 //        searchableSpinnerType.setAdapter(mTypeAdapter);
@@ -174,18 +176,6 @@ public class InsertCustomerActivity extends AppCompatActivity {
                 mArea = getString(R.string.default_name);
             }
         });
-        //Type Spinner
-//        searchableSpinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                mType = mTypeArray.get(position);
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> parent) {
-//                mArea = getString(R.string.default_name);
-//            }
-//        });
 
     }
 
@@ -264,8 +254,8 @@ public class InsertCustomerActivity extends AppCompatActivity {
 
     //  Stores data to Server
     private void storeData() {
-
-        showProgress();
+        flag = 0;
+        startProgressDialog();
 
 
         Map<String, String> postParam = new HashMap<>();
@@ -368,26 +358,29 @@ public class InsertCustomerActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void showProgress() {
+
+    private void startProgressDialog() {
+
         progressDialog.setMessage("Please Wait...");
-        progressDialog.setCancelable(false);
+        progressDialog.setCancelable(true);
         progressDialog.show();
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                progressDialog.dismiss();
-                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        validateData();
-                    }
-                });
-                snackbar.show();
+                if (flag == 0) {
+                    progressDialog.dismiss();
+                    Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            validateData();
+                        }
+                    });
+                    snackbar.show();
+                }
             }
         };
         Handler handler = new Handler();
         handler.postDelayed(runnable, 20000);
-
     }
 
 

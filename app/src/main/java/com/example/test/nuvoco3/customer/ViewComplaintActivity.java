@@ -75,8 +75,11 @@ public class ViewComplaintActivity extends AppCompatActivity {
                 progressDialog.dismiss();
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
-                    if (mSearchText.equals("0"))
-                        size = 50;
+                    if (mSearchText.equals("0")) {
+                        if (jsonArray.length() > 25)
+                            size = 25;
+                        else size = jsonArray.length();
+                    }
                     else
                         size = jsonArray.length();
 
@@ -121,9 +124,7 @@ public class ViewComplaintActivity extends AppCompatActivity {
 
     private void fetchData(JSONObject object) {
         try {
-            if (object.getString("record_id").toLowerCase().contains(mSearchText.toLowerCase())
-                    || object.getString("Type_Ofcomplaint").toLowerCase().contains(mSearchText.toLowerCase())
-                    || object.getString("Customer_name").toLowerCase().contains(mSearchText.toLowerCase())) {
+            if (object.getString("record_id").toLowerCase().contains(mSearchText.toLowerCase())) {
                 mComplaintId = object.getString("record_id") + "";
                 mCustomerId = object.getString("Customer_id") + "";
                 mCustomerName = object.getString("Customer_name") + "";

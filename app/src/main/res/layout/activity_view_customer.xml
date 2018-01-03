@@ -21,7 +21,7 @@
             android:layout_height="?attr/actionBarSize"
             app:layout_collapseMode="pin"
             app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:title="@string/view_my_customers">
+            app:title="View Customers">
 
         </android.support.v7.widget.Toolbar>
 

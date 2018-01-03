@@ -47,7 +47,7 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
     CoordinatorLayout mCoordinaterLayout;
     ProgressDialog progressDialog;
     String mContactId, mCustomerId, mCustomerName, mContactName, mContactPhone, mContactEmail, mContactDOB, mContactDOA, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy;
-    int size = 0;
+    int size = 0, flag;
     private boolean isChecked = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +91,7 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
 
 
     private void readData() {
-
+        flag = 0;
         showProgress();
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 DATABASE_URL + "/dispCon/0", null, new Response.Listener<JSONObject>() {
@@ -101,6 +101,8 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
 
+                    progressDialog.dismiss();
+                    flag = 1;
                     for (int i = 0; i < jsonArray.length(); i++) {
 
                         JSONObject object = jsonArray.getJSONObject(i);
@@ -199,26 +201,29 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
         mSearchView.setIconified(false);
     }
 
+
     private void showProgress() {
+
         progressDialog.setMessage("Please Wait...");
         progressDialog.setCancelable(true);
         progressDialog.show();
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                progressDialog.dismiss();
-                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        readData();
-                    }
-                });
-                snackbar.show();
+                if (flag == 0) {
+                    progressDialog.dismiss();
+                    Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            readData();
+                        }
+                    });
+                    snackbar.show();
+                }
             }
         };
         Handler handler = new Handler();
-        handler.postDelayed(runnable, 20000);
-
+        handler.postDelayed(runnable, 10000);
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.example.test.nuvoco3.customer;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -11,13 +10,17 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -27,7 +30,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.test.nuvoco3.MainActivity;
 import com.example.test.nuvoco3.MasterHelper;
 import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.signup.ObjectSerializer;
@@ -56,7 +58,7 @@ public class UpdateStatusActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     RequestQueue queue;
     int size = 50;
-    String mRecordId, mDate, mRepresentative, mCustomerId, mCustomerName, mStatus, mDetails, mRemark, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy, mClosedOn;
+    String mRecordId, mType, mDate, mRepresentative, mCustomerId, mCustomerName, mStatus, mDetails, mRemark, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy, mClosedOn;
     CoordinatorLayout mCoordinatorLayout;
     TextInputEditText mEditTextComplaintId, mEditTextCustomerId, mEditTextCustomerName, mEditTextDetails, mEditTextRemark;
 
@@ -66,27 +68,74 @@ public class UpdateStatusActivity extends AppCompatActivity {
 
     SearchableSpinner mComplaintSpinner;
 
+    NestedScrollView mScrollView;
+    SearchView mSearchView;
+    TextView mTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_status);
         initializeViews();
         initializeVariables();
-        readData();
-        populateSpinner();
+        if (mComplaintId != null) {
+            readData();
+            viewComplaintsNormal();
+            populateSpinner();
+            mTextView.setVisibility(View.GONE);
+            mScrollView.setVisibility(View.VISIBLE);
+            fab.setVisibility(View.VISIBLE);
+            mSearchView.setVisibility(View.GONE);
+
+        } else {
+            mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    mComplaintId = query;
+                    readData();
+                    viewComplaintsNormal();
+                    populateSpinner();
+                    mTextView.setVisibility(View.GONE);
+                    mScrollView.setVisibility(View.VISIBLE);
+                    fab.setVisibility(View.VISIBLE);
+                    mSearchView.setVisibility(View.GONE);
+
+                    return true;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    return false;
+                }
+            });
+
+
+        }
+
 
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!mStatus.equals("Closed")) {
-                    mClosedOn = getDateTime();
+                mRemark = mEditTextRemark.getText().toString();
 
-                } else {
-                    mClosedOn = "2017-01-01";
+                if (TextUtils.isEmpty(mRemark))
+                    mEditTextRemark.setError("Enter Remark");
+                else {
+
+                    if (!mStatus.equals("Closed")) {
+                        mClosedOn = getDateTime();
+
+                    } else if (mStatus.equals(getString(R.string.default_name))) {
+                        Toast.makeText(UpdateStatusActivity.this, "Select Status", Toast.LENGTH_SHORT).show();
+                    } else {
+                        mClosedOn = "2017-01-01 00:00:10";
+                    }
+
+                    updateDataNormal();
+
                 }
 
-                updateData();
             }
         });
     }
@@ -103,7 +152,7 @@ public class UpdateStatusActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
+                mStatus = getString(R.string.default_name);
             }
         });
     }
@@ -113,10 +162,14 @@ public class UpdateStatusActivity extends AppCompatActivity {
         mEditTextComplaintId.setText(mComplaintId);
         mEditTextCustomerId.setText(mCustomerId);
         mEditTextCustomerName.setText(mCustomerName);
-        mEditTextRemark.setText(mRemark);
+        if (!TextUtils.isEmpty(mRemark))
+            mEditTextRemark.setText(mRemark);
         mEditTextDetails.setText(mDetails);
         mUpdatedOn = getDateTime();
         mUpdatedBy = getUserId();
+        mDate = getDateTime();
+        mCreatedOn = getDateTime();
+        mUpdatedOn = getDateTime();
 
 
         mEditTextComplaintId.getBackground().mutate().setColorFilter(getResources().getColor(R.color.light_grey), PorterDuff.Mode.SRC_ATOP);
@@ -150,6 +203,9 @@ public class UpdateStatusActivity extends AppCompatActivity {
         mEditTextRemark = findViewById(R.id.editTextRemark);
         mEditTextDetails = findViewById(R.id.editTextDetails);
         mComplaintSpinner = findViewById(R.id.searchStatus);
+        mScrollView = findViewById(R.id.nestedScrollView);
+        mSearchView = findViewById(R.id.searchView);
+        mTextView = findViewById(R.id.textView);
 
     }
 
@@ -171,10 +227,11 @@ public class UpdateStatusActivity extends AppCompatActivity {
 
                         JSONObject object = jsonArray.getJSONObject(i);
                         if (object.getString("Complaint_id").toLowerCase().equals(mComplaintId)) {
+
+
                             mCustomerId = object.getString("Customer_id") + "";
                             mCustomerName = object.getString("Customer_name") + "";
                             mRepresentative = object.getString("Representative");
-                            mDate = object.getString("Date") + "";
                             mDetails = object.getString("complaint_details") + "";
                             mRemark = object.getString("resolution_remark");
                             mCreatedOn = object.getString("createdOn") + "";
@@ -231,7 +288,7 @@ public class UpdateStatusActivity extends AppCompatActivity {
         handler.postDelayed(runnable, 20000);
     }
 
-    private void updateData() {
+    private void updateDataDetails() {
         progressDialog.setMessage("Please Wait...");
         progressDialog.setCancelable(false);
         progressDialog.show();
@@ -242,7 +299,7 @@ public class UpdateStatusActivity extends AppCompatActivity {
                 Snackbar snackbar = Snackbar.make(mCoordinatorLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        updateData();
+                        updateDataDetails();
                     }
                 });
                 snackbar.show();
@@ -268,7 +325,7 @@ public class UpdateStatusActivity extends AppCompatActivity {
         postParam.put("13", mUpdatedBy);
         postParam.put("14", mClosedOn);
 
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, DATABASE_URL + "/updateComplaint_details", new JSONObject(postParam),
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, DATABASE_URL + "/insertCmpD", new JSONObject(postParam),
                 new Response.Listener<JSONObject>() {
 
                     @Override
@@ -279,7 +336,7 @@ public class UpdateStatusActivity extends AppCompatActivity {
 
                                 progressDialog.dismiss();
                                 Toast.makeText(UpdateStatusActivity.this, "Successfully Updated Data", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(UpdateStatusActivity.this, MainActivity.class));
+                                finish();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -316,8 +373,8 @@ public class UpdateStatusActivity extends AppCompatActivity {
 
     //  Function to provide current data and time
     private String getDateTime() {
-//        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         return dateFormat.format(date);
     }
@@ -350,6 +407,115 @@ public class UpdateStatusActivity extends AppCompatActivity {
 
     }
 
+    private void updateDataNormal() {
+
+        Map<String, String> postParam = new HashMap<>();
+
+//
+
+        postParam.put("1", mComplaintId);
+//        postParam.put("2", "2017-01-01 00:00:10");  //date
+        postParam.put("4", mCustomerName);
+        postParam.put("5", mType);
+        postParam.put("6", mDetails);
+        postParam.put("9", mUpdatedOn);    //updated on
+        postParam.put("10", mUpdatedBy);
+        postParam.put("11", mStatus);
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, DATABASE_URL + "/updateComplaints", new JSONObject(postParam),
+                new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i(TAG, response.toString());
+                        try {
+                            if (response.getString("status").equals("updated")) {
+//                                progressDialog.dismiss();
+//                                Toast.makeText(InsertComplaintActivity.this, "Successfully Inserted Data", Toast.LENGTH_SHORT).show();
+//                                Intent intent = new Intent(InsertComplaintActivity.this, InsertComplaintDetailsActivity.class);
+//                                intent.putExtra("date", mDate);
+//                                intent.putExtra("customerId", mCustomerId);
+//                                intent.putExtra("customerName", mCustomerName);
+//                                intent.putExtra("complaintDetails", mComplaintDetails);
+                                updateDataDetails();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error with Connection: " + error.getMessage() + "lol");
+            }
+        }) {
+
+            /**
+             * Passing some request headers
+             * */
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+
+
+        };
+
+        jsonObjReq.setTag("LOL");
+        // Adding request to request queue
+        queue.add(jsonObjReq);
+
+    }
+
+    private void viewComplaintsNormal() {
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
+                DATABASE_URL + "/dispComplaint", null, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.i("lol", "onResponse:  " + response);
+                progressDialog.dismiss();
+                try {
+                    JSONArray jsonArray = response.getJSONArray("message");
+
+
+                    for (int i = 0; i < jsonArray.length(); i++) {
+
+                        JSONObject object = jsonArray.getJSONObject(i);
+                        if (object.getString("record_id").equals(mComplaintId)) {
+                            mType = object.getString("Type_Ofcomplaint") + "";
+                        }
+                    }
+
+                } catch (JSONException e1) {
+                    e1.printStackTrace();
+                    e1.printStackTrace();
+                }
+            }
+
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("lol", "Error with Internet : " + error.getMessage());
+                // hide the progress dialog
+            }
+        });
+
+        // Adding request to request queue
+        queue.add(jsonObjReq);
+
+    }
+
+    public void enableSearch(View v) {
+
+        mSearchView.setIconified(false);
+    }
 
 
 }

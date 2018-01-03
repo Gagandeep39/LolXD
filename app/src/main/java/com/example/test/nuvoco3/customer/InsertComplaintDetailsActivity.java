@@ -48,6 +48,11 @@ import java.util.Map;
 
 import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 
+/**
+ * DEPRECATED
+ */
+
+
 public class InsertComplaintDetailsActivity extends AppCompatActivity {
 
     public static final String URL_INSERT_COMPLAINT_DETAILS = "/insertCmpD";

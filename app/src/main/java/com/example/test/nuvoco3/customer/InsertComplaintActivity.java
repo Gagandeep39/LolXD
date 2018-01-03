@@ -3,7 +3,6 @@ package com.example.test.nuvoco3.customer;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -56,14 +55,16 @@ import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 public class InsertComplaintActivity extends AppCompatActivity {
 
 
+    public static final String URL_INSERT_COMPLAINT_DETAILS = "/insertCmpD";
     private static final String TAG = "InsertComplaintActivity";
     private static final String URL_INSERT_COMPLAINT = "/insertComplaint";
-    String mDate, mCustomerId, mCustomerName, mComplaintType, mComplaintDetails, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy;
+    String mDate, mCustomerId, mCustomerName, mComplaintType, mComplaintDetails, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy, mStatus, mComplaintId, mRepresentative;
     SearchableSpinner mSearchType, mSearchCustomer;
     TextInputEditText mEditTextCustomerId, mEditTextComplaintDetails, mEditTextCustomer;
     TextInputLayout mEditTextLayout;
     LinearLayout mSearchCustomerLayout;
     TextView mTextViewDate;
+
 
     int mYear, mMonth, mDay;
     ImageView imageViewCalendar;
@@ -71,12 +72,13 @@ public class InsertComplaintActivity extends AppCompatActivity {
     CoordinatorLayout mCoordinaterLayout;
     ProgressDialog progressDialog;
     FloatingActionButton fab;
+    SearchableSpinner mStatusSpinner;
 
 
-    MasterHelper mTypeHelper;
+    MasterHelper mTypeHelper, mStatusHelper;
     //Arrray list returned from Helper class
     ArrayList<String> mTypeArrayList;
-    ArrayList<String> mCustomerList, mIdList;
+    ArrayList<String> mCustomerList, mIdList, mStatusList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,34 +116,16 @@ public class InsertComplaintActivity extends AppCompatActivity {
             Toast.makeText(this, "Select Customer", Toast.LENGTH_SHORT).show();
         if (TextUtils.equals(mComplaintType, getString(R.string.default_name)))
             Toast.makeText(this, "Select Complaint Type", Toast.LENGTH_SHORT).show();
+        if (TextUtils.equals(mStatus, getString(R.string.default_name)))
+            Toast.makeText(this, "Select Complaint Type", Toast.LENGTH_SHORT).show();
 
-        Log.i(TAG, "onClick: " + mDate + mCreatedOn + mCreatedBy);
-        if (!TextUtils.isEmpty(mDate) && !TextUtils.isEmpty(mComplaintDetails) && !TextUtils.isEmpty(mCustomerId) && !TextUtils.equals(mCustomerName, getString(R.string.default_name)) && !TextUtils.equals(mComplaintType, getString(R.string.default_name))) {
+        if (!TextUtils.isEmpty(mDate) && !TextUtils.isEmpty(mComplaintDetails) && !TextUtils.isEmpty(mCustomerId) && !TextUtils.equals(mCustomerName, getString(R.string.default_name)) && !TextUtils.equals(mComplaintType, getString(R.string.default_name)) && !TextUtils.equals(mStatus, getString(R.string.default_name))) {
             Log.i("lol", "validateData: " + "test OnClicks");
             storeDataToServer();
         }
     }
 
     private void storeDataToServer() {
-        progressDialog.setMessage("Please Wait...");
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                progressDialog.dismiss();
-                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        validateData();
-                    }
-                });
-                snackbar.show();
-            }
-        };
-        Handler handler = new Handler();
-        handler.postDelayed(runnable, 20000);
-
 
         Map<String, String> postParam = new HashMap<>();
 
@@ -155,7 +139,7 @@ public class InsertComplaintActivity extends AppCompatActivity {
         postParam.put("8", mCreatedBy);
         postParam.put("9", mUpdatedOn);
         postParam.put("10", mUpdatedBy);
-        postParam.put("11", "1");
+        postParam.put("11", mStatus);
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, DATABASE_URL + URL_INSERT_COMPLAINT, new JSONObject(postParam),
                 new Response.Listener<JSONObject>() {
@@ -165,16 +149,17 @@ public class InsertComplaintActivity extends AppCompatActivity {
                         Log.i(TAG, response.toString());
                         try {
                             if (response.getString("status").equals("updated")) {
-                                progressDialog.dismiss();
-                                Toast.makeText(InsertComplaintActivity.this, "Successfully Inserted Data", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(InsertComplaintActivity.this, InsertComplaintDetailsActivity.class);
-                                intent.putExtra("date", mDate);
-                                intent.putExtra("customerId", mCustomerId);
-                                intent.putExtra("customerName", mCustomerName);
-                                intent.putExtra("complaintDetails", mComplaintDetails);
-                                intent.putExtra("complaintId", response.getString("complaint_ID"));
-                                startActivity(intent);
-                                finish();
+//                                progressDialog.dismiss();
+//                                Toast.makeText(InsertComplaintActivity.this, "Successfully Inserted Data", Toast.LENGTH_SHORT).show();
+//                                Intent intent = new Intent(InsertComplaintActivity.this, InsertComplaintDetailsActivity.class);
+//                                intent.putExtra("date", mDate);
+//                                intent.putExtra("customerId", mCustomerId);
+//                                intent.putExtra("customerName", mCustomerName);
+//                                intent.putExtra("complaintDetails", mComplaintDetails);
+                                mComplaintId = response.getString("complaint_ID");
+                                mRepresentative = getUserId();
+//                                startActivity(intent);
+                                saveDetailsDataToServer();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -213,10 +198,11 @@ public class InsertComplaintActivity extends AppCompatActivity {
     private void populateSpinners() {
         ArrayAdapter<String> mCustomerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mCustomerList);
         ArrayAdapter<String> mTypeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mTypeArrayList);
-
+        ArrayAdapter<String> mStatusAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mStatusList);
 
         mSearchCustomer.setAdapter(mCustomerAdapter);
         mSearchType.setAdapter(mTypeAdapter);
+        mStatusSpinner.setAdapter(mStatusAdapter);
         mCustomerAdapter.notifyDataSetChanged();
         mSearchCustomer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -240,6 +226,17 @@ public class InsertComplaintActivity extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 mComplaintType = getString(R.string.default_name);
+            }
+        });
+        mStatusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mStatus = mStatusList.get(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                mStatus = getString(R.string.default_name);
             }
         });
 
@@ -391,9 +388,12 @@ public class InsertComplaintActivity extends AppCompatActivity {
         queue = Volley.newRequestQueue(this);
         //Initializing Helper class and its Array list
         mTypeHelper = new MasterHelper(this, "ComplaintType");
+        mStatusHelper = new MasterHelper(this, "ComplaintStatus");
         mTypeArrayList = new ArrayList<>();
         //Storing return Value in Array List
         mTypeArrayList = mTypeHelper.getRecordName();
+        mStatusList = mStatusHelper.getRecordName();
+
         mIdList = new ArrayList<>();
         mCustomerList = new ArrayList<>();
 
@@ -416,6 +416,90 @@ public class InsertComplaintActivity extends AppCompatActivity {
         mTextViewDate = findViewById(R.id.textViewDate);
         mSearchCustomerLayout = findViewById(R.id.searchCustomerLayout);
         mSearchType = findViewById(R.id.searchType);
+        mStatusSpinner = findViewById(R.id.searchStatus);
     }
+
+    private void saveDetailsDataToServer() {
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                progressDialog.dismiss();
+                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        validateData();
+                    }
+                });
+                snackbar.show();
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, 20000);
+
+        Map<String, String> postParam = new HashMap<>();
+
+//
+        postParam.put("2", mComplaintId);
+        postParam.put("3", mDate);
+        postParam.put("4", mRepresentative);
+        postParam.put("5", mCustomerId);
+        postParam.put("6", mCustomerName);
+        postParam.put("7", mStatus);
+        postParam.put("8", mComplaintDetails);
+        postParam.put("9", "");
+        postParam.put("10", mCreatedOn);
+        postParam.put("11", mCreatedBy);
+        postParam.put("12", mUpdatedOn);
+        postParam.put("13", mUpdatedBy);
+        postParam.put("14", "2017-01-01");
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, DATABASE_URL + URL_INSERT_COMPLAINT_DETAILS, new JSONObject(postParam),
+                new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i(TAG, response.toString());
+                        try {
+                            if (response.getString("status").equals("updated")) {
+
+                                progressDialog.dismiss();
+                                Toast.makeText(InsertComplaintActivity.this, "Successfully Inserted Data", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error with Connection: " + error.getMessage() + "lol");
+            }
+        }) {
+
+            /**
+             * Passing some request headers
+             * */
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+
+
+        };
+
+        jsonObjReq.setTag("LOL");
+        // Adding request to request queue
+        queue.add(jsonObjReq);
+    }
+
 
 }

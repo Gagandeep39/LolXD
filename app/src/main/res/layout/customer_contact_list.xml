@@ -50,7 +50,7 @@
                     android:textSize="@dimen/text_medium" />
 
                 <TextView
-                    android:id="@+id/textViewContactId"
+                    android:id="@+id/textViewCustomerId"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="end" />
@@ -68,7 +68,7 @@
                     android:textSize="@dimen/text_medium" />
 
                 <TextView
-                    android:id="@+id/textViewCustomerId"
+                    android:id="@+id/textViewCustomerName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                     android:gravity="end" />
@@ -82,7 +82,6 @@
 
             <TextView
                 android:textSize="@dimen/text_small"
-                android:id="@+id/textViewCustomerName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Contact Name : " />

@@ -126,6 +126,7 @@
                 android:padding="@dimen/padding_medium"
                 android:text="Select Date"
                 android:textSize="20sp"
+                android:onClick="datePickerFunction"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/imageViewCalendar"
                 app:layout_constraintStart_toStartOf="parent"
