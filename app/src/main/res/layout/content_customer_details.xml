@@ -15,6 +15,12 @@
         android:layout_height="match_parent"
         tools:context=".lead.CustomerDetailsActivity">
 
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="120sp"
+            android:layout_height="120sp"
+            android:src="@color/colorAccent" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

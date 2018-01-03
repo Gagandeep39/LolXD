@@ -56,10 +56,10 @@
             android:parentActivityName=".lead.ViewCustomerActivity"
             android:theme="@style/AppTheme" />
         <activity
-            android:parentActivityName=".signup.LoginActivity"
             android:name=".signup.RegisterActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_sign_up"
+            android:parentActivityName=".signup.LoginActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".lead.CustomerDetailsActivity"
@@ -139,7 +139,7 @@
         <activity
             android:name=".market.ViewBrandPriceDetailsActivity"
             android:label="@string/title_activity_brand_price_details"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

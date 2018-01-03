@@ -1,17 +1,19 @@
 package com.example.test.nuvoco3.customer;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -23,11 +25,13 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.R;
+import com.example.test.nuvoco3.signup.ObjectSerializer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
@@ -36,7 +40,6 @@ public class ViewComplaintActivity extends AppCompatActivity {
     public static final String URL_DISPLAY_COMPLAINT_DTLS = "/dispComplaint";
     String mComplaintId, mCustomerId, mCustomerName, mCreatedBy, mCreatedOn, mUpdatedBy, mUpdatedOn, mDetails, mType, mDate;
     RecyclerView mRecyclerView;
-    SwipeRefreshLayout mSwipeRefresh;
     ArrayList<Complaints> mComplaintArrayList;
     ComplaintAdapter mComplaintAdapter;
     RequestQueue queue;
@@ -45,6 +48,7 @@ public class ViewComplaintActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     CoordinatorLayout mCoordinatorLayout;
     int size = 50;
+    private boolean isChecked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,22 +84,17 @@ public class ViewComplaintActivity extends AppCompatActivity {
                     for (int i = 0; i < size; i++) {
 
                         JSONObject object = jsonArray.getJSONObject(i);
-                        if (object.getString("record_id").toLowerCase().contains(mSearchText.toLowerCase())
-                                || object.getString("Type_Ofcomplaint").toLowerCase().contains(mSearchText.toLowerCase())
-                                || object.getString("Customer_name").toLowerCase().contains(mSearchText.toLowerCase())) {
-                            mComplaintId = object.getString("record_id") + "";
-                            mCustomerId = object.getString("Customer_id") + "";
-                            mCustomerName = object.getString("Customer_name") + "";
-                            mDate = object.getString("Date") + "";
-                            mType = object.getString("Type_Ofcomplaint") + "";
-                            mDetails = object.getString("complaint_details") + "";
+                        if (isChecked) {
+                            if (object.getString("createdBy").equals(getUserId())) {
+//                                Log.i(TAG, "onResponse: " + "created by onlu" + isChecked);
+                                fetchData(object);
 
-                            mCreatedOn = object.getString("createdOn") + "";
-                            mCreatedBy = object.getString("createdBy") + "";
-                            mUpdatedBy = object.getString("upatedBy") + "";
-                            mUpdatedOn = object.getString("upatedOn") + "";
-                            mComplaintArrayList.add(new Complaints(mCustomerId, mCustomerName, mType, mDetails, mComplaintId, mDate, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy));
-                            mComplaintAdapter.notifyDataSetChanged();
+                            }
+
+
+                        } else {
+                            fetchData(object);
+
                         }
 
                     }
@@ -120,6 +119,30 @@ public class ViewComplaintActivity extends AppCompatActivity {
 
     }
 
+    private void fetchData(JSONObject object) {
+        try {
+            if (object.getString("record_id").toLowerCase().contains(mSearchText.toLowerCase())
+                    || object.getString("Type_Ofcomplaint").toLowerCase().contains(mSearchText.toLowerCase())
+                    || object.getString("Customer_name").toLowerCase().contains(mSearchText.toLowerCase())) {
+                mComplaintId = object.getString("record_id") + "";
+                mCustomerId = object.getString("Customer_id") + "";
+                mCustomerName = object.getString("Customer_name") + "";
+                mDate = object.getString("Date") + "";
+                mType = object.getString("Type_Ofcomplaint") + "";
+                mDetails = object.getString("complaint_details") + "";
+
+                mCreatedOn = object.getString("createdOn") + "";
+                mCreatedBy = object.getString("createdBy") + "";
+                mUpdatedBy = object.getString("upatedBy") + "";
+                mUpdatedOn = object.getString("upatedOn") + "";
+                mComplaintArrayList.add(new Complaints(mCustomerId, mCustomerName, mType, mDetails, mComplaintId, mDate, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy));
+                mComplaintAdapter.notifyDataSetChanged();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void initializeSearch() {
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -134,13 +157,6 @@ public class ViewComplaintActivity extends AppCompatActivity {
                 return false;
             }
         });
-//        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//            @Override
-//            public void onRefresh() {
-//                mSearchText = "0";
-//                mRecyclerView.setAdapter(mComplaintAdapter);
-//            }
-//        });
     }
 
     private void initializeViews() {
@@ -160,6 +176,13 @@ public class ViewComplaintActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();
+            return true;
+        } else if (item.getItemId() == R.id.checkable_menu) {
+            isChecked = !item.isChecked();
+            item.setChecked(isChecked);
+            mComplaintArrayList.clear();
+            mComplaintAdapter.notifyDataSetChanged();
+            readData();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -192,12 +215,40 @@ public class ViewComplaintActivity extends AppCompatActivity {
         handler.postDelayed(runnable, 20000);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.view_customer_menu, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        progressDialog.dismiss();
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem checkable = menu.findItem(R.id.checkable_menu);
+        checkable.setChecked(isChecked);
+        return true;
     }
+
+
+    private String getUserId() {
+        ArrayList<String> newArralist = new ArrayList<>();
+        // Creates a shared preferences variable to retrieve the logeed in users IDs and store it in Updated By Section
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.test.nuvoco3", Context.MODE_PRIVATE);
+
+        try {
+            newArralist = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("CustomerData", ObjectSerializer.serialize(new ArrayList<String>())));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (newArralist.size() > 0)
+            return newArralist.get(6);
+
+        return "Invalid User";
+
+    }
+
+
 
 
 

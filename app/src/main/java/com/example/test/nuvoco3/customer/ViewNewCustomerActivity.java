@@ -14,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -52,6 +53,7 @@ public class ViewNewCustomerActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     CoordinatorLayout mCoordinatorLayout;
     int size = 0;
+    private boolean isChecked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,23 +93,12 @@ public class ViewNewCustomerActivity extends AppCompatActivity {
                 return false;
             }
         });
-        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mSearchText = "";
-                readData();
-                Log.i(TAG, "onRefresh: " + "test");
-                mSwipeRefresh.setRefreshing(false);
-            }
-
-        });
 
     }
 
     private void initializeViews() {
 
         mRecyclerView = findViewById(R.id.recyclerView);
-        mSwipeRefresh = findViewById(R.id.swipeRefreshLayout);
         mSearchView = findViewById(R.id.searchView);
         mCoordinatorLayout = findViewById(R.id.coordinator);
     }
@@ -186,6 +177,13 @@ public class ViewNewCustomerActivity extends AppCompatActivity {
         if (item.getItemId() == android.R.id.home) {
             finish();
             return true;
+        } else if (item.getItemId() == R.id.checkable_menu) {
+            isChecked = !item.isChecked();
+            item.setChecked(isChecked);
+            mCustomerArrayList.clear();
+            mAdapter.notifyDataSetChanged();
+            readData();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -215,6 +213,22 @@ public class ViewNewCustomerActivity extends AppCompatActivity {
         };
         Handler handler = new Handler();
         handler.postDelayed(runnable, 20000);
+    }
+
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.view_customer_menu, menu);
+//
+//        return super.onCreateOptionsMenu(menu);
+//    }
+
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem checkable = menu.findItem(R.id.checkable_menu);
+        checkable.setChecked(isChecked);
+        return true;
     }
 
 

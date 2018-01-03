@@ -74,4 +74,6 @@
     <string name="sub_dealer">Sub Dealer</string>
     <string name="individual">Individual</string>
     <string name="view_my_customers">View My Customers</string>
+    <string name="title_activity_create_jcp">CreateJCPActivity</string>
+    <string name="title_activity_new_jcp">NewJCPActivity</string>
 </resources>

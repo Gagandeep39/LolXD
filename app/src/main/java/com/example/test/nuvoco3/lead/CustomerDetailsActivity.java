@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -20,15 +21,11 @@ public class CustomerDetailsActivity extends AppCompatActivity {
     TextView mName, mType, mCategory, mStatus, mPhone, mEmail, mArea, mDistrict, mState, mAddress, mCreatedBy, mCreatedOn, mUpdatedBy, mUpdatedOn;
     LinearLayout mNewContact, mNewComplaint, mNewCampaign, mNewPrice;
     int position;
+    ImageView mImageIcon;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_details);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("Customer Details");
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
         initializeViews();
         position = getIntent().getIntExtra("position", -1);
         displayData(position);
@@ -84,10 +81,19 @@ public class CustomerDetailsActivity extends AppCompatActivity {
         mCreatedOn.append(mCustomerArrayList.get(position).getCustomerCreatedOn());
         mUpdatedBy.append(mCustomerArrayList.get(position).getCustomerUpdatedBy());
         mUpdatedOn.append(mCustomerArrayList.get(position).getCustomerUpdatedOn());
+        mImageIcon.setBackgroundResource(chooseImage(mCustomerArrayList.get(position).getCustomerCategory()));
+
+
+
     }
 
     //  Initialize Views
     private void initializeViews() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Customer Details");
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         mName = findViewById(R.id.textViewName);
         mType = findViewById(R.id.textViewType);
         mCategory = findViewById(R.id.textViewCategory);
@@ -106,6 +112,7 @@ public class CustomerDetailsActivity extends AppCompatActivity {
         mNewComplaint = findViewById(R.id.textViewComplaint);
         mNewCampaign = findViewById(R.id.textViewCampaign);
         mNewPrice = findViewById(R.id.textViewPrice);
+        mImageIcon = findViewById(R.id.imageView);
     }
 
     @Override
@@ -115,5 +122,17 @@ public class CustomerDetailsActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private int chooseImage(String mCategory) {
+        switch (mCategory) {
+            case "Dealer":
+                return R.drawable.ic_dealer;
+            case "Subdealer":
+                return R.drawable.ic_sub_dealer;
+            case "Individual":
+                return R.drawable.ic_individual;
+        }
+        return R.drawable.ic_individual;
     }
 }

@@ -1,6 +1,8 @@
 package com.example.test.nuvoco3.lead;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
@@ -11,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -22,11 +25,13 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.R;
+import com.example.test.nuvoco3.signup.ObjectSerializer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
@@ -43,6 +48,7 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     String mContactId, mCustomerId, mCustomerName, mContactName, mContactPhone, mContactEmail, mContactDOB, mContactDOA, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy;
     int size = 0;
+    private boolean isChecked = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,37 +101,22 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
 
-                    if (mSearchText.equals("0"))
-                        size = 50;
-                    else
-                        size = jsonArray.length();
-
-
-                    progressDialog.dismiss();
-                    for (int i = 0; i < size; i++) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
 
                         JSONObject object = jsonArray.getJSONObject(i);
-                        if (object.getString("record_id").toLowerCase().contains(mSearchText.toLowerCase())
-                                || object.getString("c_name").toLowerCase().contains(mSearchText.toLowerCase())
-                                || object.getString("contactPerson").toLowerCase().contains(mSearchText.toLowerCase())
-                                || object.getString("contactPerson_email").toLowerCase().contains(mSearchText.toLowerCase())) {
-                            mContactId = object.getString("record_id") + "";   //primary key
-                            mCustomerName = object.getString("c_name") + "";
-                            mContactName = object.getString("contactPerson") + "";
-                            mContactPhone = object.getString("contactPerson_phone") + "";
-                            mContactEmail = object.getString("contactPerson_email") + "";
-                            mContactDOB = object.getString("contactPerson_DOB") + "";
-                            mContactDOA = object.getString("contactPerson_DOA") + "";
-                            mCustomerId = object.getString("record_id") + ""; //Foreign Key
-                            mCreatedBy = object.getString("createdBy") + "";
-                            mCreatedOn = object.getString("createdOn") + "";
-                            mUpdatedBy = object.getString("updatedBy") + "";
-                            mUpdatedOn = object.getString("updatedOn") + "";
-                            Log.i("lol", "onResponse: " + mCustomerId);
-                            mCustomerContactArrayList.add(new CustomerContact(mContactId, mCustomerId, mCustomerName, mContactName, mContactPhone, mContactEmail, mContactDOB, mContactDOA, mCreatedBy, mCreatedOn, mUpdatedBy, mUpdatedOn));
-                            mAdapter.notifyDataSetChanged();
-                        }
 
+                        if (isChecked) {
+                            if (object.getString("createdBy").equals(getUserId())) {
+//                                Log.i(TAG, "onResponse: " + "created by onlu" + isChecked);
+                                fetchData(object);
+
+                            }
+
+
+                        } else {
+                            fetchData(object);
+
+                        }
                     }
 
 
@@ -148,6 +139,34 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
         queue.add(jsonObjReq);
     }
 
+    private void fetchData(JSONObject object) {
+        try {
+            if (object.getString("record_id").toLowerCase().contains(mSearchText.toLowerCase())
+                    || object.getString("c_name").toLowerCase().contains(mSearchText.toLowerCase())
+                    || object.getString("contactPerson").toLowerCase().contains(mSearchText.toLowerCase())
+                    || object.getString("contactPerson_email").toLowerCase().contains(mSearchText.toLowerCase())) {
+                mContactId = object.getString("record_id") + "";   //primary key
+                mCustomerName = object.getString("c_name") + "";
+                mContactName = object.getString("contactPerson") + "";
+                mContactPhone = object.getString("contactPerson_phone") + "";
+                mContactEmail = object.getString("contactPerson_email") + "";
+                mContactDOB = object.getString("contactPerson_DOB") + "";
+                mContactDOA = object.getString("contactPerson_DOA") + "";
+                mCustomerId = object.getString("record_id") + ""; //Foreign Key
+                mCreatedBy = object.getString("createdBy") + "";
+                mCreatedOn = object.getString("createdOn") + "";
+                mUpdatedBy = object.getString("updatedBy") + "";
+                mUpdatedOn = object.getString("updatedOn") + "";
+                Log.i("lol", "onResponse: " + mCustomerId);
+                mCustomerContactArrayList.add(new CustomerContact(mContactId, mCustomerId, mCustomerName, mContactName, mContactPhone, mContactEmail, mContactDOB, mContactDOA, mCreatedBy, mCreatedOn, mUpdatedBy, mUpdatedOn));
+                mAdapter.notifyDataSetChanged();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
     private void initializeViews() {
         mSearchView = findViewById(R.id.searchView);
@@ -163,6 +182,13 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();
+            return true;
+        } else if (item.getItemId() == R.id.checkable_menu) {
+            isChecked = !item.isChecked();
+            item.setChecked(isChecked);
+            mCustomerContactArrayList.clear();
+            mAdapter.notifyDataSetChanged();
+            readData();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -196,10 +222,36 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.view_customer_menu, menu);
+
+        return super.onCreateOptionsMenu(menu);
     }
 
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem checkable = menu.findItem(R.id.checkable_menu);
+        checkable.setChecked(isChecked);
+        return true;
+    }
+
+
+    private String getUserId() {
+        ArrayList<String> newArralist = new ArrayList<>();
+        // Creates a shared preferences variable to retrieve the logeed in users IDs and store it in Updated By Section
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.test.nuvoco3", Context.MODE_PRIVATE);
+
+        try {
+            newArralist = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("CustomerData", ObjectSerializer.serialize(new ArrayList<String>())));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (newArralist.size() > 0)
+            return newArralist.get(6);
+
+        return "Invalid User";
+
+    }
 
 }
