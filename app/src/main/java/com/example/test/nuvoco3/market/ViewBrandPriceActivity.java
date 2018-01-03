@@ -149,9 +149,7 @@ public class ViewBrandPriceActivity extends AppCompatActivity {
 
     private void fetchData(JSONObject object) {
         try {
-            if (object.getString("Brand").toLowerCase().contains(mSearchText.toLowerCase())
-                    || object.getString("record_id").toLowerCase().contains(mSearchText.toLowerCase())
-                    || object.getString("counter").toLowerCase().contains(mSearchText.toLowerCase())) {
+            if (object.getString("counter").toLowerCase().contains(mSearchText.toLowerCase())) {
                 mCustomer = object.getString("Brand") + "";
                 mDate = object.getString("Date") + "";
                 mProduct = object.getString("Product") + "";
@@ -213,12 +211,7 @@ public class ViewBrandPriceActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.view_customer_menu, menu);
 
-        return super.onCreateOptionsMenu(menu);
-    }
 
 
     @Override
@@ -247,8 +240,12 @@ public class ViewBrandPriceActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.view_customer_menu, menu);
 
-
+        return super.onCreateOptionsMenu(menu);
+    }
 
 
 }

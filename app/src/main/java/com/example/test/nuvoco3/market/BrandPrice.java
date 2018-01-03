@@ -10,7 +10,7 @@ public class BrandPrice {
     private String mRepresentative;
     private String mCounter;
     private String mDate;
-    private String mCustomer;
+    private String mBrand;
     private String mProduct;
     private String mWSP;
     private String mRSP;
@@ -21,12 +21,12 @@ public class BrandPrice {
     private String mUpdatedOn;
     private String mUpdatedBy;
 
-    public BrandPrice(String mRecordId, String mRepresentative, String mCounter, String mDate, String mCustomer, String mProduct, String mWSP, String mRSP, String mStock, String mRemarks, String mCreatedOn, String mCreatedBy, String mUpdatedOn, String mUpdatedBy) {
+    public BrandPrice(String mRecordId, String mRepresentative, String mCounter, String mDate, String mBrand, String mProduct, String mWSP, String mRSP, String mStock, String mRemarks, String mCreatedOn, String mCreatedBy, String mUpdatedOn, String mUpdatedBy) {
         this.mRecordId = mRecordId;
         this.mRepresentative = mRepresentative;
         this.mCounter = mCounter;
         this.mDate = mDate;
-        this.mCustomer = mCustomer;
+        this.mBrand = mBrand;
         this.mProduct = mProduct;
         this.mWSP = mWSP;
         this.mRSP = mRSP;
@@ -54,8 +54,8 @@ public class BrandPrice {
         return mDate;
     }
 
-    public String getCustomer() {
-        return mCustomer;
+    public String getBrand() {
+        return mBrand;
     }
 
     public String getProduct() {

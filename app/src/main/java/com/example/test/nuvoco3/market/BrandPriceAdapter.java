@@ -36,9 +36,9 @@ public class BrandPriceAdapter extends RecyclerView.Adapter<BrandPriceAdapter.Vi
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        BrandPrice mCurrentBrandPrice = mBrandPrice.get(position);
+        final BrandPrice mCurrentBrandPrice = mBrandPrice.get(position);
         holder.setIsRecyclable(false);
-        holder.mBrand.append(mCurrentBrandPrice.getCustomer());
+        holder.mBrand.append(mCurrentBrandPrice.getBrand());
         holder.mCounter.append(mCurrentBrandPrice.getCounter());
         holder.mStock.append(mCurrentBrandPrice.getStock());
         holder.mProduct.append(mCurrentBrandPrice.getProduct());
@@ -63,7 +63,7 @@ public class BrandPriceAdapter extends RecyclerView.Adapter<BrandPriceAdapter.Vi
         holder.mTextViewDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mContext.startActivity(new Intent(mContext, ViewBrandPriceDetailsActivity.class).putExtra("Position", position));
+                mContext.startActivity(new Intent(mContext, ViewBrandPriceDetailsActivity.class).putExtra("CustomerName", mCurrentBrandPrice.getCounter()));
             }
         });
     }

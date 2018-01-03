@@ -14,7 +14,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -215,21 +214,6 @@ public class ViewNewCustomerActivity extends AppCompatActivity {
         handler.postDelayed(runnable, 20000);
     }
 
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.view_customer_menu, menu);
-//
-//        return super.onCreateOptionsMenu(menu);
-//    }
-
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem checkable = menu.findItem(R.id.checkable_menu);
-        checkable.setChecked(isChecked);
-        return true;
-    }
 
 
     private String getUserId() {

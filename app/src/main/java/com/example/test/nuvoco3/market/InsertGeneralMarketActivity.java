@@ -1,5 +1,6 @@
 package com.example.test.nuvoco3.market;
 
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -17,6 +18,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -26,6 +29,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.test.nuvoco3.MasterHelper;
 import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.signup.ObjectSerializer;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
@@ -38,6 +42,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,19 +55,23 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
     String mRepresentative, mCounter, mDate, mCustomer, mMarketDetail, mMSP, mPrice, mDemand, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy;
     TextInputEditText mEditTextRepresentative, mEditTextCounter, mEditTextMSP, mEditTextPrice;
     TextInputEditText mEditTextMarketDetails, mEditTextDemands;
-    SearchableSpinner mSearchCustomer;
+    SearchableSpinner mSearchCustomer, mSearchProduct, mSearchBrand;
     RequestQueue queue;
     ArrayList<String> mCustomerList, mIdList;
     CoordinatorLayout mCoordinaterLayout;
     ProgressDialog progressDialog;
+    MasterHelper mBrandHelper, mProductHelper;
+    ArrayList<String> mBrandList, mProductList;
+    ArrayAdapter mBrandAdapter, mProductAdapter;
+    TextView mTextViewDate;
+    int mYear, mMonth, mDay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert_general_market);
         initializeViews();
-        progressDialog = new ProgressDialog(this);
-        queue = Volley.newRequestQueue(this);
+        initializeVariables();
         populateCustomers();
         populateSpinner();
 
@@ -75,14 +84,23 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
         });
     }
 
+    private void initializeVariables() {
+
+        progressDialog = new ProgressDialog(this);
+        queue = Volley.newRequestQueue(this);
+
+        mBrandHelper = new MasterHelper(this, "Brand");
+        mProductHelper = new MasterHelper(this, "Product");
+
+        mBrandList = mBrandHelper.getRecordName();
+        mProductList = mProductHelper.getRecordName();
+    }
+
     private void validateData() {
         mRepresentative = mEditTextRepresentative.getText().toString();
-        mCounter = mEditTextCounter.getText().toString();
         mPrice = mEditTextPrice.getText().toString();
-        mMSP = mEditTextMSP.getText().toString();
         mMarketDetail = mEditTextMarketDetails.getText().toString();
         mDemand = mEditTextDemands.getText().toString();
-        mDate = getDateTime();
         mCreatedBy = getUserId();
         mCreatedOn = getDateTime();
         mUpdatedBy = getUserId();
@@ -218,6 +236,34 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
                 mCustomer = "default";
             }
         });
+
+        //Master helper Spinner
+        mBrandAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mBrandList);
+        mProductAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mProductList);
+
+        mSearchBrand.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        mSearchProduct.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                mMSP = mProductList.get(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                mMSP = getString(R.string.default_name);
+
+            }
+        });
     }
 
     //Get References for Views
@@ -227,13 +273,14 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         mEditTextRepresentative = findViewById(R.id.textInputEditRepresentative);
-        mEditTextCounter = findViewById(R.id.textInputEditCounter);
-        mEditTextMSP = findViewById(R.id.textInputEditMSP);
         mEditTextPrice = findViewById(R.id.textInputEditPrice);
         mEditTextMarketDetails = findViewById(R.id.editTextDetails);
         mCoordinaterLayout = findViewById(R.id.coordinator);
         mEditTextDemands = findViewById(R.id.editTextDemand);
-        mSearchCustomer = findViewById(R.id.searchCategoryBrand);
+        mSearchCustomer = findViewById(R.id.searchCategoryCustomer);
+        mSearchProduct = findViewById(R.id.searchCategoryProduct);
+        mSearchBrand = findViewById(R.id.searchCategoryBrand);
+        mTextViewDate = findViewById(R.id.textViewDate);
         mEditTextRepresentative.setText(getUserId());
         mEditTextRepresentative.setKeyListener(null);
     }
@@ -334,11 +381,34 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        progressDialog.dismiss();
+    public void datePickerFunction(View v) {
+        final View buttonClicked = v;
+
+        // Get Current Date
+        final Calendar c = Calendar.getInstance();
+        mYear = c.get(Calendar.YEAR);
+        mMonth = c.get(Calendar.MONTH);
+        mDay = c.get(Calendar.DAY_OF_MONTH);
+
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                new DatePickerDialog.OnDateSetListener() {
+
+                    @Override
+                    public void onDateSet(DatePicker view, int year,
+                                          int monthOfYear, int dayOfMonth) {
+
+
+                        mTextViewDate.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
+                        mDate = dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
+
+                    }
+                }, mYear, mMonth, mDay);
+        datePickerDialog.show();
     }
+
+
+
 
 
 }

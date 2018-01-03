@@ -12,26 +12,59 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="16sp">
+        android:padding="@dimen/padding_standard">
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/textInputLayoutRepresentative"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone">
+            android:layout_height="wrap_content">
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/textInputEditRepresentative"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="User ID"
-                android:inputType="number"
-                android:maxLength="4" />
+                android:clickable="false"
+                android:focusable="false" />
+
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/textInputLayoutName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/textInputEditName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
+                android:hint="User Name" />
 
 
         </android.support.design.widget.TextInputLayout>
 
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8sp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select Customer" />
+
+            <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+
+                android:id="@+id/searchCounter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintText="Default" />
+        </LinearLayout>
 
 
         <LinearLayout
@@ -72,20 +105,44 @@
                 app:hintText="Default" />
         </LinearLayout>
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/textInputLayoutCounter"
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <android.support.design.widget.TextInputEditText
-                android:inputType="textPersonName"
-                android:id="@+id/textInputEditCounter"
-                android:layout_width="match_parent"
-                android:nextFocusForward="@+id/textInputEditWSP"
+            android:layout_height="wrap_content"
+            android:text="Select Date" />
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textViewDate"
+                android:layout_width="0dp"
+                android:layout_marginEnd="8dp"
+                android:background="?attr/selectableItemBackground"
                 android:layout_height="wrap_content"
-                android:hint="Counter" />
+                android:clickable="true"
+                android:padding="@dimen/padding_medium"
+                android:text="Select Date"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/imageViewCalendar"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-
-        </android.support.design.widget.TextInputLayout>
+            <ImageView
+                android:id="@+id/imageViewCalendar"
+                android:layout_width="30sp"
+                android:layout_height="30sp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:onClick="datePickerFunction"
+                android:src="@drawable/ic_today_grey"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
 
 
         <android.support.design.widget.TextInputLayout
@@ -159,6 +216,15 @@
 
 
         </android.support.design.widget.TextInputLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/padding_standard">
+
+
+        </android.support.v7.widget.RecyclerView>
 
     </LinearLayout>
 

@@ -1,5 +1,6 @@
 package com.example.test.nuvoco3.market;
 
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -10,6 +11,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -17,7 +20,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -32,6 +37,7 @@ import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.signup.ObjectSerializer;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -39,6 +45,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,16 +57,22 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
     public static final String URL_BRAND_INFO = "/dispBrand";
     private static final String TAG = "BrandPrice Activity";
     String mRecordId, mRepresentative, mCounter, mDate, mBrand, mProduct, mWSP, mRSP, mStock, mRemarks, mCreatedBy, mCreatedOn, mUpdatedBy, mUpdatedOn;
-    SearchableSpinner mSearchProduct, mSearchBrand;
-    TextInputEditText mEditTextRepresentative, mEditTextCounter, mEditTextWSP, mEditTextRSP, mEditTextStocks;
+    SearchableSpinner mSearchProduct, mSearchBrand, mSearchCustomers;
+    TextInputEditText mEditTextRepresentative, mEditTextCounter, mEditTextWSP, mEditTextRSP, mEditTextStocks, mUserName;
     EditText mEditTextRemarks;
-    String mBrandArray[] = {"Brand 1", "Brand 2", "Brand 3"};
-    String mProductArray[] = {"Product 1", "Product 2", "Product 3"};
     RequestQueue queue;
-    ArrayList<String> mBrandArrayList, mProductArrayList;
+    ArrayList<String> mBrandArrayList, mProductArrayList, mCustomerArrayList;
     CoordinatorLayout mCoordinaterLayout;
     ProgressDialog progressDialog;
     MasterHelper mBrandHelper, mProductHelper;
+
+    //Date picker
+    TextView mTextViewDate;
+    //Displaying recently Added items
+    RecyclerView mRecyclerView;
+    BrandPriceDetailsAdapter mDetailsAdapter;
+    ArrayList<BrandPrice> mBrandPricePriceList;
+    private int mDay, mYear, mMonth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +80,7 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
         setContentView(R.layout.activity_brand_price);
         initializeViews();
         initializeVariables();
+        initializeBottomViews();
         populateSpinners();
 
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -79,11 +93,19 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
 
     }
 
+    private void initializeBottomViews() {
+        mDetailsAdapter = new BrandPriceDetailsAdapter(this, mBrandPricePriceList);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setAdapter(mDetailsAdapter);
+    }
+
     private void initializeVariables() {
         queue = Volley.newRequestQueue(this);
         progressDialog = new ProgressDialog(this);
         mBrandArrayList = new ArrayList<>();
         mProductArrayList = new ArrayList<>();
+        mCustomerArrayList = new ArrayList<>();
+        mBrandPricePriceList = new ArrayList<>();
 
         mBrandHelper = new MasterHelper(this, "Brand");
         mProductHelper = new MasterHelper(this, "Product");
@@ -91,18 +113,18 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
         mBrandArrayList = mBrandHelper.getRecordName();
         mProductArrayList = mProductHelper.getRecordName();
 
+        populateCustomers();
+
 
     }
 
     //Stores data and variables and checks if Something is left empty or not
     private void validateDate() {
         mRepresentative = mEditTextRepresentative.getText().toString();
-        mCounter = mEditTextCounter.getText().toString();
         mWSP = mEditTextWSP.getText().toString();
         mRSP = mEditTextRSP.getText().toString();
         mStock = mEditTextStocks.getText().toString();
         mRemarks = mEditTextRemarks.getText().toString();
-        mDate = getDateTime();
         mCreatedBy = getUserId();
         mCreatedOn = getDateTime();
         mUpdatedBy = getUserId();
@@ -120,13 +142,15 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
             mEditTextStocks.setError("Stocks cannot be Empty");
         if (TextUtils.isEmpty(mRemarks))
             mEditTextRemarks.setError("Remarks Field cannot be Empty");
+        if (TextUtils.isEmpty(mDate))
+            Toast.makeText(this, "Select Date", Toast.LENGTH_SHORT).show();
 
 
         if (TextUtils.equals(mProduct, "default"))
             Toast.makeText(this, "Select a Product", Toast.LENGTH_SHORT).show();
         if (TextUtils.equals(mBrand, "default"))
             Toast.makeText(this, "Select a Brand", Toast.LENGTH_SHORT).show();
-        if (!TextUtils.isEmpty(mRepresentative) && !TextUtils.isEmpty(mCounter) && !TextUtils.isEmpty(mWSP) && !TextUtils.isEmpty(mRSP) && !TextUtils.isEmpty(mStock) && !TextUtils.isEmpty(mRemarks) && !TextUtils.equals(mProduct, "default") && !TextUtils.equals(mBrand, "default"))
+        if (!TextUtils.isEmpty(mRepresentative) && !TextUtils.isEmpty(mCounter) && !TextUtils.isEmpty(mWSP) && !TextUtils.isEmpty(mRSP) && !TextUtils.isEmpty(mStock) && !TextUtils.isEmpty(mRemarks) && !TextUtils.equals(mProduct, "default") && !TextUtils.equals(mBrand, "default") && !TextUtils.isEmpty(mDate))
             sendDataToServer();
 
     }
@@ -180,7 +204,8 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
                             if (response.getString("status").equals("updated")) {
                                 progressDialog.dismiss();
                                 Toast.makeText(InsertBrandPriceActivity.this, "Successfully Inserted Data", Toast.LENGTH_SHORT).show();
-                                finish();
+                                mBrandPricePriceList.add(new BrandPrice("1", mRepresentative, mCounter, mDate, mBrand, mProduct, mWSP, mRSP, mStock, mRemarks, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy));
+                                mDetailsAdapter.notifyDataSetChanged();
 
                             }
                         } catch (JSONException e) {
@@ -222,9 +247,13 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
 
         ArrayAdapter<String> mProductAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mProductArrayList);
         ArrayAdapter<String> mBrandAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mBrandArrayList);
+        ArrayAdapter<String> mCustomerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mCustomerArrayList);
+
         progressDialog.dismiss();
         mSearchProduct.setAdapter(mProductAdapter);
         mSearchBrand.setAdapter(mBrandAdapter);
+        mSearchCustomers.setAdapter(mCustomerAdapter);
+
         mSearchBrand.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -249,6 +278,17 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
 
             }
         });
+        mSearchCustomers.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                mCounter = mCustomerArrayList.get(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                mCounter = getString(R.string.default_name);
+            }
+        });
 
     }
 
@@ -259,7 +299,6 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         mEditTextRepresentative = findViewById(R.id.textInputEditRepresentative);
-        mEditTextCounter = findViewById(R.id.textInputEditCounter);
         mEditTextWSP = findViewById(R.id.textInputEditWSP);
         mEditTextRSP = findViewById(R.id.textInputEditRSP);
         mEditTextStocks = findViewById(R.id.textInputEditStocks);
@@ -267,8 +306,14 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
         mSearchBrand = findViewById(R.id.searchCategoryBrand);
         mCoordinaterLayout = findViewById(R.id.coordinator);
         mSearchProduct = findViewById(R.id.searchCategoryProduct);
+        mUserName = findViewById(R.id.textInputEditName);
+        mSearchCustomers = findViewById(R.id.searchCounter);
+        mTextViewDate = findViewById(R.id.textViewDate);
+        mRecyclerView = findViewById(R.id.recyclerView);
         mEditTextRepresentative.setText(getUserId());
         mEditTextRepresentative.setKeyListener(null);
+        mUserName.setText(getUserName());
+        mUserName.setKeyListener(null);
     }
 
 
@@ -298,6 +343,23 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
 
     }
 
+    private String getUserName() {
+        ArrayList<String> newArralist = new ArrayList<>();
+        // Creates a shared preferences variable to retrieve the logeed in users IDs and store it in Updated By Section
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.test.nuvoco3", Context.MODE_PRIVATE);
+
+        try {
+            newArralist = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("CustomerData", ObjectSerializer.serialize(new ArrayList<String>())));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (newArralist.size() > 0)
+            return newArralist.get(7);
+
+        return "Invalid User";
+
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -307,9 +369,91 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        progressDialog.dismiss();
+    public void datePickerFunction(View v) {
+        final View buttonClicked = v;
+
+        // Get Current Date
+        final Calendar c = Calendar.getInstance();
+        mYear = c.get(Calendar.YEAR);
+        mMonth = c.get(Calendar.MONTH);
+        mDay = c.get(Calendar.DAY_OF_MONTH);
+
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                new DatePickerDialog.OnDateSetListener() {
+
+                    @Override
+                    public void onDateSet(DatePicker view, int year,
+                                          int monthOfYear, int dayOfMonth) {
+
+
+                        mTextViewDate.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
+                        mDate = dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
+
+                    }
+                }, mYear, mMonth, mDay);
+        datePickerDialog.show();
     }
+
+
+    public void populateCustomers() {
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                progressDialog.dismiss();
+                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        populateCustomers();
+                    }
+                });
+                snackbar.show();
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, 20000);
+
+
+        Map<String, String> postParam = new HashMap<>();
+
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
+                DATABASE_URL + "/dispCust", null, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONArray jsonArray = response.getJSONArray("message");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+
+                        JSONObject object = jsonArray.getJSONObject(i);
+//                        mIdList.add(object.getString("record_id"));   //primary key
+                        mCustomerArrayList.add(object.getString("name"));
+                    }
+                    progressDialog.dismiss();
+
+
+                } catch (JSONException e1) {
+                    e1.printStackTrace();
+                    e1.printStackTrace();
+                }
+            }
+
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("lol", "Error with Internet : " + error.getMessage());
+                // hide the progress dialog
+            }
+        });
+
+        // Adding request to request queue
+        queue.add(jsonObjReq);
+    }
+
+
 }

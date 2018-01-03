@@ -1,67 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:orientation="vertical"
+    android:id="@+id/recyclerView"
     android:padding="@dimen/padding_standard"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".market.ViewBrandPriceDetailsActivity"
     tools:showIn="@layout/activity_brand_price_details">
 
-    <TextView
-        android:id="@+id/textViewCustomer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Customer : " />
 
-    <TextView
-        android:id="@+id/textViewProduct"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Product : " />
-
-    <TextView
-        android:id="@+id/textViewRSP"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="RSP : " />
-
-    <TextView
-        android:id="@+id/textViewWSP"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="WSP : " />
-
-    <TextView
-        android:id="@+id/textViewStock"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Stock : " />
-
-    <TextView
-        android:id="@+id/textViewRemark"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Remark : " />
-
-    <TextView
-        android:id="@+id/textViewDate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Date : " />
-
-    <TextView
-        android:id="@+id/textViewCreatedBy"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="created By : " />
-
-    <TextView
-        android:id="@+id/textViewCreatedOn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Created On : " />
-
-</LinearLayout>
+</android.support.v7.widget.RecyclerView>

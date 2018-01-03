@@ -14,6 +14,27 @@
         android:orientation="vertical"
         android:padding="16sp">
 
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/textInputLayoutRepresentative"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorPrimary"
+            app:layout_constraintEnd_toEndOf="@+id/textInputLayoutCategory"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/textInputLayoutCategory"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutCategory">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/textInputEditRepresentative"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
+                android:hint="Representative"
+                android:nextFocusForward="@+id/textInputEditCounter" />
+
+        </android.support.design.widget.TextInputLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -27,76 +48,89 @@
 
             <com.toptoche.searchablespinnerlibrary.SearchableSpinner
 
+                android:id="@+id/searchCategoryCustomer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintText="Default" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Date" />
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textViewDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:padding="@dimen/padding_medium"
+                android:text="Select Date"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/imageViewCalendar"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/imageViewCalendar"
+                android:layout_width="30sp"
+                android:layout_height="30sp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:onClick="datePickerFunction"
+                android:src="@drawable/ic_today_grey"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8sp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select Brand" />
+
+            <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+
                 android:id="@+id/searchCategoryBrand"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:hintText="Default" />
         </LinearLayout>
 
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/textInputLayoutRepresentative"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:backgroundTint="@color/colorPrimary"
-            app:layout_constraintEnd_toEndOf="@+id/textInputLayoutCategory"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/textInputLayoutCategory"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutCategory">
+            android:orientation="vertical"
+            android:padding="8sp">
 
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/textInputEditRepresentative"
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:nextFocusForward="@+id/textInputEditCounter"
-                android:hint="User ID"
-                android:inputType="number"
-                android:maxLength="4" />
+                android:text="Select Product" />
 
-        </android.support.design.widget.TextInputLayout>
+            <com.toptoche.searchablespinnerlibrary.SearchableSpinner
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/textInputLayoutCounter"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="@+id/textInputLayoutCategory"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/textInputLayoutCategory"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutCategory">
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/textInputEditCounter"
-                android:inputType="textPersonName"
+                android:id="@+id/searchCategoryProduct"
                 android:layout_width="match_parent"
-                android:nextFocusForward="@+id/textInputEditMSP"
                 android:layout_height="wrap_content"
-                android:hint="Counter" />
-
-
-        </android.support.design.widget.TextInputLayout>
-
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/textInputLayoutMSP"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="@+id/textInputLayoutCategory"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/textInputLayoutCategory"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutCategory">
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/textInputEditMSP"
-                android:layout_width="match_parent"
-                android:inputType="textPersonName"
-
-                android:nextFocusForward="@+id/textInputEditPrice"
-                android:layout_height="wrap_content"
-                android:hint="Major Selling Products" />
-
-
-        </android.support.design.widget.TextInputLayout>
+                app:hintText="Default" />
+        </LinearLayout>
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/textInputLayoutPrice"
