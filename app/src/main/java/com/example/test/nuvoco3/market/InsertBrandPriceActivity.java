@@ -319,11 +319,12 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
 
     //  Function to provide current data and time
     private String getDateTime() {
-//        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         return dateFormat.format(date);
     }
+
 
     // Get LoggedIn users ID
     private String getUserId() {
@@ -387,12 +388,18 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
                                           int monthOfYear, int dayOfMonth) {
 
 
-                        mTextViewDate.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
-                        mDate = dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
+                        mTextViewDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+//        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                        Date date = new Date();
+
+                        mDate = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth + " " + dateFormat.format(date);
+                        Log.i(TAG, "onDateSet: " + mDate);
 
                     }
                 }, mYear, mMonth, mDay);
         datePickerDialog.show();
+
     }
 
 

@@ -74,7 +74,6 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
         initializeVariables();
         populateCustomers();
         populateSpinner();
-
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,12 +107,6 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(mRepresentative)) {
             mEditTextRepresentative.setError("Enter Representative's Name");
         }
-        if (TextUtils.isEmpty(mCounter)) {
-            mEditTextCounter.setError("Enter Counter's Name");
-        }
-        if (TextUtils.isEmpty(mMSP)) {
-            mEditTextMSP.setError("Enter MSP");
-        }
         if (TextUtils.isEmpty(mPrice)) {
             mEditTextPrice.setError("Enter Price");
         }
@@ -130,7 +123,7 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
 
     //Saves Data to Server
     private void sendDataToServer() {
-        showValidationDialogue();
+        Log.i(TAG, "sendDataToServer: " + getDateTime());
 
         Map<String, String> postParam = new HashMap<>();
 
@@ -156,7 +149,6 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
                         Log.i(TAG, response.toString());
                         try {
                             if (response.getString("status").equals("updated")) {
-                                progressDialog.dismiss();
                                 Toast.makeText(InsertGeneralMarketActivity.this, "Successfully Inserted Data", Toast.LENGTH_SHORT).show();
                                 finish();
 
@@ -227,6 +219,7 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
         mSearchCustomer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mCounter = mCustomerList.get(position);
                 mCustomer = mCustomerList.get(position);
 //                mCustomerId = mIdList.get(position);
             }
@@ -241,6 +234,8 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
         mBrandAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mBrandList);
         mProductAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mProductList);
 
+        mSearchBrand.setAdapter(mBrandAdapter);
+        mSearchProduct.setAdapter(mProductAdapter);
         mSearchBrand.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -287,8 +282,8 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
 
     //  Function to provide current data and time
     private String getDateTime() {
-//        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         return dateFormat.format(date);
     }
@@ -340,8 +335,6 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
         };
         Handler handler = new Handler();
         handler.postDelayed(runnable, 20000);
-        ArrayAdapter<String> mCustomerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mCustomerList);
-
         mCustomerList = new ArrayList<String>();
         mIdList = new ArrayList<>();
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
@@ -353,10 +346,10 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
                 progressDialog.dismiss();
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
-                    for (int i = 0; i < 50; i++) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
 
                         JSONObject object = jsonArray.getJSONObject(i);
-                        mIdList.add(object.getString("record_id"));   //primary key
+//                        mIdList.add(object.getString("record_id"));   //primary key
                         mCustomerList.add(object.getString("name"));
                     }
 
@@ -399,12 +392,18 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
                                           int monthOfYear, int dayOfMonth) {
 
 
-                        mTextViewDate.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
-                        mDate = dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
+                        mTextViewDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+//        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                        Date date = new Date();
+
+                        mDate = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth + " " + dateFormat.format(date);
+                        Log.i(TAG, "onDateSet: " + mDate);
 
                     }
                 }, mYear, mMonth, mDay);
         datePickerDialog.show();
+
     }
 
 

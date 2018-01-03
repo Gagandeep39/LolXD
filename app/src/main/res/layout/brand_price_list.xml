@@ -8,6 +8,8 @@
     app:cardCornerRadius="@dimen/padding_medium">
 
     <LinearLayout
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

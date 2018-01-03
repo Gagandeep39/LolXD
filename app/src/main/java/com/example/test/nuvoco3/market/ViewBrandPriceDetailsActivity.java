@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -29,7 +30,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import static com.example.test.nuvoco3.market.ViewBrandPriceActivity.URL_DISPLAY_MARKET;
-import static com.example.test.nuvoco3.market.ViewBrandPriceActivity.mBrandPriceArrayList;
 import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 
 public class ViewBrandPriceDetailsActivity extends AppCompatActivity {
@@ -54,7 +54,6 @@ public class ViewBrandPriceDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_brand_price_details);
         initializeViews();
         initializeVariables();
-        readData();
 
     }
 
@@ -62,6 +61,9 @@ public class ViewBrandPriceDetailsActivity extends AppCompatActivity {
         queue = Volley.newRequestQueue(this);
         if (getIntent().getStringExtra("CustomerName") != null) {
             mSearchText = getIntent().getStringExtra("CustomerName");
+            Log.i(TAG, "initializeVariables: " + mSearchText);
+            setTitle(mSearchText);
+            readData();
         }
         mPriceList = new ArrayList<>();
         mDetailsAdapter = new BrandPriceDetailsAdapter(this, mPriceList);
@@ -130,6 +132,7 @@ public class ViewBrandPriceDetailsActivity extends AppCompatActivity {
     private void fetchData(JSONObject object) {
         try {
             if (object.getString("counter").toLowerCase().contains(mSearchText.toLowerCase())) {
+                Log.i(TAG, "fetchData: " + "just another test");
                 mCustomer = object.getString("Brand") + "";
                 mDate = object.getString("Date") + "";
                 mProduct = object.getString("Product") + "";
@@ -144,8 +147,9 @@ public class ViewBrandPriceDetailsActivity extends AppCompatActivity {
                 mCreatedOn = object.getString("createdOn") + "";
                 mUpdatedBy = object.getString("updatedBy") + "";
                 mUpdatedOn = object.getString("updatedOn") + "";
-                mBrandPriceArrayList.add(new BrandPrice(mRecordId, mRepresentative, mCounter, mDate, mCustomer, mProduct, mWSP, mRSP, mStock, mRemarks, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy));
+                mPriceList.add(new BrandPrice(mRecordId, mRepresentative, mCounter, mDate, mCustomer, mProduct, mWSP, mRSP, mStock, mRemarks, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy));
                 mDetailsAdapter.notifyDataSetChanged();
+                mRecyclerView.setAdapter(mDetailsAdapter);
             }
         } catch (JSONException e) {
             e.printStackTrace();

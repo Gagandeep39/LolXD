@@ -47,7 +47,7 @@ public class ViewBrandPriceActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     int size = 0;
     private boolean isChecked = false;
-    private String mCustomer, mDate, mProduct, mRSP, mStock, mWSP, mCounter, mCreatedBy, mCreatedOn, mUpdatedBy, mUpdatedOn, mRecordId, mRemarks, mRepresentative;
+    String mCustomer, mDate, mProduct, mRSP, mStock, mWSP, mCounter, mCreatedBy, mCreatedOn, mUpdatedBy, mUpdatedOn, mRecordId, mRemarks, mRepresentative;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,7 +149,7 @@ public class ViewBrandPriceActivity extends AppCompatActivity {
 
     private void fetchData(JSONObject object) {
         try {
-            if (object.getString("counter").toLowerCase().contains(mSearchText.toLowerCase())) {
+//            if (object.getString("counter").toLowerCase().contains(mSearchText.toLowerCase())) {
                 mCustomer = object.getString("Brand") + "";
                 mDate = object.getString("Date") + "";
                 mProduct = object.getString("Product") + "";
@@ -166,7 +166,7 @@ public class ViewBrandPriceActivity extends AppCompatActivity {
                 mUpdatedOn = object.getString("updatedOn") + "";
                 mBrandPriceArrayList.add(new BrandPrice(mRecordId, mRepresentative, mCounter, mDate, mCustomer, mProduct, mWSP, mRSP, mStock, mRemarks, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy));
                 mBrandPriceAdapter.notifyDataSetChanged();
-            }
+//            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
