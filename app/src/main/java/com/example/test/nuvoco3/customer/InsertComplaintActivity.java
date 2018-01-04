@@ -110,6 +110,7 @@ public class InsertComplaintActivity extends AppCompatActivity {
         mCreatedOn = getDateTime();
         mUpdatedBy = getUserId();
         mUpdatedOn = getDateTime();
+        mStatus = "Open";
 
         if (TextUtils.isEmpty(mComplaintDetails))
             mEditTextComplaintDetails.setError("Enter Details");
@@ -201,11 +202,11 @@ public class InsertComplaintActivity extends AppCompatActivity {
     private void populateSpinners() {
         ArrayAdapter<String> mCustomerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mCustomerList);
         ArrayAdapter<String> mTypeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mTypeArrayList);
-        ArrayAdapter<String> mStatusAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mStatusList);
+//        ArrayAdapter<String> mStatusAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mStatusList);
 
         mSearchCustomer.setAdapter(mCustomerAdapter);
         mSearchType.setAdapter(mTypeAdapter);
-        mStatusSpinner.setAdapter(mStatusAdapter);
+//        mStatusSpinner.setAdapter(mStatusAdapter);
         mCustomerAdapter.notifyDataSetChanged();
         mSearchCustomer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -231,17 +232,20 @@ public class InsertComplaintActivity extends AppCompatActivity {
                 mComplaintType = getString(R.string.default_name);
             }
         });
-        mStatusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mStatus = mStatusList.get(position);
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                mStatus = getString(R.string.default_name);
-            }
-        });
+
+//        mStatusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                mStatus = mStatusList.get(position);
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//                mStatus = getString(R.string.default_name);
+//            }
+//        });
+
 
 
     }
@@ -397,11 +401,11 @@ public class InsertComplaintActivity extends AppCompatActivity {
         queue = Volley.newRequestQueue(this);
         //Initializing Helper class and its Array list
         mTypeHelper = new MasterHelper(this, "ComplaintType");
-        mStatusHelper = new MasterHelper(this, "ComplaintStatus");
+//        mStatusHelper = new MasterHelper(this, "ComplaintStatus");
         mTypeArrayList = new ArrayList<>();
         //Storing return Value in Array List
         mTypeArrayList = mTypeHelper.getRecordName();
-        mStatusList = mStatusHelper.getRecordName();
+//        mStatusList = mStatusHelper.getRecordName();
 
         mIdList = new ArrayList<>();
         mCustomerList = new ArrayList<>();

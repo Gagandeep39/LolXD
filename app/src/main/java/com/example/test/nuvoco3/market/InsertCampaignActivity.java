@@ -1,5 +1,6 @@
 package com.example.test.nuvoco3.market;
 
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -19,7 +20,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -30,6 +33,7 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.R;
+import com.example.test.nuvoco3.helpers.MasterHelper;
 import com.example.test.nuvoco3.signup.ObjectSerializer;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
@@ -41,6 +45,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,22 +56,27 @@ import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_CUSTOMER;
 import static com.example.test.nuvoco3.helpers.Contract.INSERT_CAMPAIGN;
 
 public class InsertCampaignActivity extends AppCompatActivity {
-    public static final String URL_ADD_CAMPAIGN = "/insertCamp";
     private static final String TAG = "InsertCampaign Activity";
     String mRepresentative, mCounter, mDate, mCompany, mCampaignDetail, mCreatedOn, mCreatedBy, mUpdatedBy, mUpdatedOn;
     TextInputEditText mEditTextRepresentative, mEditTextDetails, mEditTextCustomerName;
     TextInputLayout mEditTextLayout;
-    SearchableSpinner mSearchContact, mSearchCompany;
+    SearchableSpinner mSearchContact, mSearchCustomer, mSearchBrand;
     RequestQueue queue;
     CoordinatorLayout mCoordinaterLayout;
     ProgressDialog progressDialog;
     FloatingActionButton fab;
-    ArrayAdapter mCustomerAdapter, mContactAdapter;
+    ArrayAdapter mCustomerAdapter, mContactAdapter, mBrandAdapter;
     LinearLayout mSearchCompanyLayout;
     boolean isChecked = false;
+    int mYear, mMonth, mDay;
+    TextView mTextViewDate;
 
     //Spinners
     ArrayList<String> mContactList, mCustomerList;
+
+    //Master helper
+    MasterHelper mBrandHelper;
+    ArrayList<String> mBrandList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +100,11 @@ public class InsertCampaignActivity extends AppCompatActivity {
         queue = Volley.newRequestQueue(this);
         mCustomerList = new ArrayList<>();
         mContactList = new ArrayList<>();
+        mBrandList = new ArrayList<>();
+        mBrandHelper = new MasterHelper(this, "Brand");
+        mBrandList = mBrandHelper.getRecordName();
+
+
         if (getIntent().getStringExtra("CustomerDetails") != null) {
             mEditTextLayout.setVisibility(View.VISIBLE);
             mEditTextLayout.setOnKeyListener(null);
@@ -98,7 +113,6 @@ public class InsertCampaignActivity extends AppCompatActivity {
 
             mEditTextCustomerName.setText(getIntent().getStringExtra("CustomerName"));
             mCompany = getIntent().getStringExtra("CustomerName");
-            populateContacts();
         }
 
 
@@ -106,40 +120,53 @@ public class InsertCampaignActivity extends AppCompatActivity {
     }
 
     private void populateSpinners() {
+        mBrandAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mBrandList);
         mCustomerAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mCustomerList);
-        mContactAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mContactList);
+//        mContactAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mContactList);
 
-        mSearchCompany.setAdapter(mCustomerAdapter);
-        mSearchContact.setAdapter(mContactAdapter);
-        mSearchCompany.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mSearchCustomer.setAdapter(mCustomerAdapter);
+//        mSearchContact.setAdapter(mContactAdapter);
+        mSearchBrand.setAdapter(mBrandAdapter);
+
+        mSearchCustomer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mCompany = mCustomerList.get(position);
+                mCounter = mCustomerList.get(position);
                 Log.i(TAG, "onItemSelected: " + mCompany);
-                populateContacts();
-                mContactList.clear();
-                mContactAdapter.notifyDataSetChanged();
+//                populateContacts();
+//                mContactList.clear();
+//                mContactAdapter.notifyDataSetChanged();
                 mSearchContact.setAdapter(mContactAdapter);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                mCompany = getString(R.string.default_name);
-                mContactList.clear();
-                mContactAdapter.notifyDataSetChanged();
+                mCounter = getString(R.string.default_name);
 
             }
         });
         mSearchContact.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mCounter = mContactList.get(position);
+//                mCounter = mContactList.get(position);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                mCounter = getString(R.string.default_name);
+//                mCounter = getString(R.string.default_name);
+            }
+        });
+        mSearchBrand.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                mCompany = mBrandList.get(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                mCompany = getString(R.string.default_name);
+
             }
         });
     }
@@ -255,7 +282,6 @@ public class InsertCampaignActivity extends AppCompatActivity {
     private void validateData() {
         mRepresentative = mEditTextRepresentative.getText().toString();
         mCampaignDetail = mEditTextDetails.getText().toString();
-        mDate = getDateTime();
         mCreatedBy = getUserId();
         mCreatedOn = getDateTime();
         mUpdatedBy = getUserId();
@@ -269,12 +295,14 @@ public class InsertCampaignActivity extends AppCompatActivity {
         }
 
         if (TextUtils.equals(mCompany, getString(R.string.default_name)))
-            Toast.makeText(this, "Select a Company", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Select a Brand", Toast.LENGTH_SHORT).show();
         if (TextUtils.equals(mCounter, getString(R.string.default_name)))
-            Toast.makeText(this, "Select a Contact", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Select a Customer", Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(mDate))
+            Toast.makeText(this, "Select Date", Toast.LENGTH_SHORT).show();
 
 
-        if (!TextUtils.isEmpty(mRepresentative) && !TextUtils.isEmpty(mCampaignDetail) && !TextUtils.equals(mCompany, getString(R.string.default_name)) && !TextUtils.equals(mCounter, getString(R.string.default_name)))
+        if (!TextUtils.isEmpty(mRepresentative) && !TextUtils.isEmpty(mCampaignDetail) && !TextUtils.equals(mCompany, getString(R.string.default_name)) && !TextUtils.equals(mCounter, getString(R.string.default_name)) && !TextUtils.isEmpty(mDate))
             storeDataOnServer();
     }
 
@@ -363,12 +391,14 @@ public class InsertCampaignActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         mEditTextRepresentative = findViewById(R.id.textInputEditRepresentative);
         mEditTextDetails = findViewById(R.id.editTextDetails);
-        mSearchCompany = findViewById(R.id.searchCompany);
+        mSearchCustomer = findViewById(R.id.searchCompany);
         mCoordinaterLayout = findViewById(R.id.coordinator);
         mSearchContact = findViewById(R.id.searchContact);
         mEditTextCustomerName = findViewById(R.id.textInputEditCustomerName);
         mSearchCompanyLayout = findViewById(R.id.searchCompanyLayout);
         mEditTextLayout = findViewById(R.id.textInputLayoutCustomerName);
+        mTextViewDate = findViewById(R.id.textViewDate);
+        mSearchBrand = findViewById(R.id.searchBrand);
 
         fab = findViewById(R.id.fab);
         mEditTextRepresentative.setText(getUserId());
@@ -432,6 +462,37 @@ public class InsertCampaignActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    public void datePickerFunction(View v) {
+
+        // Get Current Date
+        final Calendar c = Calendar.getInstance();
+        mYear = c.get(Calendar.YEAR);
+        mMonth = c.get(Calendar.MONTH);
+        mDay = c.get(Calendar.DAY_OF_MONTH);
+
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                new DatePickerDialog.OnDateSetListener() {
+
+                    @Override
+                    public void onDateSet(DatePicker view, int year,
+                                          int monthOfYear, int dayOfMonth) {
+
+
+                        mTextViewDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+//        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                        Date date = new Date();
+
+                        mDate = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth + " " + dateFormat.format(date);
+                        Log.i(TAG, "onDateSet: " + mDate);
+
+                    }
+                }, mYear, mMonth, mDay);
+        datePickerDialog.show();
+
+    }
 
 
 
