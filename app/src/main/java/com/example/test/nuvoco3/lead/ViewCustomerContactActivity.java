@@ -181,21 +181,6 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-            return true;
-        } else if (item.getItemId() == R.id.checkable_menu) {
-            isChecked = !item.isChecked();
-            item.setChecked(isChecked);
-            mCustomerContactArrayList.clear();
-            mAdapter.notifyDataSetChanged();
-            readData();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     public void enableSearch(View v) {
 
@@ -240,6 +225,22 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
         MenuItem checkable = menu.findItem(R.id.checkable_menu);
         checkable.setChecked(isChecked);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        } else if (item.getItemId() == R.id.checkable_menu) {
+            isChecked = !item.isChecked();
+            item.setChecked(isChecked);
+            mCustomerContactArrayList.clear();
+            mAdapter.notifyDataSetChanged();
+            readData();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 

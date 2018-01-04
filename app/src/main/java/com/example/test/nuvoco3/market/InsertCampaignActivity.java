@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -46,8 +47,8 @@ import java.util.Map;
 
 import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
 import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_CONTACT;
+import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_CUSTOMER;
 import static com.example.test.nuvoco3.helpers.Contract.INSERT_CAMPAIGN;
-import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 
 public class InsertCampaignActivity extends AppCompatActivity {
     public static final String URL_ADD_CAMPAIGN = "/insertCamp";
@@ -62,6 +63,7 @@ public class InsertCampaignActivity extends AppCompatActivity {
     FloatingActionButton fab;
     ArrayAdapter mCustomerAdapter, mContactAdapter;
     LinearLayout mSearchCompanyLayout;
+    boolean isChecked = false;
 
     //Spinners
     ArrayList<String> mContactList, mCustomerList;
@@ -166,7 +168,7 @@ public class InsertCampaignActivity extends AppCompatActivity {
 
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
-                DATABASE_URL + "/dispCust", null, new Response.Listener<JSONObject>() {
+                BASE_URL + DISPLAY_CUSTOMER, null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
@@ -176,14 +178,19 @@ public class InsertCampaignActivity extends AppCompatActivity {
                     for (int i = 0; i < jsonArray.length(); i++) {
 
                         JSONObject object = jsonArray.getJSONObject(i);
-//                        if (object.getString("name").equals(mCompany)) {
+                        if (isChecked) {
+                            if (object.getString("createdBy").equals(getUserId())) {
+                                mCustomerList.add(object.getString("name"));
 
-                        mCustomerList.add(object.getString("name"));
+                            }
+
+
+                        } else {
+                            mCustomerList.add(object.getString("name"));
+
                         }
-//                    }
-                    progressDialog.dismiss();
-                    mContactAdapter.notifyDataSetChanged();
-
+                        progressDialog.dismiss();
+                    }
 
                 } catch (JSONException e1) {
                     e1.printStackTrace();
@@ -206,26 +213,6 @@ public class InsertCampaignActivity extends AppCompatActivity {
 
 
     public void populateContacts() {
-//        progressDialog.setMessage("Please Wait...");
-//        progressDialog.setCancelable(false);
-//        progressDialog.show();
-//        Runnable runnable = new Runnable() {
-//            @Override
-//            public void run() {
-//                progressDialog.dismiss();
-//                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        populateCustomers();
-//                    }
-//                });
-//                snackbar.show();
-//            }
-//        };
-//        Handler handler = new Handler();
-//        handler.postDelayed(runnable, 20000);
-
-
 
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
@@ -417,9 +404,29 @@ public class InsertCampaignActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.view_customer_menu, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem checkable = menu.findItem(R.id.checkable_menu);
+        checkable.setChecked(isChecked);
+        return true;
+    }
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();
+            return true;
+        } else if (item.getItemId() == R.id.checkable_menu) {
+            isChecked = !item.isChecked();
+            item.setChecked(isChecked);
+            mCustomerList.clear();
+            populateCustomers();
             return true;
         }
         return super.onOptionsItemSelected(item);

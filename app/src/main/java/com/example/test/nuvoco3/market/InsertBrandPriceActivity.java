@@ -16,6 +16,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -65,6 +66,7 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
     CoordinatorLayout mCoordinaterLayout;
     ProgressDialog progressDialog;
     MasterHelper mBrandHelper, mProductHelper;
+    boolean isChecked = false;
 
     //Date picker
     TextView mTextViewDate;
@@ -363,14 +365,6 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     public void datePickerFunction(View v) {
         final View buttonClicked = v;
@@ -439,8 +433,19 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
                     for (int i = 0; i < jsonArray.length(); i++) {
 
                         JSONObject object = jsonArray.getJSONObject(i);
+                        if (isChecked) {
+                            if (object.getString("createdBy").equals(getUserId())) {
+//                                Log.i(TAG, "onResponse: " + "created by onlu" + isChecked);
+                                mCustomerArrayList.add(object.getString("name"));
+
+                            }
+
+
+                        } else {
+                            mCustomerArrayList.add(object.getString("name"));
+
+                        }
 //                        mIdList.add(object.getString("record_id"));   //primary key
-                        mCustomerArrayList.add(object.getString("name"));
                     }
                     progressDialog.dismiss();
 
@@ -463,6 +468,39 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
         // Adding request to request queue
         queue.add(jsonObjReq);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.view_customer_menu, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem checkable = menu.findItem(R.id.checkable_menu);
+        checkable.setChecked(isChecked);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        } else if (item.getItemId() == R.id.checkable_menu) {
+            isChecked = !item.isChecked();
+            item.setChecked(isChecked);
+            mCustomerArrayList.clear();
+            populateCustomers();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+
 
 
 }

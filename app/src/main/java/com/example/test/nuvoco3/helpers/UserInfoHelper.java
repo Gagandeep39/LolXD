@@ -30,4 +30,8 @@ public class UserInfoHelper {
         mUserInfo = userArrayList.get(mInfoType) + "";
         return mUserInfo;
     }
+
+    public static boolean isEmailValid(String mEmail) {
+        return mEmail.contains("@");
+    }
 }

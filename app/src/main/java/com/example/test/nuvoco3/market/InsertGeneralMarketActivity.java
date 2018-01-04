@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -48,8 +49,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
+import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_CUSTOMER;
 import static com.example.test.nuvoco3.helpers.Contract.INSERT_GENERAL_MARKET_INFO;
-import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 
 public class InsertGeneralMarketActivity extends AppCompatActivity {
     private static final String TAG = "GeneralMarket Activity";
@@ -66,6 +67,8 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
     ArrayAdapter mBrandAdapter, mProductAdapter;
     TextView mTextViewDate;
     int mYear, mMonth, mDay;
+    boolean isChecked = false;
+    ArrayAdapter<String> mCustomerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,7 +127,7 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
 
     //Saves Data to Server
     private void sendDataToServer() {
-        Log.i(TAG, "sendDataToServer: " + getDateTime());
+        showValidationDialogue();
 
         Map<String, String> postParam = new HashMap<>();
 
@@ -150,6 +153,7 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
                         Log.i(TAG, response.toString());
                         try {
                             if (response.getString("status").equals("updated")) {
+                                progressDialog.dismiss();
                                 Toast.makeText(InsertGeneralMarketActivity.this, "Successfully Inserted Data", Toast.LENGTH_SHORT).show();
                                 finish();
 
@@ -215,8 +219,9 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
 
     //Adds data to Spinner
     private void populateSpinner() {
-        ArrayAdapter<String> mCustomerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mCustomerList);
+        mCustomerAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mCustomerList);
         mSearchCustomer.setAdapter(mCustomerAdapter);
+        mCustomerAdapter.notifyDataSetChanged();
         mSearchCustomer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -227,7 +232,7 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                mCustomer = "default";
+                mCustomer = getString(R.string.default_name);
             }
         });
 
@@ -307,15 +312,6 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
 
     public void populateCustomers() {
         progressDialog.setMessage("Please Wait...");
@@ -339,7 +335,7 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
         mCustomerList = new ArrayList<String>();
         mIdList = new ArrayList<>();
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
-                DATABASE_URL + "/dispCust", null, new Response.Listener<JSONObject>() {
+                BASE_URL + DISPLAY_CUSTOMER, null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
@@ -350,8 +346,19 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
                     for (int i = 0; i < jsonArray.length(); i++) {
 
                         JSONObject object = jsonArray.getJSONObject(i);
-//                        mIdList.add(object.getString("record_id"));   //primary key
-                        mCustomerList.add(object.getString("name"));
+                        if (isChecked) {
+                            if (object.getString("createdBy").equals(getUserId())) {
+                                mCustomerList.add(object.getString("name"));
+                                populateSpinner();
+
+                            }
+
+
+                        } else {
+                            mCustomerList.add(object.getString("name"));
+                            populateSpinner();
+
+                        }
                     }
 
 
@@ -406,6 +413,36 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
 
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.view_customer_menu, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem checkable = menu.findItem(R.id.checkable_menu);
+        checkable.setChecked(isChecked);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        } else if (item.getItemId() == R.id.checkable_menu) {
+            isChecked = !item.isChecked();
+            item.setChecked(isChecked);
+            mCustomerList.clear();
+            populateCustomers();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
 
 

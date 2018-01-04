@@ -54,7 +54,6 @@ public class UserAccountActivity extends AppCompatActivity {
 //            Log.i(TAG, "displayData: " + "user Not Logged In");
 //        } else {
 
-
             //Shows user Information
         mAddress.append(mHelper.getUserInfo(USER_ADDRESS));
         mAge.append(mHelper.getUserInfo(USER_AGE));
