@@ -1,4 +1,4 @@
-package com.example.test.nuvoco3;
+package com.example.test.nuvoco3.helpers;
 
 import android.content.Context;
 import android.util.Log;
@@ -15,49 +15,51 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 
-public class MasterHelper {
-    private ArrayList<String> mRecordNameList;
-    private Context mContext;
-    private String mType;
+/**
+ * Created by gagandeep on 29/12/17.
+ */
+
+public class CustomerHelper {
+    private HashMap<String, String> mCustomerArray;
     private RequestQueue queue;
-    private String URL_VIEW_RECORD_MASTER = "/dispRecMaster";
-    private String mRecordName;
+    private String mCustomer, mId;
 
 
-    public MasterHelper(Context mContext, String mType) {
+    public CustomerHelper(Context mContext) {
         this.mContext = mContext;
-        this.mType = mType;
     }
 
+    private Context mContext;
 
-    public ArrayList<String> getRecordName() {
-        mRecordNameList = new ArrayList<>();
+    //Makes an Array Based on This (Customer Name or ID)
+    private String mType;
+
+    public HashMap<String, String> getCustomerList() {
         queue = Volley.newRequestQueue(mContext);
-
+        mCustomerArray = new HashMap<>();
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
-                DATABASE_URL + URL_VIEW_RECORD_MASTER + "/" + mType, null, new Response.Listener<JSONObject>() {
+                DATABASE_URL + "/dispCust", null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
                 Log.i("lol", "onResponse:  " + response);
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
-                    for (int i = 0; i < jsonArray.length(); i++) {
-//                        if (response.getString("r_type").equals(mType)) {
+                    for (int i = 0; i < 50; i++) {
 
-                            JSONObject object = jsonArray.getJSONObject(i);
-                            mRecordName = object.getString("r_name");
-                            mRecordNameList.add(mRecordName);
-
-//                        }
+                        JSONObject object = jsonArray.getJSONObject(i);
+                        mCustomer = object.getString("name");
+                        mId = object.getString("record_id");
+                        mCustomerArray.put(mId, mCustomer);
                     }
 
                 } catch (JSONException e1) {
+                    e1.printStackTrace();
                     e1.printStackTrace();
                 }
             }
@@ -75,7 +77,7 @@ public class MasterHelper {
         queue.add(jsonObjReq);
 
 
-        return mRecordNameList;
+        return mCustomerArray;
     }
 
 }

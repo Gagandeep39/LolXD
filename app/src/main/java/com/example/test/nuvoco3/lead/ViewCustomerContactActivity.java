@@ -34,7 +34,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
+import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
+import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_CONTACT;
 
 public class ViewCustomerContactActivity extends AppCompatActivity {
     private static final String TAG = "ViewCustomerContact";
@@ -94,7 +95,7 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
         flag = 0;
         showProgress();
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
-                DATABASE_URL + "/dispCon/0", null, new Response.Listener<JSONObject>() {
+                BASE_URL + DISPLAY_CONTACT, null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {

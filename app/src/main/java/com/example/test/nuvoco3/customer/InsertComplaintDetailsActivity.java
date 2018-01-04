@@ -30,8 +30,8 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.MainActivity;
-import com.example.test.nuvoco3.MasterHelper;
 import com.example.test.nuvoco3.R;
+import com.example.test.nuvoco3.helpers.MasterHelper;
 import com.example.test.nuvoco3.signup.ObjectSerializer;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
@@ -46,7 +46,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
+import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
+import static com.example.test.nuvoco3.helpers.Contract.INSERT_COMPLAINT_DETAILS;
 
 /**
  * DEPRECATED
@@ -55,7 +56,6 @@ import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 
 public class InsertComplaintDetailsActivity extends AppCompatActivity {
 
-    public static final String URL_INSERT_COMPLAINT_DETAILS = "/insertCmpD";
     private static final String TAG = "InsertComplaintDetails";
     String mComplaintId, mDate, mRepresentative, mCustomerId, mCustomerName, mStatus, mComplaintDetails, mComplaintRemark, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy, mClosedOn;
     SearchableSpinner mSearchStatus, mSearchCustomer;
@@ -168,7 +168,7 @@ public class InsertComplaintDetailsActivity extends AppCompatActivity {
         postParam.put("13", mUpdatedBy);
         postParam.put("14", "2017-01-01");
 
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, DATABASE_URL + URL_INSERT_COMPLAINT_DETAILS, new JSONObject(postParam),
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, BASE_URL + INSERT_COMPLAINT_DETAILS, new JSONObject(postParam),
                 new Response.Listener<JSONObject>() {
 
                     @Override

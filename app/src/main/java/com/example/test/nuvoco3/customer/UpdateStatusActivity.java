@@ -30,8 +30,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.test.nuvoco3.MasterHelper;
 import com.example.test.nuvoco3.R;
+import com.example.test.nuvoco3.helpers.MasterHelper;
 import com.example.test.nuvoco3.signup.ObjectSerializer;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
@@ -47,7 +47,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
+import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
+import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_COMPLAINT;
+import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_COMPLAINT_DETAILS;
+import static com.example.test.nuvoco3.helpers.Contract.INSERT_COMPLAINT_DETAILS;
+import static com.example.test.nuvoco3.helpers.Contract.UPDATE_COMPLAINT;
 
 public class UpdateStatusActivity extends AppCompatActivity {
 
@@ -212,11 +216,10 @@ public class UpdateStatusActivity extends AppCompatActivity {
     private void readData() {
         startProgressDialog();
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
-                DATABASE_URL + "/dispCmpDetails/0", null, new Response.Listener<JSONObject>() {
+                BASE_URL + DISPLAY_COMPLAINT_DETAILS, null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
-                Log.i("lol", "onResponse:  " + response);
                 progressDialog.dismiss();
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
@@ -325,7 +328,7 @@ public class UpdateStatusActivity extends AppCompatActivity {
         postParam.put("13", mUpdatedBy);
         postParam.put("14", mClosedOn);
 
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, DATABASE_URL + "/insertCmpD", new JSONObject(postParam),
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, BASE_URL + INSERT_COMPLAINT_DETAILS, new JSONObject(postParam),
                 new Response.Listener<JSONObject>() {
 
                     @Override
@@ -422,7 +425,7 @@ public class UpdateStatusActivity extends AppCompatActivity {
         postParam.put("10", mUpdatedBy);
         postParam.put("11", mStatus);
 
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, DATABASE_URL + "/updateComplaints", new JSONObject(postParam),
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, BASE_URL + UPDATE_COMPLAINT, new JSONObject(postParam),
                 new Response.Listener<JSONObject>() {
 
                     @Override
@@ -474,7 +477,7 @@ public class UpdateStatusActivity extends AppCompatActivity {
 
     private void viewComplaintsNormal() {
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
-                DATABASE_URL + "/dispComplaint", null, new Response.Listener<JSONObject>() {
+                BASE_URL + DISPLAY_COMPLAINT, null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {

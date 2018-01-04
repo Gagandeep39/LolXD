@@ -29,8 +29,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.test.nuvoco3.MasterHelper;
 import com.example.test.nuvoco3.R;
+import com.example.test.nuvoco3.helpers.MasterHelper;
 import com.example.test.nuvoco3.signup.ObjectSerializer;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
@@ -47,10 +47,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
+import static com.example.test.nuvoco3.helpers.Contract.INSERT_GENERAL_MARKET_INFO;
 import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 
 public class InsertGeneralMarketActivity extends AppCompatActivity {
-    public static final String URL_INSERT_GEN_MARKET = "/insertGen";
     private static final String TAG = "GeneralMarket Activity";
     String mRepresentative, mCounter, mDate, mCustomer, mMarketDetail, mMSP, mPrice, mDemand, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy;
     TextInputEditText mEditTextRepresentative, mEditTextCounter, mEditTextMSP, mEditTextPrice;
@@ -141,7 +142,7 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
         postParam.put("12", mUpdatedOn);
         postParam.put("13", mUpdatedBy);
 
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, DATABASE_URL + URL_INSERT_GEN_MARKET, new JSONObject(postParam),
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, BASE_URL + INSERT_GENERAL_MARKET_INFO, new JSONObject(postParam),
                 new Response.Listener<JSONObject>() {
 
                     @Override
@@ -172,7 +173,7 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
              * */
             @Override
             public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<String, String>();
+                HashMap<String, String> headers = new HashMap<>();
                 headers.put("Content-Type", "application/json; charset=utf-8");
                 return headers;
             }
@@ -375,7 +376,6 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
 
 
     public void datePickerFunction(View v) {
-        final View buttonClicked = v;
 
         // Get Current Date
         final Calendar c = Calendar.getInstance();

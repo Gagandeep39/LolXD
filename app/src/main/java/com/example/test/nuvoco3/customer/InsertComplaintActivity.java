@@ -32,8 +32,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.test.nuvoco3.MasterHelper;
 import com.example.test.nuvoco3.R;
+import com.example.test.nuvoco3.helpers.MasterHelper;
 import com.example.test.nuvoco3.signup.ObjectSerializer;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
@@ -50,14 +50,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
+import static com.example.test.nuvoco3.helpers.Contract.INSERT_COMPLAINT;
+import static com.example.test.nuvoco3.helpers.Contract.INSERT_COMPLAINT_DETAILS;
 import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 
 public class InsertComplaintActivity extends AppCompatActivity {
 
 
-    public static final String URL_INSERT_COMPLAINT_DETAILS = "/insertCmpD";
     private static final String TAG = "InsertComplaintActivity";
-    private static final String URL_INSERT_COMPLAINT = "/insertComplaint";
     String mDate, mCustomerId, mCustomerName, mComplaintType, mComplaintDetails, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy, mStatus, mComplaintId, mRepresentative;
     SearchableSpinner mSearchType, mSearchCustomer;
     TextInputEditText mEditTextCustomerId, mEditTextComplaintDetails, mEditTextCustomer;
@@ -141,7 +142,7 @@ public class InsertComplaintActivity extends AppCompatActivity {
         postParam.put("10", mUpdatedBy);
         postParam.put("11", mStatus);
 
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, DATABASE_URL + URL_INSERT_COMPLAINT, new JSONObject(postParam),
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, BASE_URL + INSERT_COMPLAINT, new JSONObject(postParam),
                 new Response.Listener<JSONObject>() {
 
                     @Override
@@ -456,7 +457,7 @@ public class InsertComplaintActivity extends AppCompatActivity {
         postParam.put("13", mUpdatedBy);
         postParam.put("14", "2017-01-01");
 
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, DATABASE_URL + URL_INSERT_COMPLAINT_DETAILS, new JSONObject(postParam),
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, BASE_URL + INSERT_COMPLAINT_DETAILS, new JSONObject(postParam),
                 new Response.Listener<JSONObject>() {
 
                     @Override

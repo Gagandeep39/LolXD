@@ -28,8 +28,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.test.nuvoco3.MasterHelper;
 import com.example.test.nuvoco3.R;
+import com.example.test.nuvoco3.helpers.MasterHelper;
 import com.example.test.nuvoco3.signup.ObjectSerializer;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
@@ -44,7 +44,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
+import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
+import static com.example.test.nuvoco3.helpers.Contract.INSERT_CUSTOMER;
 
 public class InsertCustomerActivity extends AppCompatActivity {
     public static final String TAG = "InsertCustomer Activity";
@@ -53,9 +54,8 @@ public class InsertCustomerActivity extends AppCompatActivity {
     TextInputEditText editTextName, editTextAddress, editTextPhone, editTextEmail;
     String mName, mType, mCategory, mAddress, mArea, mDistrict, mState, mPhone, mEmail, mStatus, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy;
     RequestQueue queue;
-    CoordinatorLayout mCoordinaterLayout;
+    public CoordinatorLayout mCoordinaterLayout;
     ProgressDialog progressDialog;
-    int flag;
 
     //Master Helper
     MasterHelper mTypeHelper, mCategoryHelper, mAreaHelper, mDistrictHelper, mStateHelper;
@@ -67,10 +67,9 @@ public class InsertCustomerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_insert_customer);
 
 
-
         initializeViews();
         initializeVariables();
-//        showProgress();
+        showProgress();
         initializeSpinners();
         floatingActionButtonAddData.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,10 +81,8 @@ public class InsertCustomerActivity extends AppCompatActivity {
 
     private void initializeVariables() {
 
-        progressDialog = new ProgressDialog(this);
         queue = Volley.newRequestQueue(this);
-        flag = 0;
-        startProgressDialog();
+
         //initialize Helpers
         mAreaHelper = new MasterHelper(this, "Area");
         mStateHelper = new MasterHelper(this, "State");
@@ -94,13 +91,12 @@ public class InsertCustomerActivity extends AppCompatActivity {
         mDistrictHelper = new MasterHelper(this, "District");
 
         //initialize Arrays
+
         mAreaArray = mAreaHelper.getRecordName();
         mStateArray = mStateHelper.getRecordName();
         mTypeArray = mTypeHelper.getRecordName();
         mCategoryArray = mCategoryHelper.getRecordName();
         mDistrictArray = mDistrictHelper.getRecordName();
-
-
     }
 
     //  Populates the spinners
@@ -110,15 +106,13 @@ public class InsertCustomerActivity extends AppCompatActivity {
 //        ArrayAdapter mTypeAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mTypeArray);
         ArrayAdapter mCategoryAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mCategoryArray);
         ArrayAdapter mDistrictAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mDistrictArray);
-        progressDialog.dismiss();
+
         //Seting Adapter
         searchableSpinnerArea.setAdapter(mAreaAdapter);
 //        searchableSpinnerType.setAdapter(mTypeAdapter);
         searchableSpinnerState.setAdapter(mStateAdapter);
         searchableSpinnerCategory.setAdapter(mCategoryAdapter);
         searchableSpinnerDistrict.setAdapter(mDistrictAdapter);
-
-
 
 
         //Area Spinner
@@ -181,6 +175,7 @@ public class InsertCustomerActivity extends AppCompatActivity {
 
     //  initialize the views on the screen
     private void initializeViews() {
+        progressDialog = new ProgressDialog(this);
         floatingActionButtonAddData = findViewById(R.id.fabAddData);
         editTextName = findViewById(R.id.textInputEditName);
         editTextAddress = findViewById(R.id.textInputEditAddress);
@@ -248,14 +243,14 @@ public class InsertCustomerActivity extends AppCompatActivity {
         if (TextUtils.equals(mCategory, "default"))
             Toast.makeText(this, "Select Category", Toast.LENGTH_SHORT).show();
         if (!TextUtils.isEmpty(mName) && !TextUtils.isEmpty(mAddress) && !TextUtils.isEmpty(mPhone) && !TextUtils.isEmpty(mEmail) && !TextUtils.equals(mArea, "default") && !TextUtils.equals(mState, "default") && !TextUtils.equals(mDistrict, "default") && !TextUtils.equals(mType, "default") && !TextUtils.equals(mCategory, "default") && isEmailValid(mEmail))
-        storeData();
+            storeData();
 
     }
 
     //  Stores data to Server
     private void storeData() {
-        flag = 0;
-        startProgressDialog();
+
+        showProgress();
 
 
         Map<String, String> postParam = new HashMap<>();
@@ -276,7 +271,7 @@ public class InsertCustomerActivity extends AppCompatActivity {
         postParam.put("13", mUpdatedOn);
         postParam.put("14", mUpdatedBy);
 
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, DATABASE_URL + "/insertCus", new JSONObject(postParam),
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, BASE_URL + INSERT_CUSTOMER, new JSONObject(postParam),
                 new Response.Listener<JSONObject>() {
 
                     @Override
@@ -358,29 +353,26 @@ public class InsertCustomerActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-    private void startProgressDialog() {
-
+    private void showProgress() {
         progressDialog.setMessage("Please Wait...");
-        progressDialog.setCancelable(true);
+        progressDialog.setCancelable(false);
         progressDialog.show();
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                if (flag == 0) {
-                    progressDialog.dismiss();
-                    Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            validateData();
-                        }
-                    });
-                    snackbar.show();
-                }
+                progressDialog.dismiss();
+                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        validateData();
+                    }
+                });
+                snackbar.show();
             }
         };
         Handler handler = new Handler();
         handler.postDelayed(runnable, 20000);
+
     }
 
 

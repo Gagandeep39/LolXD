@@ -48,7 +48,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
+import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
+import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_CONTACT;
+import static com.example.test.nuvoco3.helpers.Contract.INSERT_CONTACT;
 
 public class InsertCustomerContactActivity extends AppCompatActivity {
     private static final String TAG = "InsertContacts";
@@ -244,7 +246,7 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
         postParam.put("11", mUpdatedBy);
         postParam.put("12", mCustomerId);
 
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, DATABASE_URL + "/insertCon", new JSONObject(postParam),
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, BASE_URL + INSERT_CONTACT, new JSONObject(postParam),
                 new Response.Listener<JSONObject>() {
 
                     @Override
@@ -361,7 +363,7 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
         mCustomerList = new ArrayList<String>();
         mIdList = new ArrayList<>();
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
-                DATABASE_URL + "/dispCust", null, new Response.Listener<JSONObject>() {
+                BASE_URL + DISPLAY_CONTACT, null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {

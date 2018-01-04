@@ -32,8 +32,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.test.nuvoco3.MasterHelper;
 import com.example.test.nuvoco3.R;
+import com.example.test.nuvoco3.helpers.MasterHelper;
 import com.example.test.nuvoco3.signup.ObjectSerializer;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
@@ -50,13 +50,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
+import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
+import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_CUSTOMER;
+import static com.example.test.nuvoco3.helpers.Contract.INSERT_PRICES;
 
 public class InsertBrandPriceActivity extends AppCompatActivity {
-    public static final String URL_INSERT_MARKET_PRICE = "/insertR";
-    public static final String URL_BRAND_INFO = "/dispBrand";
     private static final String TAG = "BrandPrice Activity";
-    String mRecordId, mRepresentative, mCounter, mDate, mBrand, mProduct, mWSP, mRSP, mStock, mRemarks, mCreatedBy, mCreatedOn, mUpdatedBy, mUpdatedOn;
+    String mRepresentative, mCounter, mDate, mBrand, mProduct, mWSP, mRSP, mStock, mRemarks, mCreatedBy, mCreatedOn, mUpdatedBy, mUpdatedOn;
     SearchableSpinner mSearchProduct, mSearchBrand, mSearchCustomers;
     TextInputEditText mEditTextRepresentative, mEditTextCounter, mEditTextWSP, mEditTextRSP, mEditTextStocks, mUserName;
     EditText mEditTextRemarks;
@@ -72,7 +72,7 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
     RecyclerView mRecyclerView;
     BrandPriceDetailsAdapter mDetailsAdapter;
     ArrayList<BrandPrice> mBrandPricePriceList;
-    private int mDay, mYear, mMonth;
+    int mDay, mYear, mMonth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +95,9 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
 
     private void initializeBottomViews() {
         mDetailsAdapter = new BrandPriceDetailsAdapter(this, mBrandPricePriceList);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
+        mLayoutManager.setReverseLayout(true);
+        mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mDetailsAdapter);
     }
 
@@ -194,7 +196,7 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
         postParam.put("13", mUpdatedBy);
         postParam.put("14", mProduct);
 
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, DATABASE_URL + URL_INSERT_MARKET_PRICE, new JSONObject(postParam),
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, BASE_URL + INSERT_PRICES, new JSONObject(postParam),
                 new Response.Listener<JSONObject>() {
 
                     @Override
@@ -428,7 +430,7 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
 
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
-                DATABASE_URL + "/dispCust", null, new Response.Listener<JSONObject>() {
+                BASE_URL + DISPLAY_CUSTOMER, null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {

@@ -1,21 +1,30 @@
 package com.example.test.nuvoco3.signup;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.example.test.nuvoco3.R;
+import com.example.test.nuvoco3.helpers.UserInfoHelper;
 
-import java.io.IOException;
-import java.util.ArrayList;
+import static com.example.test.nuvoco3.helpers.Contract.USER_ADDRESS;
+import static com.example.test.nuvoco3.helpers.Contract.USER_AGE;
+import static com.example.test.nuvoco3.helpers.Contract.USER_AREA;
+import static com.example.test.nuvoco3.helpers.Contract.USER_CITY;
+import static com.example.test.nuvoco3.helpers.Contract.USER_DEPARTMENT;
+import static com.example.test.nuvoco3.helpers.Contract.USER_EMAIL;
+import static com.example.test.nuvoco3.helpers.Contract.USER_ID;
+import static com.example.test.nuvoco3.helpers.Contract.USER_NAME;
+import static com.example.test.nuvoco3.helpers.Contract.USER_PHONE_NO;
+import static com.example.test.nuvoco3.helpers.Contract.USER_PIN;
+import static com.example.test.nuvoco3.helpers.Contract.USER_STATUS;
 
 public class UserAccountActivity extends AppCompatActivity {
     private static final String TAG = "UserAccount Activity";
     TextView mName, mPhone, mEmail, mArea, mCity, mState, mStatus, mPin, mDepartment, mAge, mId, mAddress;
+
+    UserInfoHelper mHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,41 +34,41 @@ public class UserAccountActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        mHelper = new UserInfoHelper(this);
         initializeViews();
 
         displayData();
     }
 
     private void displayData() {
-        ArrayList<String> newArralist = new ArrayList<>();
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.test.nuvoco3", Context.MODE_PRIVATE);
-
-        try {
-            newArralist = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("CustomerData", ObjectSerializer.serialize(new ArrayList<String>())));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        if (newArralist.size() < 0) {
-            Log.i(TAG, "displayData: " + "user Not Logged In");
-        } else {
+//        ArrayList<String> newArralist = new ArrayList<>();
+//        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.test.nuvoco3", Context.MODE_PRIVATE);
+//
+//        try {
+//            newArralist = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("CustomerData", ObjectSerializer.serialize(new ArrayList<String>())));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        if (newArralist.size() < 0) {
+//            Log.i(TAG, "displayData: " + "user Not Logged In");
+//        } else {
 
 
             //Shows user Information
-            mAddress.append(newArralist.get(0) + "");
-            mAge.append(newArralist.get(1) + "");
-            mArea.append(newArralist.get(2) + "");
-            mCity.append(newArralist.get(3) + "");
-            mDepartment.append(newArralist.get(4) + "");
-            mEmail.append(newArralist.get(5) + "");
-            mId.append(newArralist.get(6) + "");
-            mName.append(newArralist.get(7) + "");
-            mPhone.append(newArralist.get(8) + "");
-            mPin.append(newArralist.get(9) + "");
-            mStatus.append(newArralist.get(10) + "");
+        mAddress.append(mHelper.getUserInfo(USER_ADDRESS));
+        mAge.append(mHelper.getUserInfo(USER_AGE));
+        mArea.append(mHelper.getUserInfo(USER_AREA));
+        mCity.append(mHelper.getUserInfo(USER_CITY));
+        mDepartment.append(mHelper.getUserInfo(USER_DEPARTMENT));
+        mEmail.append(mHelper.getUserInfo(USER_EMAIL));
+        mId.append(mHelper.getUserInfo(USER_ID));
+        mName.append(mHelper.getUserInfo(USER_NAME));
+        mPhone.append(mHelper.getUserInfo(USER_PHONE_NO));
+        mPin.append(mHelper.getUserInfo(USER_PIN));
+        mStatus.append(mHelper.getUserInfo(USER_STATUS));
         }
 
-    }
 
     private void initializeViews() {
         mName = findViewById(R.id.textViewName);

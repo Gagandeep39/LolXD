@@ -44,6 +44,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
+import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_CONTACT;
+import static com.example.test.nuvoco3.helpers.Contract.INSERT_CAMPAIGN;
 import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 
 public class InsertCampaignActivity extends AppCompatActivity {
@@ -226,7 +229,7 @@ public class InsertCampaignActivity extends AppCompatActivity {
 
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
-                DATABASE_URL + "/dispCon/0", null, new Response.Listener<JSONObject>() {
+                BASE_URL + DISPLAY_CONTACT, null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
@@ -236,7 +239,6 @@ public class InsertCampaignActivity extends AppCompatActivity {
 
                         JSONObject object = jsonArray.getJSONObject(i);
                         if (object.getString("c_name").toLowerCase().equals(mCompany)) {
-                            Log.i(TAG, "onResponse: " + object.getString("contactPerson"));
                             mContactList.add(object.getString("contactPerson"));
                         }
                     }
@@ -323,7 +325,7 @@ public class InsertCampaignActivity extends AppCompatActivity {
         postParam.put("9", mUpdatedOn);
         postParam.put("10", mUpdatedBy);
 
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, DATABASE_URL + URL_ADD_CAMPAIGN, new JSONObject(postParam),
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, BASE_URL + INSERT_CAMPAIGN, new JSONObject(postParam),
                 new Response.Listener<JSONObject>() {
 
                     @Override
@@ -421,12 +423,6 @@ public class InsertCampaignActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        progressDialog.dismiss();
     }
 
 

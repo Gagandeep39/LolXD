@@ -80,25 +80,6 @@ public class RecordManagementActivity extends AppCompatActivity {
             }
         });
 
-
-//        ArrayAdapter mStatusAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mStatusArray);
-//        mStatusSearch.setAdapter(mStatusAdapter);
-//        mStatusSearch.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//                if (i == 0)
-//                    mStatus = "0";
-//                else if (i == 1)
-//                    mStatus = "1";
-//
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//                mStatus = getString(R.string.default_name);
-//
-//            }
-//        });
     }
 
 
@@ -205,8 +186,8 @@ public class RecordManagementActivity extends AppCompatActivity {
 
     //  Function to provide current data and time
     private String getDateTime() {
-//        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         return dateFormat.format(date);
     }

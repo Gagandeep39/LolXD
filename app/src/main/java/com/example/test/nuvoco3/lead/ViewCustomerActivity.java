@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -34,13 +33,13 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
+import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
+import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_CUSTOMER;
 
 public class ViewCustomerActivity extends AppCompatActivity {
     private static final String TAG = "ViewCustomer Activity";
     public static ArrayList<Customer> mCustomerArrayList;
     RecyclerView mRecyclerView;
-    SwipeRefreshLayout mSwipeRefresh;
     String mAddress, mArea, mDistrict, mCategory, mEmail, mPhone, mState, mCreatedBy, mCreatedOn, mUpdatedBy, mUpdatedOn, mId, mName, mStatus;
     CustomerAdapter mAdapter;
     RequestQueue queue;
@@ -104,7 +103,7 @@ public class ViewCustomerActivity extends AppCompatActivity {
         startProgressDialog();
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
-                DATABASE_URL + "/dispCust", null, new Response.Listener<JSONObject>() {
+                BASE_URL + DISPLAY_CUSTOMER, null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
