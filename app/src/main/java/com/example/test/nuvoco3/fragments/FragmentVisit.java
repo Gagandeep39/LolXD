@@ -12,6 +12,7 @@ import android.widget.Button;
 
 import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.visits.CreateJCPActivity;
+import com.example.test.nuvoco3.visits.ViewJCPActivity;
 
 
 /**
@@ -27,7 +28,7 @@ public class FragmentVisit extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    Button mButton1, mButton2, mButtonNewVisit, mButton4;
+    Button mButton1, mButtonViewVisit, mButtonNewVisit, mButton4;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -61,10 +62,18 @@ public class FragmentVisit extends Fragment {
         View v = inflater.inflate(R.layout.fragment_visit, container, false);
         // Inflate the layout for this fragment
         mButton1 = v.findViewById(R.id.button);
-        mButton2 = v.findViewById(R.id.button2);
+        mButtonViewVisit = v.findViewById(R.id.button2);
         mButtonNewVisit = v.findViewById(R.id.button3);
         mButton4 = v.findViewById(R.id.button4);
 
+
+        mButtonViewVisit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(view.getContext(), ViewJCPActivity.class));
+
+            }
+        });
         mButtonNewVisit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

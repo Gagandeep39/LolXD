@@ -142,8 +142,16 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".visits.CreateJCPActivity"
-            android:parentActivityName=".MainActivity"
             android:label="@string/title_activity_create_jcp"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".visits.ViewJCPActivity"
+            android:label="@string/title_activity_view_jcp"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".visits.VisitDetailsActivity"
+            android:label="@string/title_activity_visit_details"
             android:theme="@style/AppTheme"></activity>
     </application>
 
