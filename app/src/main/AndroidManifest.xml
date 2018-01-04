@@ -140,6 +140,10 @@
             android:name=".market.ViewBrandPriceDetailsActivity"
             android:label="@string/title_activity_brand_price_details"
             android:theme="@style/AppTheme" />
+        <activity
+            android:name=".market.CreateJCPActivity"
+            android:label="@string/title_activity_create_jcp"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>
