@@ -4,16 +4,25 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.TextView;
 
+import com.example.test.nuvoco3.BuildConfig;
 import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.signup.LoginActivity;
 
 public class SplashScreenActivity extends AppCompatActivity {
+    int versionCode = BuildConfig.VERSION_CODE;
+    String versionName = BuildConfig.VERSION_NAME;
+    TextView mTextViewVersion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash_screen); new Handler().postDelayed(new Runnable() {
+        setContentView(R.layout.activity_splash_screen);
+        mTextViewVersion = findViewById(R.id.textViewVersion);
+        mTextViewVersion.setText(versionName);
+
+        new Handler().postDelayed(new Runnable() {
 
             /*
              * Showing splash screen with a timer. This will be useful when you
@@ -29,5 +38,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                 finish();
             }
         }, 1000);
+
+
     }
     }

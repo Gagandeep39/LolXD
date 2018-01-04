@@ -45,14 +45,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
 
+    //Build info
+    int versionCode = BuildConfig.VERSION_CODE;
+    String versionName = BuildConfig.VERSION_NAME;
+    TextView mTextViewBuildInfo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (getIntent().hasExtra("asd")) {
-            if (getSupportFragmentManager().getBackStackEntryCount() > 0)
-                getSupportFragmentManager().popBackStackImmediate("MESSAGE_TAG", 0);
-        }
+        mTextViewBuildInfo = findViewById(R.id.textViewBuildInfo);
+        mTextViewBuildInfo.setText("Version " + versionName);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

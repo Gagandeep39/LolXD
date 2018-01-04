@@ -24,7 +24,7 @@
                 android:id="@+id/textInputEditRepresentative"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="User ID"
+                android:hint="Representative ID"
                 android:clickable="false"
                 android:focusable="false" />
 
@@ -42,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:clickable="false"
                 android:focusable="false"
-                android:hint="User Name" />
+                android:hint="Representative" />
 
 
         </android.support.design.widget.TextInputLayout>
