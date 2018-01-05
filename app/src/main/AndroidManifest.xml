@@ -109,7 +109,7 @@
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".customer.ViewNewCustomerActivity"
+            android:name=".customer.ViewMyCustomerActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_view_new_customer"
             android:parentActivityName=".MainActivity"

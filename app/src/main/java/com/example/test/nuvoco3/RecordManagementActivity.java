@@ -1,9 +1,11 @@
 package com.example.test.nuvoco3;
 
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -22,20 +24,17 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.test.nuvoco3.signup.ObjectSerializer;
+import com.example.test.nuvoco3.helpers.UserInfoHelper;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.example.test.nuvoco3.helpers.Contract.PROGRESS_DIALOG_DURATION;
+import static com.example.test.nuvoco3.helpers.UserInfoHelper.getDateTime;
 import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 
 public class RecordManagementActivity extends AppCompatActivity {
@@ -48,6 +47,8 @@ public class RecordManagementActivity extends AppCompatActivity {
     SearchableSpinner mTypeSearch, mStatusSearch;
     String mTypeArray[] = {"District", "Area", "State", "CustomerType", "Category", "ComplaintType", "Brand", "Product", "Department"};
     String mStatusArray[] = {"True", "False"};
+    ProgressDialog progressDialog;
+    CoordinatorLayout mCoordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,8 +88,8 @@ public class RecordManagementActivity extends AppCompatActivity {
         mCategory = mEditTextCategory.getText().toString();
         mName = mEditTextName.getText().toString();
         mStatus = "1";
-        mCreatedBy = getUserId();
-        mUpdatedBy = getUserId();
+        mCreatedBy = new UserInfoHelper(this).getUserId();
+        mUpdatedBy = new UserInfoHelper(this).getUserId();
         mCreatedOn = getDateTime();
         mUpdatedOn = getDateTime();
 
@@ -108,6 +109,7 @@ public class RecordManagementActivity extends AppCompatActivity {
     }
 
     private void sendDataToServer() {
+        showProgressDialogue();
         Map<String, String> postParam = new HashMap<>();
 
         postParam.put("1", "101");
@@ -124,15 +126,19 @@ public class RecordManagementActivity extends AppCompatActivity {
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, DATABASE_URL + URL_INSERT_PRODUCT, new JSONObject(postParam),
                 new Response.Listener<JSONObject>() {
-
                     @Override
                     public void onResponse(JSONObject response) {
+                        if (progressDialog.isShowing()) {
+                            progressDialog.dismiss();
+                        }
                         Log.i(TAG, response.toString());
                         try {
                             if (response.getString("status").equals("updated")) {
                                 Toast.makeText(RecordManagementActivity.this, "Successfully Inserted Data", Toast.LENGTH_SHORT).show();
                                 finish();
 
+                            } else {
+                                Toast.makeText(RecordManagementActivity.this, "" + response, Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -147,21 +153,13 @@ public class RecordManagementActivity extends AppCompatActivity {
                 VolleyLog.d(TAG, "Error with Connection: " + error.getMessage() + "lol");
             }
         }) {
-
-            /**
-             * Passing some request headers
-             * */
             @Override
             public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json; charset=utf-8");
                 return headers;
             }
-
-
         };
-
-        jsonObjReq.setTag("LOL");
         // Adding request to request queue
         queue.add(jsonObjReq);
 
@@ -176,38 +174,10 @@ public class RecordManagementActivity extends AppCompatActivity {
         fab = findViewById(R.id.fab);
         mEditTextCategory = findViewById(R.id.textInputEditCategory);
         mEditTextName = findViewById(R.id.textInputEditName);
-//        mEditTextStatus = findViewById(R.id.textInputEditStatus);
-//        mEditTextType = findViewById(R.id.textInputEditType);
         mTypeSearch = findViewById(R.id.searchType);
         mStatusSearch = findViewById(R.id.searchStatus);
         queue = Volley.newRequestQueue(this);
-    }
-
-
-    //  Function to provide current data and time
-    private String getDateTime() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = new Date();
-        return dateFormat.format(date);
-    }
-
-    // Get LoggedIn users ID
-    private String getUserId() {
-        ArrayList<String> newArralist = new ArrayList<>();
-        // Creates a shared preferences variable to retrieve the logeed in users IDs and store it in Updated By Section
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.test.nuvoco3", Context.MODE_PRIVATE);
-
-        try {
-            newArralist = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("CustomerData", ObjectSerializer.serialize(new ArrayList<String>())));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (newArralist.size() > 0)
-            return newArralist.get(6);
-
-        return "Invalid User";
-
+        progressDialog = new ProgressDialog(this);
     }
 
 
@@ -219,4 +189,29 @@ public class RecordManagementActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    private void showProgressDialogue() {
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                    Snackbar snackbar = Snackbar.make(mCoordinatorLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Toast.makeText(RecordManagementActivity.this, "Connection Error", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    snackbar.show();
+                }
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, PROGRESS_DIALOG_DURATION);
+
+    }
+
 }

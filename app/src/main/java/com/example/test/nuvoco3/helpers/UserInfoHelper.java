@@ -243,6 +243,14 @@ public class UserInfoHelper {
         return dateFormat.format(date);
     }
 
+    public static String getDate() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+//        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        return dateFormat.format(date);
+    }
+
+
 
 
 

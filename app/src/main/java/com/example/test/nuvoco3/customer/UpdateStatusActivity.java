@@ -1,8 +1,6 @@
 package com.example.test.nuvoco3.customer;
 
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
@@ -33,18 +31,13 @@ import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.helpers.MasterHelper;
 import com.example.test.nuvoco3.helpers.UserInfoHelper;
-import com.example.test.nuvoco3.signup.ObjectSerializer;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,7 +45,10 @@ import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
 import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_COMPLAINT;
 import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_COMPLAINT_DETAILS;
 import static com.example.test.nuvoco3.helpers.Contract.INSERT_COMPLAINT_DETAILS;
+import static com.example.test.nuvoco3.helpers.Contract.PROGRESS_DIALOG_DURATION;
 import static com.example.test.nuvoco3.helpers.Contract.UPDATE_COMPLAINT;
+import static com.example.test.nuvoco3.helpers.UserInfoHelper.getDate;
+import static com.example.test.nuvoco3.helpers.UserInfoHelper.getDateTime;
 
 public class UpdateStatusActivity extends AppCompatActivity {
 
@@ -93,6 +89,7 @@ public class UpdateStatusActivity extends AppCompatActivity {
             mSearchView.setVisibility(View.GONE);
 
         } else {
+            mSearchView.setIconified(false);
             mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextSubmit(String query) {
@@ -100,11 +97,11 @@ public class UpdateStatusActivity extends AppCompatActivity {
                     readData();
                     viewComplaintsNormal();
                     populateSpinner();
+                    mSearchView.requestFocus();
                     mTextView.setVisibility(View.GONE);
                     mScrollView.setVisibility(View.VISIBLE);
                     fab.setVisibility(View.VISIBLE);
                     mSearchView.setVisibility(View.GONE);
-
                     return true;
                 }
 
@@ -128,13 +125,13 @@ public class UpdateStatusActivity extends AppCompatActivity {
                     mEditTextRemark.setError("Enter Remark");
                 else {
 
-                    if (!mStatus.equals("Closed")) {
-                        mClosedOn = getDateTime();
+                    if (mStatus.equals("Closed")) {
+                        mClosedOn = getDate();
 
                     } else if (mStatus.equals(getString(R.string.default_name))) {
                         Toast.makeText(UpdateStatusActivity.this, "Select Status", Toast.LENGTH_SHORT).show();
                     } else {
-                        mClosedOn = "2017-01-01 00:00:10";
+                        mClosedOn = "2019-01-01";
                     }
 
                     updateDataNormal();
@@ -171,9 +168,9 @@ public class UpdateStatusActivity extends AppCompatActivity {
             mEditTextRemark.setText(mRemark);
         mEditTextDetails.setText(mDetails);
         mUpdatedOn = getDateTime();
-        mUpdatedBy = getUserId();
+        mUpdatedBy = new UserInfoHelper(this).getUserId();
         mDate = getDateTime();
-        mCreatedOn = getDateTime();
+        mCreatedBy = new UserInfoHelper(this).getUserId();
         mUpdatedOn = getDateTime();
 
 
@@ -215,13 +212,15 @@ public class UpdateStatusActivity extends AppCompatActivity {
     }
 
     private void readData() {
-        startProgressDialog();
+        showProgressDialog();
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 BASE_URL + DISPLAY_COMPLAINT_DETAILS, null, new Response.Listener<JSONObject>() {
-
             @Override
             public void onResponse(JSONObject response) {
-                progressDialog.dismiss();
+                if (progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
+                Log.i(TAG, "onResponse: " + response);
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
 
@@ -238,11 +237,11 @@ public class UpdateStatusActivity extends AppCompatActivity {
                             mRepresentative = object.getString("Representative");
                             mDetails = object.getString("complaint_details") + "";
                             mRemark = object.getString("resolution_remark");
-                            mCreatedOn = object.getString("createdOn") + "";
-                            mCreatedBy = object.getString("creayedBy") + "";
-                            mUpdatedBy = object.getString("updatedBy") + "";
-                            mUpdatedOn = object.getString("updatedOn") + "";
-                            mClosedOn = object.getString("complaint_closedOn") + "";
+//                            mCreatedOn = object.getString("createdOn") + "";
+//                            mCreatedBy = object.getString("creayedBy") + "";
+//                            mUpdatedBy = object.getString("updatedBy") + "";
+//                            mUpdatedOn = object.getString("updatedOn") + "";
+//                            mClosedOn = object.getString("complaint_closedOn") + "";
                             mStatus = object.getString("complaint_status") + "";
                         }
 
@@ -252,7 +251,6 @@ public class UpdateStatusActivity extends AppCompatActivity {
 
                 } catch (JSONException e1) {
                     e1.printStackTrace();
-                    e1.printStackTrace();
                 }
             }
 
@@ -260,14 +258,11 @@ public class UpdateStatusActivity extends AppCompatActivity {
 
             @Override
             public void onErrorResponse(VolleyError error) {
+                Toast.makeText(UpdateStatusActivity.this, "" + error, Toast.LENGTH_SHORT).show();
                 VolleyLog.d("lol", "Error with Internet : " + error.getMessage());
                 // hide the progress dialog
             }
         }) {
-
-            /**
-             * Passing some request headers
-             */
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
@@ -285,7 +280,7 @@ public class UpdateStatusActivity extends AppCompatActivity {
 
     }
 
-    private void startProgressDialog() {
+    private void showProgressDialog() {
 
         progressDialog.setMessage("Please Wait...");
         progressDialog.setCancelable(false);
@@ -293,39 +288,24 @@ public class UpdateStatusActivity extends AppCompatActivity {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                progressDialog.dismiss();
-                Snackbar snackbar = Snackbar.make(mCoordinatorLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        readData();
-                    }
-                });
-                snackbar.show();
+                if (progressDialog.isShowing()) {
+
+                    progressDialog.dismiss();
+                    Snackbar snackbar = Snackbar.make(mCoordinatorLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            readData();
+                        }
+                    });
+                    snackbar.show();
+                }
             }
         };
         Handler handler = new Handler();
-        handler.postDelayed(runnable, 20000);
+        handler.postDelayed(runnable, PROGRESS_DIALOG_DURATION);
     }
 
     private void updateDataDetails() {
-        progressDialog.setMessage("Please Wait...");
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                progressDialog.dismiss();
-                Snackbar snackbar = Snackbar.make(mCoordinatorLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        updateDataDetails();
-                    }
-                });
-                snackbar.show();
-            }
-        };
-        Handler handler = new Handler();
-        handler.postDelayed(runnable, 20000);
 
         Map<String, String> postParam = new HashMap<>();
 
@@ -349,6 +329,9 @@ public class UpdateStatusActivity extends AppCompatActivity {
 
                     @Override
                     public void onResponse(JSONObject response) {
+                        if (progressDialog.isShowing()) {
+                            progressDialog.dismiss();
+                        }
                         Log.i(TAG, response.toString());
                         try {
                             if (response.getString("status").equals("updated")) {
@@ -367,6 +350,7 @@ public class UpdateStatusActivity extends AppCompatActivity {
 
             @Override
             public void onErrorResponse(VolleyError error) {
+                Toast.makeText(UpdateStatusActivity.this, "" + error, Toast.LENGTH_SHORT).show();
                 VolleyLog.d(TAG, "Error with Connection: " + error.getMessage() + "lol");
             }
         }) {
@@ -392,14 +376,6 @@ public class UpdateStatusActivity extends AppCompatActivity {
     }
 
 
-    //  Function to provide current data and time
-    private String getDateTime() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = new Date();
-        return dateFormat.format(date);
-    }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -410,38 +386,30 @@ public class UpdateStatusActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    // Get LoggedIn users ID
-    private String getUserId() {
-        ArrayList<String> newArralist = new ArrayList<>();
-        // Creates a shared preferences variable to retrieve the logeed in users IDs and store it in Updated By Section
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.test.nuvoco3", Context.MODE_PRIVATE);
-
-        try {
-            newArralist = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("CustomerData", ObjectSerializer.serialize(new ArrayList<String>())));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (newArralist.size() > 0)
-            return newArralist.get(6);
-
-        return "Invalid User";
-
-    }
 
     private void updateDataNormal() {
+        showProgressDialog();
 
         Map<String, String> postParam = new HashMap<>();
 
 //
 
         postParam.put("1", mComplaintId);
-//        postParam.put("2", "2017-01-01 00:00:10");  //date
+        postParam.put("2", mDate);  //date
         postParam.put("4", mCustomerName);
         postParam.put("5", mType);
         postParam.put("6", mDetails);
         postParam.put("9", mUpdatedOn);    //updated on
         postParam.put("10", mUpdatedBy);
         postParam.put("11", mStatus);
+//        postParam.put("1","1001");
+////        postParam.put("2", "2017-01-01 00:00:10");  //date
+//        postParam.put("4", "Rajdeep");
+//        postParam.put("5", "Logistics");
+//        postParam.put("6", "lol xD");
+//        postParam.put("9", getDateTime());    //updated on
+//        postParam.put("10", new UserInfoHelper(this).getUserId());
+//        postParam.put("11", "Resolved");
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, BASE_URL + UPDATE_COMPLAINT, new JSONObject(postParam),
                 new Response.Listener<JSONObject>() {
@@ -451,14 +419,10 @@ public class UpdateStatusActivity extends AppCompatActivity {
                         Log.i(TAG, response.toString());
                         try {
                             if (response.getString("status").equals("updated")) {
-//                                progressDialog.dismiss();
-//                                Toast.makeText(InsertComplaintActivity.this, "Successfully Inserted Data", Toast.LENGTH_SHORT).show();
-//                                Intent intent = new Intent(InsertComplaintActivity.this, InsertComplaintDetailsActivity.class);
-//                                intent.putExtra("date", mDate);
-//                                intent.putExtra("customerId", mCustomerId);
-//                                intent.putExtra("customerName", mCustomerName);
-//                                intent.putExtra("complaintDetails", mComplaintDetails);
+                                Log.i(TAG, "onResponse: " + "Updated Normal Table");
                                 updateDataDetails();
+                            } else {
+                                Toast.makeText(UpdateStatusActivity.this, "" + response, Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -470,13 +434,10 @@ public class UpdateStatusActivity extends AppCompatActivity {
 
             @Override
             public void onErrorResponse(VolleyError error) {
+                Toast.makeText(UpdateStatusActivity.this, "" + error, Toast.LENGTH_SHORT).show();
                 VolleyLog.d(TAG, "Error with Connection: " + error.getMessage() + "lol");
             }
         }) {
-
-            /**
-             * Passing some request headers
-             * */
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
@@ -517,7 +478,6 @@ public class UpdateStatusActivity extends AppCompatActivity {
 
                 } catch (JSONException e1) {
                     e1.printStackTrace();
-                    e1.printStackTrace();
                 }
             }
 
@@ -529,10 +489,6 @@ public class UpdateStatusActivity extends AppCompatActivity {
                 // hide the progress dialog
             }
         }) {
-
-            /**
-             * Passing some request headers
-             */
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
@@ -544,14 +500,13 @@ public class UpdateStatusActivity extends AppCompatActivity {
 
 
         };
-
-        // Adding request to request queue
         queue.add(jsonObjReq);
 
     }
 
     public void enableSearch(View v) {
-
+        mSearchView.setFocusable(true);
+        mSearchView.requestFocusFromTouch();
         mSearchView.setIconified(false);
     }
 

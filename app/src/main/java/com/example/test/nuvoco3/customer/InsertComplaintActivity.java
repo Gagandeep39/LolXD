@@ -3,7 +3,6 @@ package com.example.test.nuvoco3.customer;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
@@ -18,6 +17,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -36,14 +36,12 @@ import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.helpers.MasterHelper;
 import com.example.test.nuvoco3.helpers.UserInfoHelper;
-import com.example.test.nuvoco3.signup.ObjectSerializer;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -56,6 +54,8 @@ import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
 import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_CUSTOMER;
 import static com.example.test.nuvoco3.helpers.Contract.INSERT_COMPLAINT;
 import static com.example.test.nuvoco3.helpers.Contract.INSERT_COMPLAINT_DETAILS;
+import static com.example.test.nuvoco3.helpers.Contract.PROGRESS_DIALOG_DURATION;
+import static com.example.test.nuvoco3.helpers.UserInfoHelper.getDateTime;
 
 public class InsertComplaintActivity extends AppCompatActivity {
 
@@ -107,9 +107,9 @@ public class InsertComplaintActivity extends AppCompatActivity {
     private void validateData() {
 //        mDate = mEditTextDate.getText().toString();
         mComplaintDetails = mEditTextComplaintDetails.getText().toString();
-        mCreatedBy = getUserId();
+        mCreatedBy = new UserInfoHelper(this).getUserId();
         mCreatedOn = getDateTime();
-        mUpdatedBy = getUserId();
+        mUpdatedBy = new UserInfoHelper(this).getUserId();
         mUpdatedOn = getDateTime();
         mStatus = "Open";
 
@@ -154,17 +154,12 @@ public class InsertComplaintActivity extends AppCompatActivity {
                         Log.i(TAG, response.toString());
                         try {
                             if (response.getString("status").equals("updated")) {
-//                                progressDialog.dismiss();
-//                                Toast.makeText(InsertComplaintActivity.this, "Successfully Inserted Data", Toast.LENGTH_SHORT).show();
-//                                Intent intent = new Intent(InsertComplaintActivity.this, InsertComplaintDetailsActivity.class);
-//                                intent.putExtra("date", mDate);
-//                                intent.putExtra("customerId", mCustomerId);
-//                                intent.putExtra("customerName", mCustomerName);
-//                                intent.putExtra("complaintDetails", mComplaintDetails);
                                 mComplaintId = response.getString("complaint_ID");
-                                mRepresentative = getUserId();
+                                mRepresentative = new UserInfoHelper(InsertComplaintActivity.this).getUserId();
 //                                startActivity(intent);
                                 saveDetailsDataToServer();
+                            } else {
+                                Toast.makeText(InsertComplaintActivity.this, "" + response, Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -176,17 +171,16 @@ public class InsertComplaintActivity extends AppCompatActivity {
 
             @Override
             public void onErrorResponse(VolleyError error) {
+                Log.i(TAG, "onErrorResponse: " + error);
                 VolleyLog.d(TAG, "Error with Connection: " + error.getMessage() + "lol");
             }
         }) {
-
-            /**
-             * Passing some request headers
-             * */
             @Override
             public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<String, String>();
+                Map<String, String> headers = new HashMap<>();
+                // add headers <key,value>
                 headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("x-access-token", new UserInfoHelper(InsertComplaintActivity.this).getUserToken());
                 return headers;
             }
 
@@ -203,11 +197,9 @@ public class InsertComplaintActivity extends AppCompatActivity {
     private void populateSpinners() {
         ArrayAdapter<String> mCustomerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mCustomerList);
         ArrayAdapter<String> mTypeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mTypeArrayList);
-//        ArrayAdapter<String> mStatusAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mStatusList);
 
         mSearchCustomer.setAdapter(mCustomerAdapter);
         mSearchType.setAdapter(mTypeAdapter);
-//        mStatusSpinner.setAdapter(mStatusAdapter);
         mCustomerAdapter.notifyDataSetChanged();
         mSearchCustomer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -235,26 +227,14 @@ public class InsertComplaintActivity extends AppCompatActivity {
         });
 
 
-//        mStatusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                mStatus = mStatusList.get(position);
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> parent) {
-//                mStatus = getString(R.string.default_name);
-//            }
-//        });
-
-
-
     }
 
 
 
     public void datePickerFunction(View v) {
         final View buttonClicked = v;
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(buttonClicked.getWindowToken(), 0);
 
         // Get Current Date
         final Calendar c = Calendar.getInstance();
@@ -287,30 +267,6 @@ public class InsertComplaintActivity extends AppCompatActivity {
 
 
 
-    //  Function to provide current data and time
-    private String getDateTime() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = new Date();
-        return dateFormat.format(date);
-    }
-
-    // Get LoggedIn users ID
-    private String getUserId() {
-        ArrayList<String> newArralist = new ArrayList<>();
-        // Creates a shared preferences variable to retrieve the logeed in users IDs and store it in Updated By Section
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.test.nuvoco3", Context.MODE_PRIVATE);
-
-        try {
-            newArralist = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("CustomerData", ObjectSerializer.serialize(new ArrayList<String>())));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (newArralist.size() > 0)
-            return newArralist.get(6);
-
-        return "Invalid User";
-
-    }
 
     public void populateCustomers() {
         progressDialog.setMessage("Please Wait...");
@@ -319,18 +275,20 @@ public class InsertComplaintActivity extends AppCompatActivity {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                progressDialog.dismiss();
-                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        populateCustomers();
-                    }
-                });
-                snackbar.show();
+                if (progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                    Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Toast.makeText(InsertComplaintActivity.this, "Connection Error", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    snackbar.show();
+                }
             }
         };
         Handler handler = new Handler();
-        handler.postDelayed(runnable, 20000);
+        handler.postDelayed(runnable, 10000);
 
 
         Map<String, String> postParam = new HashMap<>();
@@ -349,8 +307,7 @@ public class InsertComplaintActivity extends AppCompatActivity {
 
 
                         if (isChecked) {
-                            if (object.getString("createdBy").equals(getUserId())) {
-//                                Log.i(TAG, "onResponse: " + "created by onlu" + isChecked);
+                            if (object.getString("createdBy").equals(new UserInfoHelper(InsertComplaintActivity.this).getUserId())) {
 
                                 mIdList.add(object.getString("record_id"));   //primary key
                                 mCustomerList.add(object.getString("name"));
@@ -377,14 +334,11 @@ public class InsertComplaintActivity extends AppCompatActivity {
 
             @Override
             public void onErrorResponse(VolleyError error) {
+                Toast.makeText(InsertComplaintActivity.this, "" + error, Toast.LENGTH_SHORT).show();
                 VolleyLog.d("lol", "Error with Internet : " + error.getMessage());
                 // hide the progress dialog
             }
         }) {
-
-            /**
-             * Passing some request headers
-             */
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
@@ -449,25 +403,7 @@ public class InsertComplaintActivity extends AppCompatActivity {
     }
 
     private void saveDetailsDataToServer() {
-        progressDialog.setMessage("Please Wait...");
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                progressDialog.dismiss();
-                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        validateData();
-                    }
-                });
-                snackbar.show();
-            }
-        };
-        Handler handler = new Handler();
-        handler.postDelayed(runnable, 20000);
-
+        showProgressDialogue();
         Map<String, String> postParam = new HashMap<>();
 
 //
@@ -490,13 +426,15 @@ public class InsertComplaintActivity extends AppCompatActivity {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.i(TAG, response.toString());
+                        if (progressDialog.isShowing()) {
+                            progressDialog.dismiss();
+                        }
                         try {
                             if (response.getString("status").equals("updated")) {
-
-                                progressDialog.dismiss();
                                 Toast.makeText(InsertComplaintActivity.this, "Successfully Inserted Data", Toast.LENGTH_SHORT).show();
                                 finish();
+                            } else {
+                                Toast.makeText(InsertComplaintActivity.this, "" + response, Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -508,6 +446,7 @@ public class InsertComplaintActivity extends AppCompatActivity {
 
             @Override
             public void onErrorResponse(VolleyError error) {
+                Toast.makeText(InsertComplaintActivity.this, "" + error, Toast.LENGTH_SHORT).show();
                 VolleyLog.d(TAG, "Error with Connection: " + error.getMessage() + "lol");
             }
         })  {
@@ -526,10 +465,32 @@ public class InsertComplaintActivity extends AppCompatActivity {
 
 
         };
-
-        jsonObjReq.setTag("LOL");
         // Adding request to request queue
         queue.add(jsonObjReq);
+    }
+
+    private void showProgressDialogue() {
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                    Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            saveDetailsDataToServer();
+                        }
+                    });
+                    snackbar.show();
+                }
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, PROGRESS_DIALOG_DURATION);
+
     }
 
     @Override

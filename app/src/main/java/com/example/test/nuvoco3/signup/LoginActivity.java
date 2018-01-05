@@ -188,7 +188,7 @@ public class LoginActivity extends AppCompatActivity {
                                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
                                 finish();
                             } else {
-                                Toast.makeText(LoginActivity.this, "" + response, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, "" + response.getString("status"), Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

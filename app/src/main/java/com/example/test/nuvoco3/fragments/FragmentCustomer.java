@@ -14,7 +14,7 @@ import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.customer.InsertComplaintActivity;
 import com.example.test.nuvoco3.customer.UpdateStatusActivity;
 import com.example.test.nuvoco3.customer.ViewComplaintActivity;
-import com.example.test.nuvoco3.customer.ViewNewCustomerActivity;
+import com.example.test.nuvoco3.customer.ViewMyCustomerActivity;
 
 
 /**
@@ -94,7 +94,7 @@ public class FragmentCustomer extends Fragment {
         mButtonViewNewCustomer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(v.getContext(), ViewNewCustomerActivity.class));
+                startActivity(new Intent(v.getContext(), ViewMyCustomerActivity.class));
             }
         });
         mButton3.setOnClickListener(new View.OnClickListener() {

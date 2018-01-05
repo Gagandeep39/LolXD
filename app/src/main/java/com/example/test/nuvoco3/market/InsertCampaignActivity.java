@@ -3,7 +3,6 @@ package com.example.test.nuvoco3.market;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
@@ -18,6 +17,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -35,14 +35,12 @@ import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.helpers.MasterHelper;
 import com.example.test.nuvoco3.helpers.UserInfoHelper;
-import com.example.test.nuvoco3.signup.ObjectSerializer;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,9 +50,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
-import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_CONTACT;
 import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_CUSTOMER;
 import static com.example.test.nuvoco3.helpers.Contract.INSERT_CAMPAIGN;
+import static com.example.test.nuvoco3.helpers.Contract.PROGRESS_DIALOG_DURATION;
+import static com.example.test.nuvoco3.helpers.UserInfoHelper.getDateTime;
 
 public class InsertCampaignActivity extends AppCompatActivity {
     private static final String TAG = "InsertCampaign Activity";
@@ -174,25 +173,7 @@ public class InsertCampaignActivity extends AppCompatActivity {
 
 
     public void populateCustomers() {
-        progressDialog.setMessage("Please Wait...");
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                progressDialog.dismiss();
-                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        populateCustomers();
-                    }
-                });
-                snackbar.show();
-            }
-        };
-        Handler handler = new Handler();
-        handler.postDelayed(runnable, 20000);
-
+        showProgressDialogue();
 
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
@@ -200,6 +181,9 @@ public class InsertCampaignActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(JSONObject response) {
+                if (progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
 
@@ -207,7 +191,7 @@ public class InsertCampaignActivity extends AppCompatActivity {
 
                         JSONObject object = jsonArray.getJSONObject(i);
                         if (isChecked) {
-                            if (object.getString("createdBy").equals(getUserId())) {
+                            if (object.getString("createdBy").equals(new UserInfoHelper(InsertCampaignActivity.this).getUserId())) {
                                 mCustomerList.add(object.getString("name"));
 
                             }
@@ -217,7 +201,6 @@ public class InsertCampaignActivity extends AppCompatActivity {
                             mCustomerList.add(object.getString("name"));
 
                         }
-                        progressDialog.dismiss();
                     }
 
                 } catch (JSONException e1) {
@@ -230,14 +213,11 @@ public class InsertCampaignActivity extends AppCompatActivity {
 
             @Override
             public void onErrorResponse(VolleyError error) {
+                Toast.makeText(InsertCampaignActivity.this, "" + error, Toast.LENGTH_SHORT).show();
                 VolleyLog.d("lol", "Error with Internet : " + error.getMessage());
                 // hide the progress dialog
             }
         }) {
-
-            /**
-             * Passing some request headers
-             */
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
@@ -249,58 +229,40 @@ public class InsertCampaignActivity extends AppCompatActivity {
 
 
         };
-
-        // Adding request to request queue
         queue.add(jsonObjReq);
     }
 
-
-    public void populateContacts() {
-
-
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
-                BASE_URL + DISPLAY_CONTACT, null, new Response.Listener<JSONObject>() {
-
+    private void showProgressDialogue() {
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        Runnable runnable = new Runnable() {
             @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    JSONArray jsonArray = response.getJSONArray("message");
-                    for (int i = 0; i < jsonArray.length(); i++) {
-
-                        JSONObject object = jsonArray.getJSONObject(i);
-                        if (object.getString("c_name").toLowerCase().equals(mCompany)) {
-                            mContactList.add(object.getString("contactPerson"));
-                        }
-                    }
+            public void run() {
+                if (progressDialog.isShowing()) {
                     progressDialog.dismiss();
-
-
-                } catch (JSONException e1) {
-                    e1.printStackTrace();
-                    e1.printStackTrace();
+                    Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Toast.makeText(InsertCampaignActivity.this, "Connection Error", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    snackbar.show();
                 }
             }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, PROGRESS_DIALOG_DURATION);
 
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d("lol", "Error with Internet : " + error.getMessage());
-                // hide the progress dialog
-            }
-        });
-
-        // Adding request to request queue
-        queue.add(jsonObjReq);
     }
 
 
     private void validateData() {
         mRepresentative = mEditTextRepresentative.getText().toString();
         mCampaignDetail = mEditTextDetails.getText().toString();
-        mCreatedBy = getUserId();
+        mCreatedBy = new UserInfoHelper(this).getUserId();
         mCreatedOn = getDateTime();
-        mUpdatedBy = getUserId();
+        mUpdatedBy = new UserInfoHelper(this).getUserId();
         mUpdatedOn = getDateTime();
 
         if (TextUtils.isEmpty(mRepresentative)) {
@@ -419,37 +381,13 @@ public class InsertCampaignActivity extends AppCompatActivity {
         mSearchBrand = findViewById(R.id.searchBrand);
 
         fab = findViewById(R.id.fab);
-        mEditTextRepresentative.setText(getUserId());
+        mEditTextRepresentative.setText(new UserInfoHelper(this).getUserId());
         mEditTextRepresentative.setKeyListener(null);
 
 
     }
 
-    //  Function to provide current data and time
-    private String getDateTime() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-//        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = new Date();
-        return dateFormat.format(date);
-    }
 
-    // Get LoggedIn users ID
-    private String getUserId() {
-        ArrayList<String> newArralist = new ArrayList<>();
-        // Creates a shared preferences variable to retrieve the logeed in users IDs and store it in Updated By Section
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.test.nuvoco3", Context.MODE_PRIVATE);
-
-        try {
-            newArralist = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("CustomerData", ObjectSerializer.serialize(new ArrayList<String>())));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (newArralist.size() > 0)
-            return newArralist.get(6);
-
-        return "Invalid User";
-
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -482,6 +420,9 @@ public class InsertCampaignActivity extends AppCompatActivity {
 
 
     public void datePickerFunction(View v) {
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mTextViewDate.getWindowToken(), 0);
 
         // Get Current Date
         final Calendar c = Calendar.getInstance();

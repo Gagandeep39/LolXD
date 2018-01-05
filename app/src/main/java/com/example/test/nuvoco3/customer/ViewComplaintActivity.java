@@ -1,8 +1,6 @@
 package com.example.test.nuvoco3.customer;
 
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
@@ -16,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -26,18 +25,17 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.helpers.UserInfoHelper;
-import com.example.test.nuvoco3.signup.ObjectSerializer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
+import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
+import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_COMPLAINT;
 
 public class ViewComplaintActivity extends AppCompatActivity {
     public static final String URL_DISPLAY_COMPLAINT_DTLS = "/dispComplaint";
@@ -70,12 +68,14 @@ public class ViewComplaintActivity extends AppCompatActivity {
     private void readData() {
         startProgressDialog();
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
-                DATABASE_URL + URL_DISPLAY_COMPLAINT_DTLS, null, new Response.Listener<JSONObject>() {
+                BASE_URL + DISPLAY_COMPLAINT, null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
                 Log.i("lol", "onResponse:  " + response);
-                progressDialog.dismiss();
+                if (progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
                     if (mSearchText.equals("0")) {
@@ -85,28 +85,19 @@ public class ViewComplaintActivity extends AppCompatActivity {
                     }
                     else
                         size = jsonArray.length();
-
-
                     for (int i = 0; i < size; i++) {
 
                         JSONObject object = jsonArray.getJSONObject(i);
                         if (isChecked) {
-                            if (object.getString("createdBy").equals(getUserId())) {
-//                                Log.i(TAG, "onResponse: " + "created by onlu" + isChecked);
+                            if (object.getString("createdBy").equals(new UserInfoHelper(ViewComplaintActivity.this).getUserId())) {
                                 fetchData(object);
-
                             }
-
-
                         } else {
                             fetchData(object);
-
                         }
-
                     }
 
                 } catch (JSONException e1) {
-                    e1.printStackTrace();
                     e1.printStackTrace();
                 }
             }
@@ -115,14 +106,11 @@ public class ViewComplaintActivity extends AppCompatActivity {
 
             @Override
             public void onErrorResponse(VolleyError error) {
+                Toast.makeText(ViewComplaintActivity.this, "" + error, Toast.LENGTH_SHORT).show();
                 VolleyLog.d("lol", "Error with Internet : " + error.getMessage());
                 // hide the progress dialog
             }
         }) {
-
-            /**
-             * Passing some request headers
-             */
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
@@ -134,8 +122,6 @@ public class ViewComplaintActivity extends AppCompatActivity {
 
 
         };
-
-        // Adding request to request queue
         queue.add(jsonObjReq);
 
     }
@@ -220,14 +206,17 @@ public class ViewComplaintActivity extends AppCompatActivity {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                progressDialog.dismiss();
-                Snackbar snackbar = Snackbar.make(mCoordinatorLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        readData();
-                    }
-                });
-                snackbar.show();
+                if (progressDialog.isShowing()) {
+
+                    progressDialog.dismiss();
+                    Snackbar snackbar = Snackbar.make(mCoordinatorLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            readData();
+                        }
+                    });
+                    snackbar.show();
+                }
             }
         };
         Handler handler = new Handler();
@@ -248,25 +237,6 @@ public class ViewComplaintActivity extends AppCompatActivity {
         checkable.setChecked(isChecked);
         return true;
     }
-
-
-    private String getUserId() {
-        ArrayList<String> newArralist = new ArrayList<>();
-        // Creates a shared preferences variable to retrieve the logeed in users IDs and store it in Updated By Section
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.test.nuvoco3", Context.MODE_PRIVATE);
-
-        try {
-            newArralist = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("CustomerData", ObjectSerializer.serialize(new ArrayList<String>())));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (newArralist.size() > 0)
-            return newArralist.get(6);
-
-        return "Invalid User";
-
-    }
-
 
 
 
