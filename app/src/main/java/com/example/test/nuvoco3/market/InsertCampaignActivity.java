@@ -34,6 +34,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.helpers.MasterHelper;
+import com.example.test.nuvoco3.helpers.UserInfoHelper;
 import com.example.test.nuvoco3.signup.ObjectSerializer;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
@@ -232,7 +233,22 @@ public class InsertCampaignActivity extends AppCompatActivity {
                 VolleyLog.d("lol", "Error with Internet : " + error.getMessage());
                 // hide the progress dialog
             }
-        });
+        }) {
+
+            /**
+             * Passing some request headers
+             */
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                // add headers <key,value>
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("x-access-token", new UserInfoHelper(InsertCampaignActivity.this).getUserToken());
+                return headers;
+            }
+
+
+        };
 
         // Adding request to request queue
         queue.add(jsonObjReq);
@@ -368,11 +384,13 @@ public class InsertCampaignActivity extends AppCompatActivity {
 
             /**
              * Passing some request headers
-             */
+             * */
             @Override
             public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<String, String>();
+                Map<String, String> headers = new HashMap<>();
+                // add headers <key,value>
                 headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("x-access-token", new UserInfoHelper(InsertCampaignActivity.this).getUserToken());
                 return headers;
             }
 
@@ -409,8 +427,8 @@ public class InsertCampaignActivity extends AppCompatActivity {
 
     //  Function to provide current data and time
     private String getDateTime() {
-//        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+//        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         return dateFormat.format(date);
     }

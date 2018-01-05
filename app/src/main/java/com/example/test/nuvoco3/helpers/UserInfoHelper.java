@@ -7,7 +7,10 @@ import android.util.Log;
 import com.example.test.nuvoco3.signup.ObjectSerializer;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import static com.example.test.nuvoco3.helpers.Contract.USER_ADDRESS;
 import static com.example.test.nuvoco3.helpers.Contract.USER_AGE;
@@ -233,8 +236,12 @@ public class UserInfoHelper {
         return mUserInfo;
     }
 
-
-
+    public static String getDateTime() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        return dateFormat.format(date);
+    }
 
 
 

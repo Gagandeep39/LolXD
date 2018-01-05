@@ -32,6 +32,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.helpers.MasterHelper;
+import com.example.test.nuvoco3.helpers.UserInfoHelper;
 import com.example.test.nuvoco3.signup.ObjectSerializer;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
@@ -262,7 +263,22 @@ public class UpdateStatusActivity extends AppCompatActivity {
                 VolleyLog.d("lol", "Error with Internet : " + error.getMessage());
                 // hide the progress dialog
             }
-        });
+        }) {
+
+            /**
+             * Passing some request headers
+             */
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                // add headers <key,value>
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("x-access-token", new UserInfoHelper(UpdateStatusActivity.this).getUserToken());
+                return headers;
+            }
+
+
+        };
 
         // Adding request to request queue
         queue.add(jsonObjReq);
@@ -357,11 +373,13 @@ public class UpdateStatusActivity extends AppCompatActivity {
 
             /**
              * Passing some request headers
-             */
+             * */
             @Override
             public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<String, String>();
+                Map<String, String> headers = new HashMap<>();
+                // add headers <key,value>
                 headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("x-access-token", new UserInfoHelper(UpdateStatusActivity.this).getUserToken());
                 return headers;
             }
 
@@ -461,8 +479,10 @@ public class UpdateStatusActivity extends AppCompatActivity {
              * */
             @Override
             public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<String, String>();
+                Map<String, String> headers = new HashMap<>();
+                // add headers <key,value>
                 headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("x-access-token", new UserInfoHelper(UpdateStatusActivity.this).getUserToken());
                 return headers;
             }
 
@@ -508,7 +528,22 @@ public class UpdateStatusActivity extends AppCompatActivity {
                 VolleyLog.d("lol", "Error with Internet : " + error.getMessage());
                 // hide the progress dialog
             }
-        });
+        }) {
+
+            /**
+             * Passing some request headers
+             */
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                // add headers <key,value>
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("x-access-token", new UserInfoHelper(UpdateStatusActivity.this).getUserToken());
+                return headers;
+            }
+
+
+        };
 
         // Adding request to request queue
         queue.add(jsonObjReq);

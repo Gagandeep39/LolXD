@@ -2,8 +2,6 @@ package com.example.test.nuvoco3.lead;
 
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,7 +12,6 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,25 +30,24 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.R;
-import com.example.test.nuvoco3.signup.ObjectSerializer;
+import com.example.test.nuvoco3.helpers.UserInfoHelper;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
 import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_CUSTOMER;
 import static com.example.test.nuvoco3.helpers.Contract.INSERT_CONTACT;
+import static com.example.test.nuvoco3.helpers.Contract.PROGRESS_DIALOG_DURATION;
+import static com.example.test.nuvoco3.helpers.UserInfoHelper.getDateTime;
+import static com.example.test.nuvoco3.helpers.UserInfoHelper.isEmailValid;
 
 public class InsertCustomerContactActivity extends AppCompatActivity {
     private static final String TAG = "InsertContacts";
@@ -119,9 +115,9 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
 
         }
 
-        mCreatedBy = getUserId();
+        mCreatedBy = new UserInfoHelper(this).getUserId();
         mCreatedOn = getDateTime();
-        mUpdatedBy = getUserId();
+        mUpdatedBy = new UserInfoHelper(this).getUserId();
         mUpdatedOn = getDateTime();
     }
 
@@ -221,20 +217,14 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
     }
 
     // Used to get current date and time
-    private String getDateTime() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-//        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = new Date();
-        return dateFormat.format(date);
-    }
+
 
     // Stores data in server
     private void storeData() {
         showProgress();
 
 
-
-        Map<String, String> postParam = new HashMap<>();
+        final Map<String, String> postParam = new HashMap<>();
 
 
         postParam.put("2", mCustomerName);
@@ -254,12 +244,15 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.i(TAG, response.toString());
+                        if (progressDialog.isShowing()) {
+                            progressDialog.dismiss();
+                        }
                         try {
                             if (response.getString("status").equals("updated")) {
-                                progressDialog.dismiss();
                                 Toast.makeText(InsertCustomerContactActivity.this, "Successfully Inserted New Contact", Toast.LENGTH_SHORT).show();
                                 finish();
+                            } else {
+                                Toast.makeText(InsertCustomerContactActivity.this, "" + response, Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -277,18 +270,18 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
 
             /**
              * Passing some request headers
-             */
+             * */
             @Override
             public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<String, String>();
+                Map<String, String> headers = new HashMap<>();
+                // add headers <key,value>
                 headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("x-access-token", new UserInfoHelper(InsertCustomerContactActivity.this).getUserToken());
                 return headers;
             }
 
 
         };
-
-        jsonObjReq.setTag("LOL");
         // Adding request to request queue
         queue.add(jsonObjReq);
 
@@ -312,48 +305,12 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
             }
         };
         Handler handler = new Handler();
-        handler.postDelayed(runnable, 20000);
+        handler.postDelayed(runnable, PROGRESS_DIALOG_DURATION);
     }
 
-
-    private String getUserId() {
-        ArrayList<String> newArralist = new ArrayList<>();
-        // Creates a shared preferences variable to retrieve the logeed in users IDs and store it in Updated By Section
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.test.nuvoco3", Context.MODE_PRIVATE);
-
-        try {
-            newArralist = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("CustomerData", ObjectSerializer.serialize(new ArrayList<String>())));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (newArralist.size() > 0)
-            return newArralist.get(6);
-
-        return "Invalid User";
-
-    }
 
 
     public void populateCustomers() {
-        progressDialog.setMessage("Please Wait...");
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                progressDialog.dismiss();
-                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        populateCustomers();
-                    }
-                });
-                snackbar.show();
-            }
-        };
-        Handler handler = new Handler();
-        handler.postDelayed(runnable, 20000);
-
         mCustomerList = new ArrayList<String>();
         mIdList = new ArrayList<>();
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
@@ -366,17 +323,11 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
 
-                    if (mCustomerName.equals("0"))
-                        size = 50;
-                    else
-                        size = jsonArray.length();
-
-
                     for (int i = 0; i < jsonArray.length(); i++) {
 
                         JSONObject object = jsonArray.getJSONObject(i);
                         if (isChecked) {
-                            if (object.getString("createdBy").equals(getUserId())) {
+                            if (object.getString("createdBy").equals(new UserInfoHelper(InsertCustomerContactActivity.this).getUserId())) {
                                 mIdList.add(object.getString("record_id"));   //primary key
                                 mCustomerList.add(object.getString("name"));
                                 populatingSpinner();
@@ -387,7 +338,6 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
                         } else {
                             mIdList.add(object.getString("record_id"));   //primary key
                             mCustomerList.add(object.getString("name"));
-                            Log.i(TAG, "onResponse: " + "lololol");
                             populatingSpinner();
 
                         }
@@ -408,16 +358,25 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
                 VolleyLog.d("lol", "Error with Internet : " + error.getMessage());
                 // hide the progress dialog
             }
-        });
+        }) {
+
+            /**
+             * Passing some request headers
+             */
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                // add headers <key,value>
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("x-access-token", new UserInfoHelper(InsertCustomerContactActivity.this).getUserToken());
+                return headers;
+            }
+
+
+        };
 
         // Adding request to request queue
         queue.add(jsonObjReq);
-    }
-
-
-
-    private boolean isEmailValid(String email) {
-        return email.contains("@");
     }
 
 

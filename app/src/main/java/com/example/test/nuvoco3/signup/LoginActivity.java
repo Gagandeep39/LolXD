@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
+import static com.example.test.nuvoco3.helpers.Contract.PROGRESS_DIALOG_DURATION;
 
 public class LoginActivity extends AppCompatActivity {
     public static final String TAG = "Login Activity";
@@ -66,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
         // Checks if User has an Account or Not
         if (checkLoggedIn() == 1) {
             mEmailLogin = new UserInfoHelper(this).getUserEmail();
-            mPasswordLogin = "passsdfghjk";
+            mPasswordLogin = new UserInfoHelper(this).getUserPassword();
 
             makeJsonObjReq();
 //            finish();
@@ -85,8 +86,6 @@ public class LoginActivity extends AppCompatActivity {
                 tryLoggingIn();
             }
         });
-
-        progressDialog = new ProgressDialog(this);
     }
 
     //    Sends Email ID and Password to Server for Authentication
@@ -145,6 +144,10 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onResponse(JSONObject response) {
+                        if (progressDialog.isShowing()) {
+
+                            progressDialog.dismiss();
+                        }
                         Log.i(TAG, "onResponse:  " + response);
                         try {
 
@@ -203,9 +206,6 @@ public class LoginActivity extends AppCompatActivity {
              * */
             @Override
             public Map<String, String> getHeaders() {
-//                HashMap<String, String> headers = new HashMap<String, String>();
-//                headers.put("Content-Type", "application/json; charset=utf-8");
-//                return headers;
                 Map<String, String> headers = new HashMap<>();
                 // add headers <key,value>
                 String credentials = mEmailLogin + ":" + mPasswordLogin;
@@ -231,18 +231,22 @@ public class LoginActivity extends AppCompatActivity {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                progressDialog.dismiss();
-                Snackbar snackbar = Snackbar.make(mConstraintLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+                if (progressDialog.isShowing()) {
+                    Snackbar snackbar = Snackbar.make(mConstraintLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
 
-                    }
-                });
-                snackbar.show();
+                        }
+                    });
+                    snackbar.show();
+
+                    progressDialog.dismiss();
+                }
+
             }
         };
         Handler handler = new Handler();
-        handler.postDelayed(runnable, 10000);
+        handler.postDelayed(runnable, PROGRESS_DIALOG_DURATION);
 
     }
 

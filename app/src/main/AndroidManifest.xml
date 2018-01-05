@@ -24,6 +24,7 @@
             </intent-filter>
         </activity>
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".lead.InsertCustomerActivity"
             android:configChanges="orientation|screenSize"
             android:parentActivityName=".MainActivity" />
@@ -40,58 +41,68 @@
             android:label="@string/title_activity_main2"
             android:theme="@style/AppTheme" />
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".lead.InsertCustomerContactActivity"
             android:configChanges="orientation|screenSize"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".signup.LoginActivity" />
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".customer.InsertComplaintActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_complaint"
             android:theme="@style/AppTheme" />
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".customer.InsertComplaintDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_complaint_details"
             android:parentActivityName=".lead.ViewCustomerActivity"
             android:theme="@style/AppTheme" />
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".signup.RegisterActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_sign_up"
             android:parentActivityName=".signup.LoginActivity"
             android:theme="@style/AppTheme" />
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".lead.CustomerDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_customer_details"
             android:parentActivityName=".lead.ViewCustomerActivity"
             android:theme="@style/AppTheme" />
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".lead.ViewCustomerContactActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_view_customer_contact"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme" />
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".lead.CustomerContactDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_customer_contact_details"
             android:parentActivityName=".lead.ViewCustomerContactActivity"
             android:theme="@style/AppTheme" />
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".signup.UserAccountActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_user_account"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme" />
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".market.InsertBrandPriceActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_brand_price"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme" />
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".market.InsertGeneralMarketActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_insert_general_market"
@@ -110,37 +121,44 @@
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme" />
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".market.InsertCampaignActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_insert_campaign"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme" />
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".customer.ViewComplaintActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_view_complaint"
             android:theme="@style/AppTheme" />
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".RecordManagementActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_insert"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme" />
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".customer.ComplaintStatusActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_complaint_status"
             android:theme="@style/AppTheme" />
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".customer.UpdateStatusActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_update_status"
             android:theme="@style/AppTheme" />
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".market.ViewBrandPriceDetailsActivity"
             android:label="@string/title_activity_brand_price_details"
             android:theme="@style/AppTheme" />
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".visits.CreateJCPActivity"
             android:label="@string/title_activity_create_jcp"
             android:parentActivityName=".MainActivity"
@@ -152,11 +170,13 @@
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".visits.VisitDetailsActivity"
             android:label="@string/title_activity_visit_details"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme" />
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".visits.CalendarActivity"
             android:label="@string/title_activity_calendar"
             android:theme="@style/AppTheme"></activity>

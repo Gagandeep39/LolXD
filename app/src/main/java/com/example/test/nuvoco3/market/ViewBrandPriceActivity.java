@@ -24,6 +24,7 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.R;
+import com.example.test.nuvoco3.helpers.UserInfoHelper;
 import com.example.test.nuvoco3.signup.ObjectSerializer;
 
 import org.json.JSONArray;
@@ -32,6 +33,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
 import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_PRICE;
@@ -141,7 +144,22 @@ public class ViewBrandPriceActivity extends AppCompatActivity {
                 VolleyLog.d("lol", "Error with Internet : " + error.getMessage());
                 // hide the progress dialog
             }
-        });
+        }) {
+
+            /**
+             * Passing some request headers
+             */
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                // add headers <key,value>
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("x-access-token", new UserInfoHelper(ViewBrandPriceActivity.this).getUserToken());
+                return headers;
+            }
+
+
+        };
 
         // Adding request to request queue
         queue.add(jsonObjReq);

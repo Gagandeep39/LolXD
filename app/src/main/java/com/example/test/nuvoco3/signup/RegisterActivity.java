@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.example.test.nuvoco3.helpers.Contract.PROGRESS_DIALOG_DURATION;
 import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -43,9 +44,6 @@ public class RegisterActivity extends AppCompatActivity {
     String mName, mEmail, mPhone, mAddress, mPassword1, mPassword2, mCity, mArea, mDepartment;
     SearchableSpinner mSearchableSpinnerDepartment, mSearchableSpinnerArea, mSearchableSpinnerCity;
     int mPin = 0, mAge = 0, mStatus = 1;
-    String departmentTypes[] = {"Department 1", "Department 2", "Department 3", "Department 4"};
-    String areaTypes[] = {"Area 1", "Area 2", "Area 3", "Area 4"};
-    String cityTypes[] = {"Mumbai", "Pune", "Thane", "Chandigarh"};
     RequestQueue queue;
     CoordinatorLayout mCoordinaterLayout;
     ProgressDialog progressDialog;
@@ -199,25 +197,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     //  Stores User data on Server on Successful Account Creation
     private void makeJsonObjReq() {
-        progressDialog.setMessage("Please Wait...");
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                progressDialog.dismiss();
-                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                    }
-                });
-                snackbar.show();
-            }
-        };
-        Handler handler = new Handler();
-        handler.postDelayed(runnable, 20000);
-
+        showProgressDialogue();
 
 
         Map<String, String> postParam = new HashMap<String, String>();
@@ -240,11 +220,16 @@ public class RegisterActivity extends AppCompatActivity {
 
                     @Override
                     public void onResponse(JSONObject response) {
+                        if (progressDialog.isShowing()) {
+                            progressDialog.dismiss();
+                        }
                         try {
                             if (response.getString("status").equals("updated")) {
-                                progressDialog.dismiss();
                                 Toast.makeText(RegisterActivity.this, "Successfully Signed Up", Toast.LENGTH_SHORT).show();
                                 finish();
+                            } else {
+
+                                Toast.makeText(RegisterActivity.this, "" + response, Toast.LENGTH_SHORT).show();
                             }
 
                         } catch (JSONException e) {
@@ -273,6 +258,31 @@ public class RegisterActivity extends AppCompatActivity {
         queue.add(jsonObjReq);
     }
 
+    private void showProgressDialogue() {
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (progressDialog.isShowing()) {
+                    Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    });
+                    snackbar.show();
+
+                    progressDialog.dismiss();
+                }
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, PROGRESS_DIALOG_DURATION);
+
+    }
+
     private boolean isEmailValid(String email) {
         return email.contains("@nuvoco.in");
     }
@@ -282,7 +292,7 @@ public class RegisterActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(this);
 
         //Initializing helper class for different spinners
-        mCityHelper = new MasterHelper(this, "District");
+        mCityHelper = new MasterHelper(this, "City");
         mDepartmentHelper = new MasterHelper(this, "Department");
         mAreaHelper = new MasterHelper(this, "Area");
 

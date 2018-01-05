@@ -32,6 +32,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.MainActivity;
 import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.helpers.MasterHelper;
+import com.example.test.nuvoco3.helpers.UserInfoHelper;
 import com.example.test.nuvoco3.signup.ObjectSerializer;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
@@ -200,8 +201,10 @@ public class InsertComplaintDetailsActivity extends AppCompatActivity {
              * */
             @Override
             public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<String, String>();
+                Map<String, String> headers = new HashMap<>();
+                // add headers <key,value>
                 headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("x-access-token", new UserInfoHelper(InsertComplaintDetailsActivity.this).getUserToken());
                 return headers;
             }
 

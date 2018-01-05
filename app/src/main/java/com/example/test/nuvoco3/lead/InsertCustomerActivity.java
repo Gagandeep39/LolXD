@@ -30,6 +30,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.helpers.MasterHelper;
+import com.example.test.nuvoco3.helpers.UserInfoHelper;
 import com.example.test.nuvoco3.signup.ObjectSerializer;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
@@ -69,7 +70,7 @@ public class InsertCustomerActivity extends AppCompatActivity {
 
         initializeViews();
         initializeVariables();
-        showProgress();
+//        showProgress();
         initializeSpinners();
         floatingActionButtonAddData.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -196,7 +197,7 @@ public class InsertCustomerActivity extends AppCompatActivity {
 
     //  Function to provide current data and time
     private String getDateTime() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 //        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         return dateFormat.format(date);
@@ -250,7 +251,7 @@ public class InsertCustomerActivity extends AppCompatActivity {
     //  Stores data to Server
     private void storeData() {
 
-        showProgress();
+//        showProgress();
 
 
         Map<String, String> postParam = new HashMap<>();
@@ -314,15 +315,15 @@ public class InsertCustomerActivity extends AppCompatActivity {
              * */
             @Override
             public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<String, String>();
+                Map<String, String> headers = new HashMap<>();
+                // add headers <key,value>
                 headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("x-access-token", new UserInfoHelper(InsertCustomerActivity.this).getUserToken());
                 return headers;
             }
 
 
         };
-
-        jsonObjReq.setTag("LOL");
         // Adding request to request queue
         queue.add(jsonObjReq);
 
