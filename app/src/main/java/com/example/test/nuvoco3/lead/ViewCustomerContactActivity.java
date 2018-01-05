@@ -2,7 +2,6 @@ package com.example.test.nuvoco3.lead;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
@@ -16,29 +15,29 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.helpers.UserInfoHelper;
-import com.example.test.nuvoco3.signup.ObjectSerializer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
 import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_CONTACT;
+import static com.example.test.nuvoco3.helpers.Contract.PROGRESS_DIALOG_DURATION;
 
 public class ViewCustomerContactActivity extends AppCompatActivity {
     private static final String TAG = "ViewCustomerContact";
@@ -51,7 +50,6 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
     CoordinatorLayout mCoordinaterLayout;
     ProgressDialog progressDialog;
     String mContactId, mCustomerId, mCustomerName, mContactName, mContactPhone, mContactEmail, mContactDOB, mContactDOA, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy;
-    int size = 0, flag;
     private boolean isChecked = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +63,13 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                mCustomerContactArrayList.clear();
                 mSearchText = query;
                 readData();
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(mSearchView.getWindowToken(), 0);
+                mAdapter.notifyDataSetChanged();
+                mRecyclerView.setAdapter(mAdapter);
                 return true;
             }
 
@@ -83,6 +86,7 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
         mCustomerContactArrayList = new ArrayList<>();
         if (getIntent().getStringExtra("customerID") != null) {
             mSearchText = getIntent().getStringExtra("customerID");
+            Log.i(TAG, "populateActivity: " + mSearchText);
             readData();
         } else
             readData();
@@ -95,7 +99,6 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
 
 
     private void readData() {
-        flag = 0;
         showProgress();
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 BASE_URL + DISPLAY_CONTACT, null, new Response.Listener<JSONObject>() {
@@ -103,17 +106,17 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
                 try {
+                    if (progressDialog.isShowing()) {
+                        progressDialog.dismiss();
+                    }
                     JSONArray jsonArray = response.getJSONArray("message");
-
-                    progressDialog.dismiss();
-                    flag = 1;
+                    Log.i(TAG, "onResponse: " + response);
                     for (int i = 0; i < jsonArray.length(); i++) {
 
                         JSONObject object = jsonArray.getJSONObject(i);
 
                         if (isChecked) {
-                            if (object.getString("createdBy").equals(getUserId())) {
-//                                Log.i(TAG, "onResponse: " + "created by onlu" + isChecked);
+                            if (object.getString("createdBy").equals(new UserInfoHelper(ViewCustomerContactActivity.this).getUserId())) {
                                 fetchData(object);
 
                             }
@@ -136,14 +139,10 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                VolleyLog.d("lol", "Error with Internet : " + error.getMessage());
+                Toast.makeText(ViewCustomerContactActivity.this, "" + error, Toast.LENGTH_SHORT).show();
                 // hide the progress dialog
             }
         }) {
-
-            /**
-             * Passing some request headers
-             */
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
@@ -152,8 +151,6 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
                 headers.put("x-access-token", new UserInfoHelper(ViewCustomerContactActivity.this).getUserToken());
                 return headers;
             }
-
-
         };
 
         // Adding request to request queue
@@ -163,6 +160,7 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
     private void fetchData(JSONObject object) {
         try {
             if (object.getString("record_id").toLowerCase().contains(mSearchText.toLowerCase())
+                    || object.getString("customer_id").toLowerCase().contains(mSearchText.toLowerCase())
                     || object.getString("c_name").toLowerCase().contains(mSearchText.toLowerCase())
                     || object.getString("contactPerson").toLowerCase().contains(mSearchText.toLowerCase())
                     || object.getString("contactPerson_email").toLowerCase().contains(mSearchText.toLowerCase())) {
@@ -173,7 +171,7 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
                 mContactEmail = object.getString("contactPerson_email") + "";
                 mContactDOB = object.getString("contactPerson_DOB") + "";
                 mContactDOA = object.getString("contactPerson_DOA") + "";
-                mCustomerId = object.getString("record_id") + ""; //Foreign Key
+                mCustomerId = object.getString("customer_id") + ""; //Foreign Key
                 mCreatedBy = object.getString("createdBy") + "";
                 mCreatedOn = object.getString("createdOn") + "";
                 mUpdatedBy = object.getString("updatedBy") + "";
@@ -214,7 +212,7 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                if (flag == 0) {
+                if (progressDialog.isShowing()) {
                     progressDialog.dismiss();
                     Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
                         @Override
@@ -227,7 +225,7 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
             }
         };
         Handler handler = new Handler();
-        handler.postDelayed(runnable, 10000);
+        handler.postDelayed(runnable, PROGRESS_DIALOG_DURATION);
     }
 
     @Override
@@ -262,21 +260,6 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
     }
 
 
-    private String getUserId() {
-        ArrayList<String> newArralist = new ArrayList<>();
-        // Creates a shared preferences variable to retrieve the logeed in users IDs and store it in Updated By Section
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.test.nuvoco3", Context.MODE_PRIVATE);
 
-        try {
-            newArralist = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("CustomerData", ObjectSerializer.serialize(new ArrayList<String>())));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (newArralist.size() > 0)
-            return newArralist.get(6);
-
-        return "Invalid User";
-
-    }
 
 }

@@ -2,7 +2,6 @@ package com.example.test.nuvoco3.lead;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
@@ -15,6 +14,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -25,19 +26,18 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.helpers.UserInfoHelper;
-import com.example.test.nuvoco3.signup.ObjectSerializer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
 import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_CUSTOMER;
+import static com.example.test.nuvoco3.helpers.Contract.PROGRESS_DIALOG_DURATION;
 
 public class ViewCustomerActivity extends AppCompatActivity {
     private static final String TAG = "ViewCustomer Activity";
@@ -51,23 +51,15 @@ public class ViewCustomerActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     CoordinatorLayout mCoordinatorLayout;
     int size = 0;
-    int flag;
     private boolean isChecked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_customer);
-        queue = Volley.newRequestQueue(this);
-        progressDialog = new ProgressDialog(this);
         initializeViews();
-        mCustomerArrayList = new ArrayList<>();
+        initializeVariables();
         readData();
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.getItemAnimator();
-        mAdapter = new CustomerAdapter(this, mCustomerArrayList);
-        mRecyclerView.setAdapter(mAdapter);
 
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -75,7 +67,9 @@ public class ViewCustomerActivity extends AppCompatActivity {
                 mCustomerArrayList.clear();
                 mSearchText = query;
                 readData();
-
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(mSearchView.getWindowToken(), 0);
+                mAdapter.notifyDataSetChanged();
                 mRecyclerView.setAdapter(mAdapter);
                 return true;
             }
@@ -87,6 +81,18 @@ public class ViewCustomerActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void initializeVariables() {
+
+        queue = Volley.newRequestQueue(this);
+        progressDialog = new ProgressDialog(this);
+        mCustomerArrayList = new ArrayList<>();
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.getItemAnimator();
+        mAdapter = new CustomerAdapter(this, mCustomerArrayList);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     private void initializeViews() {
@@ -102,7 +108,6 @@ public class ViewCustomerActivity extends AppCompatActivity {
 
 
     private void readData() {
-        flag = 0;
         startProgressDialog();
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
@@ -110,10 +115,12 @@ public class ViewCustomerActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(JSONObject response) {
+                if (progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
 
                 try {
-                    progressDialog.dismiss();
-                    flag = 1;
+
                     JSONArray jsonArray = response.getJSONArray("message");
                     if (mSearchText.equals("0")) {
                         if (jsonArray.length() > 25)
@@ -131,8 +138,7 @@ public class ViewCustomerActivity extends AppCompatActivity {
 
 
                         if (isChecked) {
-                            if (object.getString("createdBy").equals(getUserId())) {
-//                                Log.i(TAG, "onResponse: " + "created by onlu" + isChecked);
+                            if (object.getString("createdBy").equals(new UserInfoHelper(ViewCustomerActivity.this).getUserId())) {
                                 fetchData(object);
 
                             }
@@ -155,14 +161,11 @@ public class ViewCustomerActivity extends AppCompatActivity {
 
             @Override
             public void onErrorResponse(VolleyError error) {
+                Toast.makeText(ViewCustomerActivity.this, "" + error, Toast.LENGTH_SHORT).show();
                 VolleyLog.d("lol", "Error with Internet : " + error.getMessage());
                 // hide the progress dialog
             }
         }) {
-
-            /**
-             * Passing some request headers
-             */
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
@@ -248,24 +251,6 @@ public class ViewCustomerActivity extends AppCompatActivity {
         return true;
     }
 
-
-    private String getUserId() {
-        ArrayList<String> newArralist = new ArrayList<>();
-        // Creates a shared preferences variable to retrieve the logeed in users IDs and store it in Updated By Section
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.test.nuvoco3", Context.MODE_PRIVATE);
-
-        try {
-            newArralist = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("CustomerData", ObjectSerializer.serialize(new ArrayList<String>())));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (newArralist.size() > 0)
-            return newArralist.get(6);
-
-        return "Invalid User";
-
-    }
-
     private void startProgressDialog() {
 
         progressDialog.setMessage("Please Wait...");
@@ -274,7 +259,7 @@ public class ViewCustomerActivity extends AppCompatActivity {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                if (flag == 0) {
+                if (progressDialog.isShowing()) {
                     progressDialog.dismiss();
                     Snackbar snackbar = Snackbar.make(mCoordinatorLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
                         @Override
@@ -287,7 +272,7 @@ public class ViewCustomerActivity extends AppCompatActivity {
             }
         };
         Handler handler = new Handler();
-        handler.postDelayed(runnable, 20000);
+        handler.postDelayed(runnable, PROGRESS_DIALOG_DURATION);
     }
 
 
