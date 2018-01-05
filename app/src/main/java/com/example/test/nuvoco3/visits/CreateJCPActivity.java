@@ -140,7 +140,7 @@ public class CreateJCPActivity extends AppCompatActivity {
         mTextViewEndTime = findViewById(R.id.textViewEndTime);
         mTextViewStartTime = findViewById(R.id.textViewStartTime);
         mEditTextRepresentative = findViewById(R.id.textInputEditTextRepresentative);
-        mEditTextObjective = findViewById(R.id.textInputEditTextObjective);
+//        mEditTextObjective = findViewById(R.id.textInputEditTextObjective);
         mCustomerSpinner = findViewById(R.id.searchCustomer);
     }
 

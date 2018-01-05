@@ -148,10 +148,17 @@
         <activity
             android:name=".visits.ViewJCPActivity"
             android:label="@string/title_activity_view_jcp"
-            android:theme="@style/AppTheme" />
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".visits.VisitDetailsActivity"
             android:label="@string/title_activity_visit_details"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".visits.CalendarActivity"
+            android:label="@string/title_activity_calendar"
             android:theme="@style/AppTheme"></activity>
     </application>
 

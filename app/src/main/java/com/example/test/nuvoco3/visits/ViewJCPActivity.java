@@ -10,6 +10,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
@@ -39,6 +41,7 @@ public class ViewJCPActivity extends AppCompatActivity {
     RecyclerView mRecyclerView;
     ArrayList<JCP> mJCPArrayList;
     RequestQueue queue;
+    boolean isChecked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +64,7 @@ public class ViewJCPActivity extends AppCompatActivity {
         mJCPArrayList = new ArrayList<>();
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setHasFixedSize(true);
+        mImageSearch.requestFocus();
 
 
     }
@@ -156,6 +160,39 @@ public class ViewJCPActivity extends AppCompatActivity {
         datePickerDialog.show();
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.view_customer_menu, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem checkable = menu.findItem(R.id.checkable_menu);
+        checkable.setChecked(isChecked);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+//        else if (item.getItemId() == R.id.checkable_menu) {
+//            isChecked = !item.isChecked();
+//            item.setChecked(isChecked);
+//            mCustomerArrayList.clear();
+//            populateCustomers();
+//            return true;
+//        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
 
 
 }

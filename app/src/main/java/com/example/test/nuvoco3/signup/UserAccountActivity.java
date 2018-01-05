@@ -41,18 +41,6 @@ public class UserAccountActivity extends AppCompatActivity {
     }
 
     private void displayData() {
-//        ArrayList<String> newArralist = new ArrayList<>();
-//        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.test.nuvoco3", Context.MODE_PRIVATE);
-//
-//        try {
-//            newArralist = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("CustomerData", ObjectSerializer.serialize(new ArrayList<String>())));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        if (newArralist.size() < 0) {
-//            Log.i(TAG, "displayData: " + "user Not Logged In");
-//        } else {
 
             //Shows user Information
         mAddress.append(mHelper.getUserInfo(USER_ADDRESS));

@@ -24,7 +24,6 @@
         android:gravity="center_horizontal"
         android:text="NUVOCO"
         android:textColor="#454545"
-        android:textSize="12dp"
         app:layout_constraintBottom_toTopOf="@+id/textViewInfo" />
 
     <TextView

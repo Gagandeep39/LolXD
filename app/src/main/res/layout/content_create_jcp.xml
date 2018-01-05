@@ -143,20 +143,24 @@
     </android.support.constraint.ConstraintLayout>
 
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/textInputObjective"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8sp">
 
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/textInputEditTextObjective"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="start"
-            android:hint="Objective"
-            android:minLines="3" />
+            android:text="Select Objective" />
 
-    </android.support.design.widget.TextInputLayout>
+        <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+
+            android:id="@+id/searchObjective"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:hintText="Default" />
+    </LinearLayout>
 
 
 </LinearLayout>

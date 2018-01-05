@@ -78,4 +78,5 @@
     <string name="title_activity_new_jcp">NewJCPActivity</string>
     <string name="title_activity_view_jcp">ViewJCPActivity</string>
     <string name="title_activity_visit_details">VisitDetailsActivity</string>
+    <string name="title_activity_calendar">CalendarActivity</string>
 </resources>

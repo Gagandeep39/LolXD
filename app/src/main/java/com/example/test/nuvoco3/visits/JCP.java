@@ -30,7 +30,7 @@ public class JCP {
     }
 
 
-    public String getmRecordId() {
+    public String getRecordId() {
         return mRecordId;
     }
 

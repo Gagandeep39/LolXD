@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:showIn="@layout/activity_main"
     tools:context=".fragments.FragmentVisit">
 
 
@@ -30,9 +29,9 @@
                 android:layout_columnWeight="1"
                 android:layout_margin="16sp"
                 android:layout_rowWeight="1"
-                android:background="@color/light_grey"
+                android:background="@color/colorAccent"
                 android:padding="16sp"
-                android:text="New Visit" />
+                android:text="View Visit" />
 
             <Button
                 android:id="@+id/button3"
@@ -45,18 +44,6 @@
                 android:layout_rowWeight="1"
                 android:background="@color/colorAccent"
                 android:text="New Visit" />
-
-            <Button
-                android:id="@+id/button4"
-                android:layout_width="0sp"
-                android:layout_height="120sp"
-                android:layout_column="1"
-                android:layout_columnWeight="1"
-                android:layout_margin="16sp"
-                android:layout_row="1"
-                android:layout_rowWeight="1"
-                android:background="@color/light_grey"
-                android:text="View My Visit" />
 
 
         </GridLayout>
