@@ -2,6 +2,7 @@ package com.example.test.nuvoco3.lead;
 
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,6 +16,7 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -64,7 +66,6 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     FloatingActionButton fab;
     ArrayAdapter<String> mCustomerAdapter;
-    int size = 50;
     boolean isChecked = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,6 +184,8 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
     // Allows to select data when clicked on datapicker textView
     public void datePickerFunction(View v) {
         final View buttonClicked = v;
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(buttonClicked.getWindowToken(), 0);
 
         // Get Current Date
         final Calendar c = Calendar.getInstance();
@@ -267,10 +270,6 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
                 VolleyLog.d(TAG, "Error with Connection: " + error.getMessage());
             }
         }) {
-
-            /**
-             * Passing some request headers
-             * */
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
@@ -298,7 +297,7 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
                 Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        insertData();
+                        storeData();
                     }
                 });
                 snackbar.show();
@@ -318,8 +317,9 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(JSONObject response) {
-
-                progressDialog.dismiss();
+                if (progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
 

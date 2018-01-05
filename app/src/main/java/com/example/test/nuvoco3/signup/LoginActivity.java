@@ -158,8 +158,7 @@ public class LoginActivity extends AppCompatActivity {
                             } else if (response.getString("status").equals("unsuccessful")) {
                                 Toast.makeText(LoginActivity.this, "Wrong Password", Toast.LENGTH_SHORT).show();
                                 reenterData();
-                            }
-                            else if (response.getString("status").contains("successful")) {
+                            } else if (response.getString("status").contains("successful")) {
                                 //Store Logged in User Data that is received from Response Code
                                 ArrayList<String> set = new ArrayList<>();
                                 set.add(response.getString("u_add"));
@@ -188,6 +187,8 @@ public class LoginActivity extends AppCompatActivity {
                                 }
                                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
                                 finish();
+                            } else {
+                                Toast.makeText(LoginActivity.this, "" + response, Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -235,6 +236,7 @@ public class LoginActivity extends AppCompatActivity {
                     Snackbar snackbar = Snackbar.make(mConstraintLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            makeJsonObjReq();
 
                         }
                     });

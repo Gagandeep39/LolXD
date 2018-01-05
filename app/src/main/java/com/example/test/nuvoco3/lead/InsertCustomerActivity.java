@@ -2,9 +2,7 @@
 package com.example.test.nuvoco3.lead;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
@@ -31,22 +29,20 @@ import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.helpers.MasterHelper;
 import com.example.test.nuvoco3.helpers.UserInfoHelper;
-import com.example.test.nuvoco3.signup.ObjectSerializer;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
 import static com.example.test.nuvoco3.helpers.Contract.INSERT_CUSTOMER;
+import static com.example.test.nuvoco3.helpers.Contract.PROGRESS_DIALOG_DURATION;
+import static com.example.test.nuvoco3.helpers.UserInfoHelper.getDateTime;
+import static com.example.test.nuvoco3.helpers.UserInfoHelper.isEmailValid;
 
 public class InsertCustomerActivity extends AppCompatActivity {
     public static final String TAG = "InsertCustomer Activity";
@@ -70,7 +66,6 @@ public class InsertCustomerActivity extends AppCompatActivity {
 
         initializeViews();
         initializeVariables();
-//        showProgress();
         initializeSpinners();
         floatingActionButtonAddData.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -195,13 +190,6 @@ public class InsertCustomerActivity extends AppCompatActivity {
 
     }
 
-    //  Function to provide current data and time
-    private String getDateTime() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = new Date();
-        return dateFormat.format(date);
-    }
 
     //Takes the Variable from Edit texts inside the string and starts storedata function to store data in the server
     public void validateData() {
@@ -214,9 +202,9 @@ public class InsertCustomerActivity extends AppCompatActivity {
         mEmail = editTextEmail.getText().toString().trim();
         mStatus = "1";
         mCreatedOn = getDateTime();
-        mCreatedBy = getCustomerId();
+        mCreatedBy = new UserInfoHelper(this).getUserId();
         mUpdatedOn = getDateTime();
-        mUpdatedBy = getCustomerId();
+        mUpdatedBy = new UserInfoHelper(this).getUserId();
         if (TextUtils.isEmpty(mName)) {
             editTextName.setError("Enter Name");
         }
@@ -251,7 +239,7 @@ public class InsertCustomerActivity extends AppCompatActivity {
     //  Stores data to Server
     private void storeData() {
 
-//        showProgress();
+        showProgress();
 
 
         Map<String, String> postParam = new HashMap<>();
@@ -277,11 +265,11 @@ public class InsertCustomerActivity extends AppCompatActivity {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.i(TAG, response.toString());
+                        if (progressDialog.isShowing()) {
+                            progressDialog.dismiss();
+                        }
                         try {
                             if (response.getString("status").equals("updated")) {
-
-                                progressDialog.dismiss();
                                 Toast.makeText(InsertCustomerActivity.this, "Successfully Inserted data", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(InsertCustomerActivity.this, InsertCustomerContactActivity.class);
                                 intent.putExtra("customerId", response.getString("allot_id"));
@@ -295,6 +283,8 @@ public class InsertCustomerActivity extends AppCompatActivity {
                                 startActivity(intent);
                                 finish();
 
+                            } else {
+                                Toast.makeText(InsertCustomerActivity.this, "" + response, Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -328,23 +318,6 @@ public class InsertCustomerActivity extends AppCompatActivity {
         queue.add(jsonObjReq);
 
     }
-
-    private String getCustomerId() {
-        ArrayList<String> newArralist = new ArrayList<>();
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.test.nuvoco3", Context.MODE_PRIVATE);
-
-        try {
-            newArralist = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("CustomerData", ObjectSerializer.serialize(new ArrayList<String>())));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (newArralist.size() > 0)
-            return newArralist.get(6);
-
-        return "Invalid User";
-
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -372,14 +345,10 @@ public class InsertCustomerActivity extends AppCompatActivity {
             }
         };
         Handler handler = new Handler();
-        handler.postDelayed(runnable, 20000);
+        handler.postDelayed(runnable, PROGRESS_DIALOG_DURATION);
 
     }
 
-
-    private boolean isEmailValid(String email) {
-        return email.contains("@");
-    }
 
 
 
