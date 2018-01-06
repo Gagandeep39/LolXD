@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:clipToPadding="false"
     android:layoutAnimation="@anim/layout_animation_fall_down"
-    android:paddingTop="8sp">
+    android:paddingTop="@dimen/padding_medium">
 
 
     </android.support.v7.widget.RecyclerView>

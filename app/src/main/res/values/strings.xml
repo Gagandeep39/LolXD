@@ -82,4 +82,5 @@
     <string name="connection_error">Error Connecting to Server</string>
     <string name="something_went_wrong">Something went wrong!!</string>
     <string name="created_by_nuvoco">Created By Nuvoco IT Team</string>
+    <string name="empty">Empty</string>
 </resources>

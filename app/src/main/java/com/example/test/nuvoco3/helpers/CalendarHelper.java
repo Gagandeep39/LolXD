@@ -35,33 +35,10 @@ public class CalendarHelper {
 
     }
 
-    /**
-     * This function just performs the opposite of above function
-     * It converts the JSON formatted recieved date to simple format
-     */
-
-    public static String convertJsonDateToSmall(String start_dt) {
-        String pattern = "E, dd MMM yyyy HH:mm:ss 'GMT'";
-        DateFormat formatter = new SimpleDateFormat(pattern);
-        Date date = null;
-        try {
-            date = formatter.parse(start_dt);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-mm-dd");
-        String finalString = newFormat.format(date);
-//        Log.i("lol", "convertSmallDateToJson: " + finalString);
-        return finalString;
-
-
-    }
-
-    public static String convertDateTimeToDate(String start_dt) {
+    public static String convertJsonTimToStandardDateTime(String start_dt) {
 //        String pattern = "E, dd MMM yyyy HH:mm:ss 'GMT'";
-        String pattern = "yyyy-mm-dd";
-        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String pattern = "yyyy-MM-dd HH:mm:ss";
+        DateFormat formatter = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss 'GMT'");
         Date date = null;
         try {
             date = formatter.parse(start_dt);
@@ -71,11 +48,36 @@ public class CalendarHelper {
 
         SimpleDateFormat newFormat = new SimpleDateFormat(pattern);
         String finalString = newFormat.format(date);
+        return finalString;
+
+
+    }
+
+
+    /**
+     * This function just performs the opposite of above function
+     * It converts the JSON formatted recieved date to simple format
+     */
+
+    public static String convertJsonDateToSmall(String start_dt) {
+//        Log.i(TAG, "convertJsonDateToSmall: " + start_dt);
+        String pattern = "E, dd MMM yyyy HH:mm:ss 'GMT'";
+        DateFormat formatter = new SimpleDateFormat(pattern);
+        Date date = null;
+        try {
+            date = formatter.parse(start_dt);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String finalString = newFormat.format(date);
 //        Log.i("lol", "convertSmallDateToJson: " + finalString);
         return finalString;
 
 
     }
+
 
     /**
      * This function is used to Obtain current Date and Time

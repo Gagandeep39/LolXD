@@ -7,6 +7,7 @@ import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,8 +39,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.example.test.nuvoco3.helpers.CalendarHelper.convertJsonDateToSmall;
+import static com.example.test.nuvoco3.helpers.CalendarHelper.convertJsonTimToStandardDateTime;
+import static com.example.test.nuvoco3.helpers.CalendarHelper.getDateTime;
 import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
-import static com.example.test.nuvoco3.helpers.Contract.INSERT_COMPLAINT;
+import static com.example.test.nuvoco3.helpers.Contract.INSERT_JCP_VISIT_DETAILS;
 import static com.example.test.nuvoco3.helpers.Contract.MASTER_PRODUCT;
 import static com.example.test.nuvoco3.helpers.Contract.MASTER_VISIT_STATUS;
 
@@ -52,7 +55,7 @@ public class VisitDetailsActivity extends AppCompatActivity {
     SearchableSpinner mStatusSpinner, mProductSpinner;
     CheckBox mCheckBoxOrder;
 
-    String mJcpId, mProduct, mDate, mCustomerId, mCustomerName, mObjective, mStartTime, mEndTime, mOrder, mOrderQuantity, mVisitRemark, mVisitStatus, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy;
+    String mJcpId, mProduct, mDate, mCustomerId, mCustomerName, mObjective, mStartTime, mEndTime, mOrderStatus, mOrderQuantity, mVisitRemark, mVisitStatus, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy;
     MasterHelper mStatusHelper, mProductHelper;
     ArrayList<String> mStatusArrayList, mProductList;
     ArrayAdapter mStatusAdapter, mProductAdapter;
@@ -83,7 +86,7 @@ public class VisitDetailsActivity extends AppCompatActivity {
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.showSoftInputFromInputMethod(mEditTextQuantity.getWindowToken(), 0);
                 } else if (!mCheckBoxOrder.isChecked()) {
-                    mQuantityLayout.setVisibility(View.GONE);
+                    mLinearLayout.setVisibility(View.GONE);
                 }
             }
         });
@@ -91,16 +94,45 @@ public class VisitDetailsActivity extends AppCompatActivity {
     }
 
     private void validateData() {
+        mVisitRemark = mEditTextRemark.getText().toString();
+        mOrderQuantity = mEditTextQuantity.getText().toString();
+        mUpdatedBy = new UserInfoHelper(this).getUserId();
+        mUpdatedOn = getDateTime();
+        mCreatedBy = new UserInfoHelper(this).getUserId();
+        mCreatedOn = getDateTime();
+
+        if (TextUtils.isEmpty(mVisitRemark)) {
+            mEditTextRemark.setError("Enter Remark");
+        }
+        if (mCheckBoxOrder.isChecked() && TextUtils.isEmpty(mOrderQuantity)) {
+            mEditTextQuantity.setError("Enter The Order Quantity");
+        }
+        if (mCheckBoxOrder.isChecked() && mProduct.equals(getString(R.string.default_name)))
+            Toast.makeText(this, "Select Product", Toast.LENGTH_SHORT).show();
+
+        if (TextUtils.equals(mVisitStatus, getString(R.string.default_name)))
+            Toast.makeText(this, "Select Visit Status", Toast.LENGTH_SHORT).show();
+
+        if (!TextUtils.isEmpty(mVisitRemark) && !mCheckBoxOrder.isChecked() && !TextUtils.equals(mVisitStatus, getString(R.string.default_name))) {
+            mProduct = getString(R.string.empty);
+            mOrderQuantity = "0";
+            mOrderStatus = "0";
+            storeDataToServer();
+        } else if (!TextUtils.isEmpty(mVisitRemark) && mCheckBoxOrder.isChecked() && !TextUtils.equals(mProduct, getString(R.string.default_name)) && !TextUtils.isEmpty(mOrderQuantity) && !TextUtils.equals(mVisitStatus, getString(R.string.default_name))) {
+            mOrderStatus = "1";
+            storeDataToServer();
+        }
+
     }
 
 
     private void storeDataToServer() {
 
         Map<String, String> postParam = new HashMap<>();
-
+        Log.i(TAG, "storeDataToServer: " + " " + mJcpId + " " + mDate + " " + mCustomerId + " " + mCustomerName + " " + mObjective + " " + mVisitStatus + " " + mOrderStatus + " " + mOrderQuantity + " " + mUpdatedOn);
 //
         postParam.put("2", mJcpId);
-        postParam.put("3", mDate);
+        postParam.put("3", convertJsonTimToStandardDateTime(mDate));
         postParam.put("4", mCustomerId);
         postParam.put("5", mCustomerName);
         postParam.put("6", mObjective);
@@ -110,10 +142,11 @@ public class VisitDetailsActivity extends AppCompatActivity {
         postParam.put("10", mCreatedBy);
         postParam.put("11", mUpdatedOn);
         postParam.put("12", mUpdatedBy);
-        postParam.put("13", mOrder);
+        postParam.put("13", mOrderStatus);
         postParam.put("14", mOrderQuantity);
+        postParam.put("15", mProduct);
 
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, BASE_URL + INSERT_COMPLAINT, new JSONObject(postParam),
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, BASE_URL + INSERT_JCP_VISIT_DETAILS, new JSONObject(postParam),
                 new Response.Listener<JSONObject>() {
 
                     @Override
@@ -202,7 +235,7 @@ public class VisitDetailsActivity extends AppCompatActivity {
         if (getIntent().getStringExtra("CustomerName") != null) {
             Log.i("lol", "initializeVariables: " + "here");
             mJcpId = getIntent().getStringExtra("JcpId");
-            mDate = convertJsonDateToSmall(getIntent().getStringExtra("Date"));
+            mDate = getIntent().getStringExtra("Date");
             mCustomerId = getIntent().getStringExtra("CustomerId");
             mCustomerName = getIntent().getStringExtra("CustomerName");
             mObjective = getIntent().getStringExtra("Objective");
@@ -211,7 +244,7 @@ public class VisitDetailsActivity extends AppCompatActivity {
 
 
             mEditTextJcpId.setText(mJcpId);
-            mEditTextDate.setText(mDate);
+            mEditTextDate.setText(convertJsonDateToSmall(mDate));
             mEditTextCustomerId.setText(mCustomerId);
             mEditTextCustomerName.setText(mCustomerName);
             mEditTextStartTime.setText(mStartTime);

@@ -33,12 +33,13 @@ public class JCPDetailsAdapter extends RecyclerView.Adapter<JCPDetailsAdapter.Vi
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-
+        holder.setIsRecyclable(false);
         JCPDetails mCurrentJCP = mDetailsList.get(position);
         holder.mTextViewJcpId.append(mCurrentJCP.getJcpId());
         holder.mTextViewName.append(mCurrentJCP.getCustomerName());
         holder.mTextViewObjective.append(mCurrentJCP.getObjective());
-        holder.mViewDecorator.setBackgroundColor(selectColor(mCurrentJCP.getVisitStatus()));
+        holder.mTextViewVisitStatus.append(mCurrentJCP.getVisitStatus());
+        holder.mViewDecorator.setBackgroundColor(mContext.getResources().getColor(selectColor(mCurrentJCP.getVisitStatus())));
 
     }
 
@@ -46,14 +47,13 @@ public class JCPDetailsAdapter extends RecyclerView.Adapter<JCPDetailsAdapter.Vi
         int color = Color.GREEN;
         switch (visitStatus) {
             case VISIT_STATUS_PLANNED:
-                return Color.BLUE;
+                return R.color.indicator_blue;
             case VISIT_STATUS_PENDING:
-                return Color.RED;
+                return R.color.indicator_yellow;
             case VISIT_STATUS_COMPLETED:
-                return Color.GREEN;
+                return R.color.indicator_green;
             default:
-                return
-                        color;
+                return R.color.indicator_purple;
 
         }
     }
@@ -64,7 +64,7 @@ public class JCPDetailsAdapter extends RecyclerView.Adapter<JCPDetailsAdapter.Vi
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView mTextViewJcpId, mTextViewName, mTextViewObjective;
+        TextView mTextViewJcpId, mTextViewName, mTextViewObjective, mTextViewVisitStatus;
         View mViewDecorator;
 
         public ViewHolder(View itemView) {
@@ -73,6 +73,7 @@ public class JCPDetailsAdapter extends RecyclerView.Adapter<JCPDetailsAdapter.Vi
             mTextViewName = itemView.findViewById(R.id.textViewName);
             mTextViewObjective = itemView.findViewById(R.id.textViewObjective);
             mViewDecorator = itemView.findViewById(R.id.viewDecorate);
+            mTextViewVisitStatus = itemView.findViewById(R.id.textViewVisitStatus);
         }
     }
 }

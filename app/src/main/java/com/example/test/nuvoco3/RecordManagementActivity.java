@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.example.test.nuvoco3.helpers.CalendarHelper.getDateTime;
+import static com.example.test.nuvoco3.helpers.Contract.MASTER_VISIT_STATUS;
 import static com.example.test.nuvoco3.helpers.Contract.PROGRESS_DIALOG_DURATION;
 import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 
@@ -45,7 +46,7 @@ public class RecordManagementActivity extends AppCompatActivity {
     String mCategory, mType, mStatus, mName, mUpdatedOn, mCreatedOn, mCreatedBy, mUpdatedBy;
     RequestQueue queue;
     SearchableSpinner mTypeSearch, mStatusSearch;
-    String mTypeArray[] = {"District", "Area", "State", "CustomerType", "Category", "ComplaintType", "Brand", "Product", "Department"};
+    String mTypeArray[] = {"District", "Area", "State", "CustomerType", "Category", "ComplaintType", "Brand", "Product", "Department", MASTER_VISIT_STATUS};
     String mStatusArray[] = {"True", "False"};
     ProgressDialog progressDialog;
     CoordinatorLayout mCoordinatorLayout;

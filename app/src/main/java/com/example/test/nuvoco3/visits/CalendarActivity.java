@@ -1,7 +1,6 @@
 package com.example.test.nuvoco3.visits;
 
 import android.app.ProgressDialog;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
@@ -11,7 +10,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -42,6 +40,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import static com.example.test.nuvoco3.helpers.CalendarHelper.convertClickedDate;
+import static com.example.test.nuvoco3.helpers.CalendarHelper.convertSmallDateToJson;
+import static com.example.test.nuvoco3.helpers.CalendarHelper.getDate;
 import static com.example.test.nuvoco3.helpers.CalendarHelper.getLongDate;
 import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
 import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_JCP_VISIT_DETAILS;
@@ -64,6 +64,8 @@ public class CalendarActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     CoordinatorLayout mCoordinatorLayout;
     int arrayListLength = 0;
+    TextView mEmptyView;
+    int day = 0;
     String mRecordId, mCustomerId, mCustomerName, mDate, mStartTime, mEndTime, mObjective, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy, mJcpId, mOrder, mProduct, mProductQuantity, mVisitStatus, mVisitRemark;
 
     @Override
@@ -73,38 +75,41 @@ public class CalendarActivity extends AppCompatActivity {
         initializeViews();
         initializeVariables();
         readData();
-        calendarClicks();
 
 
     }
 
-    private void calendarClicks() {
-
-    }
 
     private void calendarOperations() {
-        Log.i(TAG, "calendarOperations: " + "i was here" + mJcpArrayList.size());
-
         List<Event> mEventList = new ArrayList<>();
         for (int i = 0; i < mJcpArrayList.size(); i++) {
-            Log.i(TAG, "calendarOperations: " + "i was here");
 
             mEventList.add(createEvent(mJcpArrayList.get(i)));
         }
-
+        if (day == 0) {
+            day = 1;
+            Log.i(TAG, "onCreate: " + "herfgjbhfdsdfg");
+            for (int i = 0; i < mJcpArrayList.size(); i++) {
+                if (mJcpArrayList.get(i).getDate().contains(convertSmallDateToJson(getDate()))) {
+                    mDayArrayList.add(mJcpArrayList.get(i));
+                }
+                mJcpAdapter.notifyDataSetChanged();
+                mRecyclerView.setAdapter(mJcpAdapter);
+            }
+        }
         mCalendarView.addEvents(mEventList);
         mCalendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
             public void onDayClick(Date dateClicked) {
                 mDayArrayList.clear();
                 String clickedDate = convertClickedDate(dateClicked);
-                Log.i(TAG, "onDayClick: " + dateClicked + " " + convertClickedDate(dateClicked));
                 for (int i = 0; i < mJcpArrayList.size(); i++) {
                     if (mJcpArrayList.get(i).getDate().contains(clickedDate)) {
                         mDayArrayList.add(mJcpArrayList.get(i));
-                        Log.i(TAG, "onDayClick: " + "hi hi");
-                        mJcpAdapter.notifyDataSetChanged();
+//                        checkAdapterIsEmpty();
                     }
+                    mJcpAdapter.notifyDataSetChanged();
+                    mRecyclerView.setAdapter(mJcpAdapter);
                 }
 
             }
@@ -114,6 +119,7 @@ public class CalendarActivity extends AppCompatActivity {
                 mTextViewMonth.setText(dateFormatForMonth.format(firstDayOfNewMonth));
             }
         });
+
     }
 
 
@@ -126,9 +132,11 @@ public class CalendarActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mJcpAdapter);
+//        setupRecyclerView();
 
 
     }
+
 
     private void initializeViews() {
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -146,39 +154,45 @@ public class CalendarActivity extends AppCompatActivity {
 
 
     private Event createEvent(JCPDetails jcp) {
-        Log.i(TAG, "createEvent: ");
-        int mColor = Color.YELLOW;
+        int mColor;
         Event mEvent;
         long mDate = getLongDate(jcp.getDate());
-        if (jcp.getVisitStatus().equals(VISIT_STATUS_PLANNED)) {
-            mColor = Color.BLUE;
-        } else if (jcp.getVisitStatus().equals(VISIT_STATUS_PENDING)) {
-            mColor = Color.RED;
-        } else if (jcp.getVisitStatus().equals(VISIT_STATUS_COMPLETED)) {
-            mColor = Color.GREEN;
+        switch (jcp.getVisitStatus()) {
+            case VISIT_STATUS_PLANNED:
+                mColor = getResources().getColor(R.color.indicator_blue);
+                break;
+            case VISIT_STATUS_PENDING:
+                mColor = getResources().getColor(R.color.indicator_yellow);
+                break;
+            case VISIT_STATUS_COMPLETED:
+                mColor = getResources().getColor(R.color.indicator_green);
+                break;
+            default:
+                mColor = getResources().getColor(R.color.indicator_purple);
         }
+
         mEvent = new Event(mColor, mDate);
 
 
         return mEvent;
 
     }
+//
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.view_customer_menu, menu);
+//
+//        return super.onCreateOptionsMenu(menu);
+//    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.view_customer_menu, menu);
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem checkable = menu.findItem(R.id.checkable_menu);
-        checkable.setChecked(isChecked);
-        return true;
-    }
-
+//
+//    @Override
+//    public boolean onPrepareOptionsMenu(Menu menu) {
+//        MenuItem checkable = menu.findItem(R.id.checkable_menu);
+//        checkable.setChecked(isChecked);
+//        return true;
+//    }
+//
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -262,21 +276,21 @@ public class CalendarActivity extends AppCompatActivity {
     private void fetchData(JSONObject object) {
         try {
 
-            mDate = object.getString("Date") + "";
+            mRecordId = object.getString("record_id") + "";
             mJcpId = object.getString("JCP_id");
+            mDate = object.getString("Date") + "";
+            mCustomerId = object.getString("ccustomer_id") + "";
+            mCustomerName = object.getString("customer_name") + "";
             mObjective = object.getString("Objective") + "";
             mVisitRemark = object.getString("Visit_remark") + "";
             mVisitStatus = object.getString("Visit_status") + "";
-            mCustomerId = object.getString("ccustomer_id") + "";
             mCreatedBy = object.getString("createdBy") + "";
             mCreatedOn = object.getString("createdOn") + "";
-            mCustomerName = object.getString("customer_name") + "";
             mOrder = object.getString("new_order") + "";
             mProductQuantity = object.getString("order_quantity") + "";
-            mRecordId = object.getString("record_id") + "";
+            mProduct = object.getString("product") + "";
             mUpdatedBy = object.getString("updatedby") + "";
             mUpdatedOn = object.getString("updatedOn") + "";
-            Log.i(TAG, "fetchData: sdfghjm");
             mJcpArrayList.add(new JCPDetails(mRecordId, mJcpId, mDate, mCustomerId, mCustomerName, mObjective, mOrder, mProduct, mProductQuantity, mVisitRemark, mVisitStatus, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy));
             mJcpAdapter.notifyDataSetChanged();
         } catch (JSONException e) {
