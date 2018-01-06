@@ -1,41 +1,64 @@
 package com.example.test.nuvoco3.visits;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.helpers.MasterHelper;
+import com.example.test.nuvoco3.helpers.UserInfoHelper;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
-import java.util.ArrayList;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import static com.example.test.nuvoco3.helpers.UserInfoHelper.getDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.example.test.nuvoco3.helpers.CalendarHelper.convertJsonDateToSmall;
+import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
+import static com.example.test.nuvoco3.helpers.Contract.INSERT_COMPLAINT;
+import static com.example.test.nuvoco3.helpers.Contract.MASTER_PRODUCT;
+import static com.example.test.nuvoco3.helpers.Contract.MASTER_VISIT_STATUS;
 
 public class VisitDetailsActivity extends AppCompatActivity {
+    private static final String TAG = "VisitDetails Activity";
     FloatingActionButton fab;
     boolean isChecked = false;
     TextInputEditText mEditTextRepresentative, mEditTextJcpId, mEditTextCustomerId, mEditTextCustomerName, mEditTextRemark, mEditTextStartTime, mEditTextEndTime, mEditTextDate, mEditTextQuantity;
-    SearchableSpinner mStatusSpinner;
+    TextInputLayout mQuantityLayout;
+    SearchableSpinner mStatusSpinner, mProductSpinner;
     CheckBox mCheckBoxOrder;
-    String mStatus;
 
-    String mJcpId, mDate, mCustomerId, mCustomerName, mObjective, mStartTime, mEndTime, mOrder, mOrderQuantity, mVisitRemark, mVisitStatus, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy;
-    MasterHelper mStatusHelper;
-    ArrayList<String> mStatusArrayList;
-    ArrayAdapter mStatusAdapter;
+    String mJcpId, mProduct, mDate, mCustomerId, mCustomerName, mObjective, mStartTime, mEndTime, mOrder, mOrderQuantity, mVisitRemark, mVisitStatus, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy;
+    MasterHelper mStatusHelper, mProductHelper;
+    ArrayList<String> mStatusArrayList, mProductList;
+    ArrayAdapter mStatusAdapter, mProductAdapter;
 
     RequestQueue queue;
+    LinearLayout mLinearLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,36 +74,135 @@ public class VisitDetailsActivity extends AppCompatActivity {
                 validateData();
             }
         });
+        mCheckBoxOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mCheckBoxOrder.isChecked()) {
+                    mLinearLayout.setVisibility(View.VISIBLE);
+                    mEditTextQuantity.requestFocus();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.showSoftInputFromInputMethod(mEditTextQuantity.getWindowToken(), 0);
+                } else if (!mCheckBoxOrder.isChecked()) {
+                    mQuantityLayout.setVisibility(View.GONE);
+                }
+            }
+        });
+
     }
 
     private void validateData() {
     }
 
+
+    private void storeDataToServer() {
+
+        Map<String, String> postParam = new HashMap<>();
+
+//
+        postParam.put("2", mJcpId);
+        postParam.put("3", mDate);
+        postParam.put("4", mCustomerId);
+        postParam.put("5", mCustomerName);
+        postParam.put("6", mObjective);
+        postParam.put("7", mVisitRemark);
+        postParam.put("8", mVisitStatus);
+        postParam.put("9", mCreatedOn);
+        postParam.put("10", mCreatedBy);
+        postParam.put("11", mUpdatedOn);
+        postParam.put("12", mUpdatedBy);
+        postParam.put("13", mOrder);
+        postParam.put("14", mOrderQuantity);
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, BASE_URL + INSERT_COMPLAINT, new JSONObject(postParam),
+                new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i(TAG, response.toString());
+                        try {
+                            if (response.getString("status").equals("updated")) {
+                                Toast.makeText(VisitDetailsActivity.this, "Successfully Added Data", Toast.LENGTH_SHORT).show();
+                                finish();
+                            } else {
+                                Toast.makeText(VisitDetailsActivity.this, "" + response, Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i(TAG, "onErrorResponse: " + error);
+                VolleyLog.d(TAG, "Error with Connection: " + error.getMessage() + "lol");
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                // add headers <key,value>
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("x-access-token", new UserInfoHelper(VisitDetailsActivity.this).getUserToken());
+                return headers;
+            }
+
+
+        };
+
+        jsonObjReq.setTag("LOL");
+        // Adding request to request queue
+        queue.add(jsonObjReq);
+
+    }
+
+
     private void populateSpinner() {
         mStatusAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mStatusArrayList);
         mStatusSpinner.setAdapter(mStatusAdapter);
+        mProductAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mProductList);
+        mProductSpinner.setAdapter(mProductAdapter);
+
         mStatusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                mStatus = mStatusArrayList.get(i);
+                mVisitStatus = mStatusArrayList.get(i);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-                mStatus = getString(R.string.default_name);
+                mVisitStatus = getString(R.string.default_name);
+            }
+        });
+
+        mProductSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                mProduct = mProductList.get(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                mProduct = getString(R.string.default_name);
+
             }
         });
     }
 
     private void initializeVariables() {
-        mStatusHelper = new MasterHelper(this, "VisitStatus");
+        mStatusHelper = new MasterHelper(this, MASTER_VISIT_STATUS);
+        mProductHelper = new MasterHelper(this, MASTER_PRODUCT);
         mStatusArrayList = mStatusHelper.getRecordName();
+        mProductList = mProductHelper.getRecordName();
 
         queue = Volley.newRequestQueue(this);
 
-        if (getIntent().getStringExtra("CustomerId") != null) {
+        if (getIntent().getStringExtra("CustomerName") != null) {
+            Log.i("lol", "initializeVariables: " + "here");
             mJcpId = getIntent().getStringExtra("JcpId");
-            mDate = getDateTime();
+            mDate = convertJsonDateToSmall(getIntent().getStringExtra("Date"));
             mCustomerId = getIntent().getStringExtra("CustomerId");
             mCustomerName = getIntent().getStringExtra("CustomerName");
             mObjective = getIntent().getStringExtra("Objective");
@@ -94,6 +216,7 @@ public class VisitDetailsActivity extends AppCompatActivity {
             mEditTextCustomerName.setText(mCustomerName);
             mEditTextStartTime.setText(mStartTime);
             mEditTextEndTime.setText(mEndTime);
+            mEditTextRepresentative.setText(new UserInfoHelper(this).getUserId());
 
 
         }
@@ -111,12 +234,15 @@ public class VisitDetailsActivity extends AppCompatActivity {
         mEditTextCustomerId = findViewById(R.id.textInputEditCustomerId);
         mEditTextCustomerName = findViewById(R.id.textInputEditCustomerName);
         mEditTextDate = findViewById(R.id.textInputEditDate);
-        mEditTextStartTime = findViewById(R.id.textInputLayoutStartTime);
-        mEditTextEndTime = findViewById(R.id.textInputLayoutEndTime);
+        mEditTextStartTime = findViewById(R.id.textInputEditStartTime);
+        mEditTextEndTime = findViewById(R.id.textInputEditEndTime);
         mEditTextQuantity = findViewById(R.id.textInputEditQuantity);
         mEditTextRemark = findViewById(R.id.textInputEditRemark);
         mCheckBoxOrder = findViewById(R.id.checkboxOrder);
         mStatusSpinner = findViewById(R.id.searchStatus);
+        mQuantityLayout = findViewById(R.id.textInputLayoutQuantity);
+        mLinearLayout = findViewById(R.id.linearLayout);
+        mProductSpinner = findViewById(R.id.searchProduct);
     }
 
     @Override

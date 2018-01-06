@@ -49,11 +49,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.example.test.nuvoco3.helpers.CalendarHelper.getDateTime;
 import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
 import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_CUSTOMER;
 import static com.example.test.nuvoco3.helpers.Contract.INSERT_JCP_VIST;
 import static com.example.test.nuvoco3.helpers.Contract.PROGRESS_DIALOG_DURATION;
-import static com.example.test.nuvoco3.helpers.UserInfoHelper.getDateTime;
 
 public class CreateJCPActivity extends AppCompatActivity {
     private static final String TAG = "CreateJCP Activity";

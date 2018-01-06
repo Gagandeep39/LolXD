@@ -31,8 +31,11 @@ public class JCPAdapter extends RecyclerView.Adapter<JCPAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         JCP mCurrentJCP = mJcpList.get(position);
+        holder.setIsRecyclable(false);
+        final String mDate = mCurrentJCP.getDate();
+        final String mCustomerId = mCurrentJCP.getCustomerId();
         final String mCustomerName = mCurrentJCP.getCustomerName();
-        final String mStartTime = mCurrentJCP.getCustomerName();
+        final String mStartTime = mCurrentJCP.getStartTime();
         final String mEndTime = mCurrentJCP.getEndTime();
         final String mObjective = mCurrentJCP.getObjective();
         final String mJcpId = mCurrentJCP.getRecordId();
@@ -43,7 +46,7 @@ public class JCPAdapter extends RecyclerView.Adapter<JCPAdapter.ViewHolder> {
         holder.mLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mContext.startActivity(new Intent(mContext, VisitDetailsActivity.class).putExtra("CustomerName", mCustomerName).putExtra("StartTime", mStartTime).putExtra("EndTime", mEndTime).putExtra("Objective", mObjective).putExtra("JcpId", mJcpId));
+                mContext.startActivity(new Intent(mContext, VisitDetailsActivity.class).putExtra("Date", mDate).putExtra("CustomerId", mCustomerId).putExtra("CustomerName", mCustomerName).putExtra("StartTime", mStartTime).putExtra("EndTime", mEndTime).putExtra("Objective", mObjective).putExtra("JcpId", mJcpId));
             }
         });
 

@@ -33,8 +33,8 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.example.test.nuvoco3.helpers.CalendarHelper.getDateTime;
 import static com.example.test.nuvoco3.helpers.Contract.PROGRESS_DIALOG_DURATION;
-import static com.example.test.nuvoco3.helpers.UserInfoHelper.getDateTime;
 import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 
 public class RecordManagementActivity extends AppCompatActivity {

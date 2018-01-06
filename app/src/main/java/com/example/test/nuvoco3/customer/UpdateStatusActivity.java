@@ -41,14 +41,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.example.test.nuvoco3.helpers.CalendarHelper.getDate;
+import static com.example.test.nuvoco3.helpers.CalendarHelper.getDateTime;
 import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
 import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_COMPLAINT;
 import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_COMPLAINT_DETAILS;
 import static com.example.test.nuvoco3.helpers.Contract.INSERT_COMPLAINT_DETAILS;
 import static com.example.test.nuvoco3.helpers.Contract.PROGRESS_DIALOG_DURATION;
 import static com.example.test.nuvoco3.helpers.Contract.UPDATE_COMPLAINT;
-import static com.example.test.nuvoco3.helpers.UserInfoHelper.getDate;
-import static com.example.test.nuvoco3.helpers.UserInfoHelper.getDateTime;
 
 public class UpdateStatusActivity extends AppCompatActivity {
 

@@ -198,6 +198,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onErrorResponse(VolleyError error) {
+                Toast.makeText(LoginActivity.this, "" + error, Toast.LENGTH_SHORT).show();
                 VolleyLog.d(TAG, "Error while making database connection : " + error.getMessage());
             }
         }) {
