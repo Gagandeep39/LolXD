@@ -23,7 +23,6 @@
         android:layout_alignParentBottom="true"
         android:gravity="center_horizontal"
         android:text="NUVOCO"
-        android:textColor="#454545"
         app:layout_constraintBottom_toTopOf="@+id/textViewInfo" />
 
     <TextView

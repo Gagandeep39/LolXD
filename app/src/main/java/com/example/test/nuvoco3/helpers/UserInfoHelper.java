@@ -250,6 +250,12 @@ public class UserInfoHelper {
         return dateFormat.format(date);
     }
 
+    public static String getTime() {
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+        Date date = new Date();
+        return dateFormat.format(date);
+    }
+
 
 
 

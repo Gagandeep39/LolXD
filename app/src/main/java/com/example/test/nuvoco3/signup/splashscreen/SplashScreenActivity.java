@@ -10,6 +10,8 @@ import com.example.test.nuvoco3.BuildConfig;
 import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.signup.LoginActivity;
 
+import static com.example.test.nuvoco3.helpers.Contract.SPLASH_SCREEN_DURATION;
+
 public class SplashScreenActivity extends AppCompatActivity {
     int versionCode = BuildConfig.VERSION_CODE;
     String versionName = BuildConfig.VERSION_NAME;
@@ -37,7 +39,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                 // close this activity
                 finish();
             }
-        }, 1000);
+        }, SPLASH_SCREEN_DURATION);
 
 
     }
