@@ -3,7 +3,6 @@ package com.example.test.nuvoco3.market;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
@@ -19,6 +18,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -36,14 +36,12 @@ import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.helpers.MasterHelper;
 import com.example.test.nuvoco3.helpers.UserInfoHelper;
-import com.example.test.nuvoco3.signup.ObjectSerializer;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -55,6 +53,8 @@ import java.util.Map;
 import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
 import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_CUSTOMER;
 import static com.example.test.nuvoco3.helpers.Contract.INSERT_PRICES;
+import static com.example.test.nuvoco3.helpers.Contract.PROGRESS_DIALOG_DURATION;
+import static com.example.test.nuvoco3.helpers.UserInfoHelper.getDateTime;
 
 public class InsertBrandPriceActivity extends AppCompatActivity {
     private static final String TAG = "BrandPrice Activity";
@@ -130,9 +130,9 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
         mRSP = mEditTextRSP.getText().toString();
         mStock = mEditTextStocks.getText().toString();
         mRemarks = mEditTextRemarks.getText().toString();
-        mCreatedBy = getUserId();
+        mCreatedBy = new UserInfoHelper(this).getUserId();
         mCreatedOn = getDateTime();
-        mUpdatedBy = getUserId();
+        mUpdatedBy = new UserInfoHelper(this).getUserId();
         mUpdatedOn = getDateTime();
 
         if (TextUtils.isEmpty(mRepresentative))
@@ -162,24 +162,7 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
 
     // All fields are Validated and now the data will be saved into the server
     private void sendDataToServer() {
-        progressDialog.setMessage("Please Wait...");
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                progressDialog.dismiss();
-                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        validateDate();
-                    }
-                });
-                snackbar.show();
-            }
-        };
-        Handler handler = new Handler();
-        handler.postDelayed(runnable, 20000);
+        showProgressDialog();
 
 
         Map<String, String> postParam = new HashMap<>();
@@ -204,14 +187,18 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
 
                     @Override
                     public void onResponse(JSONObject response) {
+                        if (progressDialog.isShowing()) {
+                            progressDialog.dismiss();
+                        }
                         Log.i(TAG, response.toString());
                         try {
                             if (response.getString("status").equals("updated")) {
-                                progressDialog.dismiss();
                                 Toast.makeText(InsertBrandPriceActivity.this, "Successfully Inserted Data", Toast.LENGTH_SHORT).show();
                                 mBrandPricePriceList.add(new BrandPrice("1", mRepresentative, mCounter, mDate, mBrand, mProduct, mWSP, mRSP, mStock, mRemarks, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy));
                                 mDetailsAdapter.notifyDataSetChanged();
 
+                            } else {
+                                Toast.makeText(InsertBrandPriceActivity.this, "" + response.getString("status"), Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -223,13 +210,10 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
 
             @Override
             public void onErrorResponse(VolleyError error) {
+                Toast.makeText(InsertBrandPriceActivity.this, "" + error, Toast.LENGTH_SHORT).show();
                 VolleyLog.d(TAG, "Error with Connection: " + error.getMessage() + "lol");
             }
         }) {
-
-            /**
-             * Passing some request headers
-             * */
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
@@ -238,14 +222,34 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
                 headers.put("x-access-token", new UserInfoHelper(InsertBrandPriceActivity.this).getUserToken());
                 return headers;
             }
-
-
         };
-
-        jsonObjReq.setTag("LOL");
         // Adding request to request queue
         queue.add(jsonObjReq);
 
+    }
+
+    private void showProgressDialog() {
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (progressDialog.isShowing()) {
+
+                    progressDialog.dismiss();
+                    Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            validateDate();
+                        }
+                    });
+                    snackbar.show();
+                }
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, PROGRESS_DIALOG_DURATION);
     }
 
 
@@ -317,60 +321,16 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
         mSearchCustomers = findViewById(R.id.searchCounter);
         mTextViewDate = findViewById(R.id.textViewDate);
         mRecyclerView = findViewById(R.id.recyclerView);
-        mEditTextRepresentative.setText(getUserId());
+        mEditTextRepresentative.setText(new UserInfoHelper(this).getUserId());
         mEditTextRepresentative.setKeyListener(null);
-        mUserName.setText(getUserName());
+        mUserName.setText(new UserInfoHelper(this).getUserName());
         mUserName.setKeyListener(null);
     }
 
-
-    //  Function to provide current data and time
-    private String getDateTime() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = new Date();
-        return dateFormat.format(date);
-    }
-
-
-    // Get LoggedIn users ID
-    private String getUserId() {
-        ArrayList<String> newArralist = new ArrayList<>();
-        // Creates a shared preferences variable to retrieve the logeed in users IDs and store it in Updated By Section
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.test.nuvoco3", Context.MODE_PRIVATE);
-
-        try {
-            newArralist = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("CustomerData", ObjectSerializer.serialize(new ArrayList<String>())));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (newArralist.size() > 0)
-            return newArralist.get(6);
-
-        return "Invalid User";
-
-    }
-
-    private String getUserName() {
-        ArrayList<String> newArralist = new ArrayList<>();
-        // Creates a shared preferences variable to retrieve the logeed in users IDs and store it in Updated By Section
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.test.nuvoco3", Context.MODE_PRIVATE);
-
-        try {
-            newArralist = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("CustomerData", ObjectSerializer.serialize(new ArrayList<String>())));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (newArralist.size() > 0)
-            return newArralist.get(7);
-
-        return "Invalid User";
-
-    }
-
-
     public void datePickerFunction(View v) {
         final View buttonClicked = v;
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(buttonClicked.getWindowToken(), 0);
 
         // Get Current Date
         final Calendar c = Calendar.getInstance();
@@ -409,18 +369,16 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                progressDialog.dismiss();
-                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        populateCustomers();
-                    }
-                });
-                snackbar.show();
+                if (progressDialog.isShowing()) {
+
+                    progressDialog.dismiss();
+                    Toast.makeText(InsertBrandPriceActivity.this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
+
+                }
             }
         };
         Handler handler = new Handler();
-        handler.postDelayed(runnable, 20000);
+        handler.postDelayed(runnable, PROGRESS_DIALOG_DURATION);
 
 
         Map<String, String> postParam = new HashMap<>();
@@ -431,14 +389,16 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(JSONObject response) {
+                if (progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
                     for (int i = 0; i < jsonArray.length(); i++) {
 
                         JSONObject object = jsonArray.getJSONObject(i);
                         if (isChecked) {
-                            if (object.getString("createdBy").equals(getUserId())) {
-//                                Log.i(TAG, "onResponse: " + "created by onlu" + isChecked);
+                            if (object.getString("createdBy").equals(new UserInfoHelper(InsertBrandPriceActivity.this).getUserId())) {
                                 mCustomerArrayList.add(object.getString("name"));
 
                             }
@@ -448,13 +408,10 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
                             mCustomerArrayList.add(object.getString("name"));
 
                         }
-//                        mIdList.add(object.getString("record_id"));   //primary key
                     }
-                    progressDialog.dismiss();
 
 
                 } catch (JSONException e1) {
-                    e1.printStackTrace();
                     e1.printStackTrace();
                 }
             }

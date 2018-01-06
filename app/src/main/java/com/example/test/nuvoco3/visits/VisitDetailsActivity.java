@@ -20,6 +20,8 @@ import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import java.util.ArrayList;
 
+import static com.example.test.nuvoco3.helpers.UserInfoHelper.getDateTime;
+
 public class VisitDetailsActivity extends AppCompatActivity {
     FloatingActionButton fab;
     boolean isChecked = false;
@@ -28,6 +30,7 @@ public class VisitDetailsActivity extends AppCompatActivity {
     CheckBox mCheckBoxOrder;
     String mStatus;
 
+    String mJcpId, mDate, mCustomerId, mCustomerName, mObjective, mStartTime, mEndTime, mOrder, mOrderQuantity, mVisitRemark, mVisitStatus, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy;
     MasterHelper mStatusHelper;
     ArrayList<String> mStatusArrayList;
     ArrayAdapter mStatusAdapter;
@@ -75,7 +78,23 @@ public class VisitDetailsActivity extends AppCompatActivity {
 
         queue = Volley.newRequestQueue(this);
 
-        if (getIntent().getStringExtra("CustomerName") != null) {
+        if (getIntent().getStringExtra("CustomerId") != null) {
+            mJcpId = getIntent().getStringExtra("JcpId");
+            mDate = getDateTime();
+            mCustomerId = getIntent().getStringExtra("CustomerId");
+            mCustomerName = getIntent().getStringExtra("CustomerName");
+            mObjective = getIntent().getStringExtra("Objective");
+            mStartTime = getIntent().getStringExtra("StartTime");
+            mEndTime = getIntent().getStringExtra("EndTime");
+
+
+            mEditTextJcpId.setText(mJcpId);
+            mEditTextDate.setText(mDate);
+            mEditTextCustomerId.setText(mCustomerId);
+            mEditTextCustomerName.setText(mCustomerName);
+            mEditTextStartTime.setText(mStartTime);
+            mEditTextEndTime.setText(mEndTime);
+
 
         }
     }

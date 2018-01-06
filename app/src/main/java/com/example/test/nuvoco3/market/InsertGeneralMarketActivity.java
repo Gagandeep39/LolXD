@@ -3,7 +3,6 @@ package com.example.test.nuvoco3.market;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
@@ -17,6 +16,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -33,14 +33,12 @@ import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.helpers.MasterHelper;
 import com.example.test.nuvoco3.helpers.UserInfoHelper;
-import com.example.test.nuvoco3.signup.ObjectSerializer;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,10 +50,12 @@ import java.util.Map;
 import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
 import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_CUSTOMER;
 import static com.example.test.nuvoco3.helpers.Contract.INSERT_GENERAL_MARKET_INFO;
+import static com.example.test.nuvoco3.helpers.Contract.PROGRESS_DIALOG_DURATION;
+import static com.example.test.nuvoco3.helpers.UserInfoHelper.getDateTime;
 
 public class InsertGeneralMarketActivity extends AppCompatActivity {
     private static final String TAG = "GeneralMarket Activity";
-    String mRepresentative, mCounter, mDate, mCustomer, mMarketDetail, mMSP, mPrice, mDemand, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy;
+    String mRepresentative, mBrand, mCounter, mDate, mMarketDetail, mMSP, mPrice, mDemand, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy;
     TextInputEditText mEditTextRepresentative, mEditTextCounter, mEditTextMSP, mEditTextPrice;
     TextInputEditText mEditTextMarketDetails, mEditTextDemands;
     SearchableSpinner mSearchCustomer, mSearchProduct, mSearchBrand;
@@ -98,6 +98,7 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
 
         mBrandList = mBrandHelper.getRecordName();
         mProductList = mProductHelper.getRecordName();
+        mCustomerList = new ArrayList<>();
     }
 
     private void validateData() {
@@ -105,9 +106,9 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
         mPrice = mEditTextPrice.getText().toString();
         mMarketDetail = mEditTextMarketDetails.getText().toString();
         mDemand = mEditTextDemands.getText().toString();
-        mCreatedBy = getUserId();
+        mCreatedBy = new UserInfoHelper(this).getUserId();
         mCreatedOn = getDateTime();
-        mUpdatedBy = getUserId();
+        mUpdatedBy = new UserInfoHelper(this).getUserId();
         mUpdatedOn = getDateTime();
         if (TextUtils.isEmpty(mRepresentative)) {
             mEditTextRepresentative.setError("Enter Representative's Name");
@@ -118,11 +119,22 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(mMarketDetail)) {
             mEditTextMarketDetails.setError("Enter Market Details");
         }
+        if (mMSP.equals(getString(R.string.default_name))) {
+            Toast.makeText(this, "Select MajorSelling Product", Toast.LENGTH_SHORT).show();
+        }
+        if (mDate == null) {
+            Toast.makeText(this, "Select Date", Toast.LENGTH_SHORT).show();
+        }
 
 
-        if (TextUtils.equals(mCustomer, "default"))
+        if (TextUtils.equals(mCounter, "default"))
             Toast.makeText(this, "Select a Customer", Toast.LENGTH_SHORT).show();
-        if (!TextUtils.isEmpty(mRepresentative) && !TextUtils.isEmpty(mCounter) && !TextUtils.isEmpty(mMSP) && !TextUtils.isEmpty(mPrice) && !TextUtils.isEmpty(mMarketDetail) && !TextUtils.isEmpty(mDemand) && !TextUtils.equals(mCustomer, "default"))
+
+        if (TextUtils.equals(mCounter, "default"))
+            Toast.makeText(this, "Select a Brand", Toast.LENGTH_SHORT).show();
+
+
+        if (!TextUtils.isEmpty(mRepresentative) && !TextUtils.isEmpty(mCounter) && !TextUtils.equals(mMSP, getString(R.string.default_name)) && !TextUtils.isEmpty(mPrice) && !TextUtils.isEmpty(mMarketDetail) && !TextUtils.isEmpty(mDemand) && !TextUtils.equals(mCounter, getString(R.string.default_name)) && !TextUtils.equals(mBrand, getString(R.string.default_name)))
             sendDataToServer();
     }
 
@@ -136,7 +148,7 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
         postParam.put("2", mRepresentative);
         postParam.put("3", mCounter);
         postParam.put("4", mDate);
-        postParam.put("5", mCustomer);
+        postParam.put("5", mBrand);
         postParam.put("6", mMarketDetail);
         postParam.put("7", mMSP);
         postParam.put("8", mPrice);
@@ -151,19 +163,20 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.i(TAG, response.toString());
+                        if (progressDialog.isShowing()) {
+                            progressDialog.dismiss();
+                        }
                         try {
                             if (response.getString("status").equals("updated")) {
-                                progressDialog.dismiss();
                                 Toast.makeText(InsertGeneralMarketActivity.this, "Successfully Inserted Data", Toast.LENGTH_SHORT).show();
                                 finish();
 
+                            } else {
+                                Toast.makeText(InsertGeneralMarketActivity.this, "" + response, Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
-
                     }
                 }, new Response.ErrorListener() {
 
@@ -172,10 +185,6 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
                 VolleyLog.d(TAG, "Error with Connection: " + error.getMessage() + "lol");
             }
         }) {
-
-            /**
-             * Passing some request headers
-             * */
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
@@ -187,8 +196,6 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
 
 
         };
-
-        jsonObjReq.setTag("LOL");
         // Adding request to request queue
         queue.add(jsonObjReq);
 
@@ -206,14 +213,17 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                progressDialog.dismiss();
-                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        validateData();
-                    }
-                });
-                snackbar.show();
+                if (progressDialog.isShowing()) {
+
+                    progressDialog.dismiss();
+                    Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            validateData();
+                        }
+                    });
+                    snackbar.show();
+                }
             }
         };
         Handler handler = new Handler();
@@ -229,13 +239,12 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mCounter = mCustomerList.get(position);
-                mCustomer = mCustomerList.get(position);
 //                mCustomerId = mIdList.get(position);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                mCustomer = getString(R.string.default_name);
+                mCounter = getString(R.string.default_name);
             }
         });
 
@@ -248,10 +257,12 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
         mSearchBrand.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                mBrand = mBrandList.get(i);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
+                mBrand = getString(R.string.default_name);
 
             }
         });
@@ -285,85 +296,40 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
         mSearchProduct = findViewById(R.id.searchCategoryProduct);
         mSearchBrand = findViewById(R.id.searchCategoryBrand);
         mTextViewDate = findViewById(R.id.textViewDate);
-        mEditTextRepresentative.setText(getUserId());
+        mEditTextRepresentative.setText(new UserInfoHelper(this).getUserId());
         mEditTextRepresentative.setKeyListener(null);
     }
 
-    //  Function to provide current data and time
-    private String getDateTime() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = new Date();
-        return dateFormat.format(date);
-    }
-
-    // Get LoggedIn users ID
-    private String getUserId() {
-        ArrayList<String> newArralist = new ArrayList<>();
-        // Creates a shared preferences variable to retrieve the logeed in users IDs and store it in Updated By Section
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.test.nuvoco3", Context.MODE_PRIVATE);
-
-        try {
-            newArralist = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("CustomerData", ObjectSerializer.serialize(new ArrayList<String>())));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (newArralist.size() > 0)
-            return newArralist.get(6);
-
-        return "Invalid User";
-
-    }
-
-
     public void populateCustomers() {
-        progressDialog.setMessage("Please Wait...");
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                progressDialog.dismiss();
-                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        populateCustomers();
-                    }
-                });
-                snackbar.show();
-            }
-        };
-        Handler handler = new Handler();
-        handler.postDelayed(runnable, 20000);
-        mCustomerList = new ArrayList<String>();
-        mIdList = new ArrayList<>();
+        showProgressDialogue();
+
+
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 BASE_URL + DISPLAY_CUSTOMER, null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
-
-                progressDialog.dismiss();
+                if (progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
+
                     for (int i = 0; i < jsonArray.length(); i++) {
 
                         JSONObject object = jsonArray.getJSONObject(i);
                         if (isChecked) {
-                            if (object.getString("createdBy").equals(getUserId())) {
+                            if (object.getString("createdBy").equals(new UserInfoHelper(InsertGeneralMarketActivity.this).getUserId())) {
                                 mCustomerList.add(object.getString("name"));
-                                populateSpinner();
 
                             }
 
 
                         } else {
                             mCustomerList.add(object.getString("name"));
-                            populateSpinner();
 
                         }
                     }
-
 
                 } catch (JSONException e1) {
                     e1.printStackTrace();
@@ -375,14 +341,10 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
 
             @Override
             public void onErrorResponse(VolleyError error) {
+                Toast.makeText(InsertGeneralMarketActivity.this, "" + error, Toast.LENGTH_SHORT).show();
                 VolleyLog.d("lol", "Error with Internet : " + error.getMessage());
-                // hide the progress dialog
             }
         }) {
-
-            /**
-             * Passing some request headers
-             */
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
@@ -394,14 +356,14 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
 
 
         };
-
-        // Adding request to request queue
         queue.add(jsonObjReq);
     }
 
 
     public void datePickerFunction(View v) {
 
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
         // Get Current Date
         final Calendar c = Calendar.getInstance();
         mYear = c.get(Calendar.YEAR);
@@ -460,6 +422,30 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showProgressDialogue() {
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                    Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Toast.makeText(InsertGeneralMarketActivity.this, "Connection Error", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    snackbar.show();
+                }
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, PROGRESS_DIALOG_DURATION);
+
     }
 
 

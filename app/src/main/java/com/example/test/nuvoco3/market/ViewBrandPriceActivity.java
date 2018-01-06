@@ -2,7 +2,6 @@ package com.example.test.nuvoco3.market;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
@@ -15,6 +14,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -25,19 +26,18 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.helpers.UserInfoHelper;
-import com.example.test.nuvoco3.signup.ObjectSerializer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
 import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_PRICE;
+import static com.example.test.nuvoco3.helpers.Contract.PROGRESS_DIALOG_DURATION;
 
 public class ViewBrandPriceActivity extends AppCompatActivity {
     public static ArrayList<BrandPrice> mBrandPriceArrayList;
@@ -48,8 +48,8 @@ public class ViewBrandPriceActivity extends AppCompatActivity {
     String mSearchText = "0";
     CoordinatorLayout mCoordinaterLayout;
     ProgressDialog progressDialog;
-    int size = 0;
     private boolean isChecked = false;
+    int size = 25;
     String mCustomer, mDate, mProduct, mRSP, mStock, mWSP, mCounter, mCreatedBy, mCreatedOn, mUpdatedBy, mUpdatedOn, mRecordId, mRemarks, mRepresentative;
 
     @Override
@@ -57,16 +57,21 @@ public class ViewBrandPriceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_brand_price);
         initializeViews();
+        initializeVariables();
+        initializeSearch();
+        readData();
+
+
+    }
+
+    private void initializeVariables() {
         progressDialog = new ProgressDialog(this);
         mBrandPriceArrayList = new ArrayList<>();
         queue = Volley.newRequestQueue(this);
-        initializeSearch();
-        readData();
         mBrandPriceAdapter = new BrandPriceAdapter(this, mBrandPriceArrayList);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mBrandPriceAdapter);
-
 
     }
 
@@ -74,8 +79,13 @@ public class ViewBrandPriceActivity extends AppCompatActivity {
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                mBrandPriceArrayList.clear();
                 mSearchText = query;
+                readData();
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(mSearchView.getWindowToken(), 0);
                 mBrandPriceAdapter.notifyDataSetChanged();
+                mRecyclerView.setAdapter(mBrandPriceAdapter);
                 return true;
             }
 
@@ -110,29 +120,33 @@ public class ViewBrandPriceActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(JSONObject response) {
-                progressDialog.dismiss();
+                if (progressDialog.isShowing()) {
+
+                    progressDialog.dismiss();
+                }
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
+                    if (mSearchText.equals("0")) {
+                        if (jsonArray.length() > 25) {
+                            size = 25;
+                        } else {
+                            size = jsonArray.length();
+                        }
+                    }
 
-                    for (int i = 0; i < jsonArray.length(); i++) {
+                    for (int i = 0; i < size; i++) {
 
                         JSONObject object = jsonArray.getJSONObject(i);
                         if (isChecked) {
-                            if (object.getString("createdBy").equals(getUserId())) {
-//                                Log.i(TAG, "onResponse: " + "created by onlu" + isChecked);
+                            if (object.getString("createdBy").equals(new UserInfoHelper(ViewBrandPriceActivity.this).getUserId())) {
                                 fetchData(object);
-
                             }
-
-
                         } else {
                             fetchData(object);
-
                         }
                     }
 
                 } catch (JSONException e1) {
-                    e1.printStackTrace();
                     e1.printStackTrace();
                 }
             }
@@ -141,14 +155,11 @@ public class ViewBrandPriceActivity extends AppCompatActivity {
 
             @Override
             public void onErrorResponse(VolleyError error) {
+                Toast.makeText(ViewBrandPriceActivity.this, "" + error, Toast.LENGTH_SHORT).show();
                 VolleyLog.d("lol", "Error with Internet : " + error.getMessage());
                 // hide the progress dialog
             }
         }) {
-
-            /**
-             * Passing some request headers
-             */
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
@@ -160,8 +171,6 @@ public class ViewBrandPriceActivity extends AppCompatActivity {
 
 
         };
-
-        // Adding request to request queue
         queue.add(jsonObjReq);
     }
 
@@ -214,18 +223,21 @@ public class ViewBrandPriceActivity extends AppCompatActivity {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                progressDialog.dismiss();
-                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        readData();
-                    }
-                });
-                snackbar.show();
+                if (progressDialog.isShowing()) {
+
+                    progressDialog.dismiss();
+                    Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            readData();
+                        }
+                    });
+                    snackbar.show();
+                }
             }
         };
         Handler handler = new Handler();
-        handler.postDelayed(runnable, 20000);
+        handler.postDelayed(runnable, PROGRESS_DIALOG_DURATION);
 
     }
 
@@ -239,23 +251,6 @@ public class ViewBrandPriceActivity extends AppCompatActivity {
         return true;
     }
 
-
-    private String getUserId() {
-        ArrayList<String> newArralist = new ArrayList<>();
-        // Creates a shared preferences variable to retrieve the logeed in users IDs and store it in Updated By Section
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.test.nuvoco3", Context.MODE_PRIVATE);
-
-        try {
-            newArralist = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("CustomerData", ObjectSerializer.serialize(new ArrayList<String>())));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (newArralist.size() > 0)
-            return newArralist.get(6);
-
-        return "Invalid User";
-
-    }
 
 
     @Override

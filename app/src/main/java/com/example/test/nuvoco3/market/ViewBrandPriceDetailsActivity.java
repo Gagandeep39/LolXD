@@ -1,8 +1,10 @@
 package com.example.test.nuvoco3.market;
 
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,7 +12,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -21,24 +24,22 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.helpers.UserInfoHelper;
-import com.example.test.nuvoco3.signup.ObjectSerializer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
 import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_PRICE;
+import static com.example.test.nuvoco3.helpers.Contract.PROGRESS_DIALOG_DURATION;
 
 public class ViewBrandPriceDetailsActivity extends AppCompatActivity {
     private static final String TAG = "ViewPriceDetails";
     Toolbar toolbar;
-    TextView mTextViewCustomer, mTextViewProduct, mTextViewRSP, mTextViewWSP, mTextViewStock, mTextViewDate, mTextViewCreatedBy, mTextViewCreatedOn;
     //Recycler view
     RecyclerView mRecyclerView;
     BrandPriceDetailsAdapter mDetailsAdapter;
@@ -51,6 +52,8 @@ public class ViewBrandPriceDetailsActivity extends AppCompatActivity {
     //variables for arraylist
     //To Sow only Specific Customer
     private String mSearchText;
+    ProgressDialog progressDialog;
+    CoordinatorLayout mCoordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,7 @@ public class ViewBrandPriceDetailsActivity extends AppCompatActivity {
     }
 
     private void initializeVariables() {
+        progressDialog = new ProgressDialog(this);
         queue = Volley.newRequestQueue(this);
         if (getIntent().getStringExtra("CustomerName") != null) {
             mSearchText = getIntent().getStringExtra("CustomerName");
@@ -85,15 +89,19 @@ public class ViewBrandPriceDetailsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         mRecyclerView = findViewById(R.id.recyclerView);
+        mCoordinatorLayout = findViewById(R.id.coordinator);
     }
 
     private void readData() {
-
+        showProgressDialogue();
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 BASE_URL + DISPLAY_PRICE, null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
+                if (progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
 
@@ -101,16 +109,11 @@ public class ViewBrandPriceDetailsActivity extends AppCompatActivity {
 
                         JSONObject object = jsonArray.getJSONObject(i);
                         if (isChecked) {
-                            if (object.getString("createdBy").equals(getUserId())) {
-//                                Log.i(TAG, "onResponse: " + "created by onlu" + isChecked);
+                            if (object.getString("createdBy").equals(new UserInfoHelper(ViewBrandPriceDetailsActivity.this).getUserId())) {
                                 fetchData(object);
-
                             }
-
-
                         } else {
                             fetchData(object);
-
                         }
                     }
 
@@ -119,11 +122,11 @@ public class ViewBrandPriceDetailsActivity extends AppCompatActivity {
                     e1.printStackTrace();
                 }
             }
-
         }, new Response.ErrorListener() {
 
             @Override
             public void onErrorResponse(VolleyError error) {
+                Toast.makeText(ViewBrandPriceDetailsActivity.this, "" + error, Toast.LENGTH_SHORT).show();
                 VolleyLog.d("lol", "Error with Internet : " + error.getMessage());
                 // hide the progress dialog
             }
@@ -184,24 +187,6 @@ public class ViewBrandPriceDetailsActivity extends AppCompatActivity {
     }
 
 
-    private String getUserId() {
-        ArrayList<String> newArralist = new ArrayList<>();
-        // Creates a shared preferences variable to retrieve the logeed in users IDs and store it in Updated By Section
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.test.nuvoco3", Context.MODE_PRIVATE);
-
-        try {
-            newArralist = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("CustomerData", ObjectSerializer.serialize(new ArrayList<String>())));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (newArralist.size() > 0)
-            return newArralist.get(6);
-
-        return "Invalid User";
-
-    }
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.view_customer_menu, menu);
@@ -224,4 +209,30 @@ public class ViewBrandPriceDetailsActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
+    private void showProgressDialogue() {
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                    Snackbar snackbar = Snackbar.make(mCoordinatorLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Toast.makeText(ViewBrandPriceDetailsActivity.this, "Connection Error", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    snackbar.show();
+                }
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, PROGRESS_DIALOG_DURATION);
+
+    }
+
 }

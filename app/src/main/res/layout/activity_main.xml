@@ -29,7 +29,7 @@
             android:layout_gravity="bottom"
             android:gravity="center"
             android:padding="@dimen/padding_standard"
-            android:text="lol" />
+            android:text="@string/created_by_nuvoco" />
 
 
     </android.support.design.widget.NavigationView>

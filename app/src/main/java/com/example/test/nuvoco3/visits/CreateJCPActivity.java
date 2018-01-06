@@ -3,7 +3,6 @@ package com.example.test.nuvoco3.visits;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
@@ -14,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -29,14 +29,13 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.R;
-import com.example.test.nuvoco3.signup.ObjectSerializer;
+import com.example.test.nuvoco3.helpers.UserInfoHelper;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -45,6 +44,7 @@ import java.util.Date;
 
 import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
 import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_CUSTOMER;
+import static com.example.test.nuvoco3.helpers.UserInfoHelper.getDateTime;
 
 public class CreateJCPActivity extends AppCompatActivity {
     private static final String TAG = "CreateJCP Activity";
@@ -76,9 +76,9 @@ public class CreateJCPActivity extends AppCompatActivity {
 
     private void validateData() {
         mObjective = mEditTextObjective.getText().toString();
-        mCreatedBy = getUserId();
+        mCreatedBy = new UserInfoHelper(this).getUserId();
         mCreatedOn = getDateTime();
-        mUpdatedBy = getUserId();
+        mUpdatedBy = new UserInfoHelper(this).getUserId();
         mUpdatedOn = getDateTime();
 
         if (TextUtils.isEmpty(mDate))
@@ -121,10 +121,10 @@ public class CreateJCPActivity extends AppCompatActivity {
     }
 
     private void initializeVariables() {
-        mCustomerList = new ArrayList();
-        mIdList = new ArrayList();
+        mCustomerList = new ArrayList<>();
+        mIdList = new ArrayList<>();
         queue = Volley.newRequestQueue(this);
-        mEditTextRepresentative.setText(getUserId());
+        mEditTextRepresentative.setText(new UserInfoHelper(this).getUserId());
         populateCustomers();
 
     }
@@ -145,6 +145,9 @@ public class CreateJCPActivity extends AppCompatActivity {
     }
 
     public void timePickerFunction(final View v) {
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mTextViewStartTime.getWindowToken(), 0);
 
         // Get Current Time
         final Calendar c = Calendar.getInstance();
@@ -172,26 +175,9 @@ public class CreateJCPActivity extends AppCompatActivity {
     }
 
 
-    // Get LoggedIn users ID
-    private String getUserId() {
-        ArrayList<String> newArralist = new ArrayList<>();
-        // Creates a shared preferences variable to retrieve the logeed in users IDs and store it in Updated By Section
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.test.nuvoco3", Context.MODE_PRIVATE);
-
-        try {
-            newArralist = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("CustomerData", ObjectSerializer.serialize(new ArrayList<String>())));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (newArralist.size() > 0)
-            return newArralist.get(6);
-
-        return "Invalid User";
-
-    }
-
-
     public void datePickerFunction(View v) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mTextViewDate.getWindowToken(), 0);
 
         // Get Current Date
         final Calendar c = Calendar.getInstance();
@@ -222,15 +208,6 @@ public class CreateJCPActivity extends AppCompatActivity {
 
     }
 
-    //  Function to provide current data and time
-    private String getDateTime() {
-//        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = new Date();
-        return dateFormat.format(date);
-    }
-
-
     public void populateCustomers() {
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
@@ -245,7 +222,7 @@ public class CreateJCPActivity extends AppCompatActivity {
 
                         JSONObject object = jsonArray.getJSONObject(i);
                         if (isChecked) {
-                            if (object.getString("createdBy").equals(getUserId())) {
+                            if (object.getString("createdBy").equals(new UserInfoHelper(CreateJCPActivity.this).getUserId())) {
                                 mCustomerList.add(object.getString("name"));
                                 mIdList.add(object.getString("record_id"));
 

@@ -9,7 +9,6 @@
     tools:showIn="@layout/activity_brand_price">
 
     <LinearLayout
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -213,6 +212,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="top"
                 android:inputType="text"
+                android:nextFocusForward="@id/fab"
                 android:hint="Remarks"
                 android:minLines="2" />
 
@@ -220,14 +220,15 @@
         </android.support.design.widget.TextInputLayout>
 
         <android.support.v7.widget.RecyclerView
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:id="@+id/recyclerView"
+            android:nestedScrollingEnabled="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/padding_standard">
 
 
         </android.support.v7.widget.RecyclerView>
+
 
     </LinearLayout>
 

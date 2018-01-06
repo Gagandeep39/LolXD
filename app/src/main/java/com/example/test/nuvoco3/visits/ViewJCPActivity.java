@@ -2,7 +2,6 @@ package com.example.test.nuvoco3.visits;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
@@ -20,16 +19,15 @@ import android.widget.ImageView;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.R;
-import com.example.test.nuvoco3.signup.ObjectSerializer;
+import com.example.test.nuvoco3.helpers.UserInfoHelper;
 
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import static com.example.test.nuvoco3.helpers.Contract.USER_NAME;
+import static com.example.test.nuvoco3.helpers.UserInfoHelper.getDateTime;
 
 public class ViewJCPActivity extends AppCompatActivity {
 
@@ -80,49 +78,8 @@ public class ViewJCPActivity extends AppCompatActivity {
         mImageSearch = findViewById(R.id.imageViewSearch);
         mRecyclerView = findViewById(R.id.recyclerView);
 
-        mEditTextRepresentative.setText(getCustomerName());
-        mEditTextDate.setText(getDate());
-    }
-
-    private String getCustomerId() {
-        ArrayList<String> newArralist = new ArrayList<>();
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.test.nuvoco3", Context.MODE_PRIVATE);
-
-        try {
-            newArralist = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("CustomerData", ObjectSerializer.serialize(new ArrayList<String>())));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (newArralist.size() > 0)
-            return newArralist.get(6);
-
-        return "Invalid User";
-
-    }
-
-    private String getCustomerName() {
-        ArrayList<String> newArralist = new ArrayList<>();
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.test.nuvoco3", Context.MODE_PRIVATE);
-
-        try {
-            newArralist = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("CustomerData", ObjectSerializer.serialize(new ArrayList<String>())));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (newArralist.size() > 0)
-            return newArralist.get(USER_NAME);
-
-        return "Invalid User";
-
-    }
-
-
-    //  Function to provide current data and time
-    private String getDate() {
-//        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        Date date = new Date();
-        return dateFormat.format(date);
+        mEditTextRepresentative.setText(new UserInfoHelper(this).getUserId());
+        mEditTextDate.setText(getDateTime());
     }
 
 

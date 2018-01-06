@@ -79,4 +79,7 @@
     <string name="title_activity_view_jcp">ViewJCPActivity</string>
     <string name="title_activity_visit_details">VisitDetailsActivity</string>
     <string name="title_activity_calendar">CalendarActivity</string>
+    <string name="connection_error">Error Connecting to Server</string>
+    <string name="something_went_wrong">Something went wrong!!</string>
+    <string name="created_by_nuvoco">Created By Nuvoco IT Team</string>
 </resources>

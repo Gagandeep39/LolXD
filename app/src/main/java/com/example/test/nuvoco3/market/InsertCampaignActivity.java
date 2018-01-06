@@ -285,24 +285,7 @@ public class InsertCampaignActivity extends AppCompatActivity {
     }
 
     private void storeDataOnServer() {
-        progressDialog.setMessage("Please Wait...");
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                progressDialog.dismiss();
-                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        storeDataOnServer();
-                    }
-                });
-                snackbar.show();
-            }
-        };
-        Handler handler = new Handler();
-        handler.postDelayed(runnable, 20000);
+        showProgressDialogue();
 
 
         Map<String, String> postParam = new HashMap<>();
@@ -323,12 +306,16 @@ public class InsertCampaignActivity extends AppCompatActivity {
 
                     @Override
                     public void onResponse(JSONObject response) {
+                        if (progressDialog.isShowing()) {
+                            progressDialog.dismiss();
+                        }
                         Log.i(TAG, response.toString());
                         try {
                             if (response.getString("status").equals("updated")) {
-                                progressDialog.dismiss();
                                 Toast.makeText(InsertCampaignActivity.this, "Successfully Inserted New Contact", Toast.LENGTH_SHORT).show();
                                 finish();
+                            } else {
+                                Toast.makeText(InsertCampaignActivity.this, "" + response, Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -340,6 +327,7 @@ public class InsertCampaignActivity extends AppCompatActivity {
 
             @Override
             public void onErrorResponse(VolleyError error) {
+                Toast.makeText(InsertCampaignActivity.this, "" + error, Toast.LENGTH_SHORT).show();
                 VolleyLog.d(TAG, "Error with Connection: " + error.getMessage());
             }
         }) {
@@ -355,8 +343,6 @@ public class InsertCampaignActivity extends AppCompatActivity {
                 headers.put("x-access-token", new UserInfoHelper(InsertCampaignActivity.this).getUserToken());
                 return headers;
             }
-
-
         };
 
         jsonObjReq.setTag("LOL");

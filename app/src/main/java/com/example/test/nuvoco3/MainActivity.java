@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mTextViewBuildInfo = findViewById(R.id.textViewBuildInfo);
-        mTextViewBuildInfo.setText("Version " + versionName);
+        mTextViewBuildInfo.append("\nVersion " + versionName);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

@@ -79,7 +79,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
         android:orientation="horizontal"
-        android:padding="8sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/textInputLayoutPassword"
         app:layout_constraintStart_toStartOf="@+id/textInputLayoutPassword">
