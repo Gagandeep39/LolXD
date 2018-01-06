@@ -9,15 +9,16 @@ public class JCPDetails {
     private String mCustomerName;
     private String mObjective;
     private String mOrder;
+    private String mProductName;
     private String mOrderQuantity;
-    private String mRemark;
-    private String mStatus;
+    private String mVisitRemark;
+    private String mVisitStatus;
     private String mCreatedBy;
     private String mCreatedOn;
     private String mUpdatedBy;
     private String mUpdatedOn;
 
-    public JCPDetails(String mRecordId, String mJcpId, String mDate, String mCustomerId, String mCustomerName, String mObjective, String mOrder, String mOrderQuantity, String mRemark, String mStatus, String mCreatedBy, String mCreatedOn, String mUpdatedBy, String mUpdatedOn) {
+    public JCPDetails(String mRecordId, String mJcpId, String mDate, String mCustomerId, String mCustomerName, String mObjective, String mOrder, String mProductName, String mOrderQuantity, String mVisitRemark, String mVisitStatus, String mCreatedBy, String mCreatedOn, String mUpdatedBy, String mUpdatedOn) {
         this.mRecordId = mRecordId;
         this.mJcpId = mJcpId;
         this.mDate = mDate;
@@ -25,9 +26,10 @@ public class JCPDetails {
         this.mCustomerName = mCustomerName;
         this.mObjective = mObjective;
         this.mOrder = mOrder;
+        this.mProductName = mProductName;
         this.mOrderQuantity = mOrderQuantity;
-        this.mRemark = mRemark;
-        this.mStatus = mStatus;
+        this.mVisitRemark = mVisitRemark;
+        this.mVisitStatus = mVisitStatus;
         this.mCreatedBy = mCreatedBy;
         this.mCreatedOn = mCreatedOn;
         this.mUpdatedBy = mUpdatedBy;
@@ -62,16 +64,20 @@ public class JCPDetails {
         return mOrder;
     }
 
+    public String getProductName() {
+        return mProductName;
+    }
+
     public String getOrderQuantity() {
         return mOrderQuantity;
     }
 
-    public String getRemark() {
-        return mRemark;
+    public String getVisitRemark() {
+        return mVisitRemark;
     }
 
-    public String getStatus() {
-        return mStatus;
+    public String getVisitStatus() {
+        return mVisitStatus;
     }
 
     public String getCreatedBy() {

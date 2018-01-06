@@ -33,4 +33,10 @@
         app:compactCalendarTargetHeight="250dp"
         app:compactCalendarTextColor="#000"
         app:compactCalendarTextSize="12sp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_standard" />
 </LinearLayout>
