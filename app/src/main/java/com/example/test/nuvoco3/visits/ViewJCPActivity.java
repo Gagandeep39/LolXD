@@ -81,7 +81,10 @@ public class ViewJCPActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 mSearchDate = mEditTextDate.getText().toString();
+                mJCPArrayList.clear();
                 readData();
+                mJcpAdapter.notifyDataSetChanged();
+                mRecyclerView.setAdapter(mJcpAdapter);
             }
         });
 
