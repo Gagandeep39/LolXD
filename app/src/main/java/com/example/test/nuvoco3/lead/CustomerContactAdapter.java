@@ -12,6 +12,9 @@ import com.example.test.nuvoco3.R;
 
 import java.util.List;
 
+import static com.example.test.nuvoco3.helpers.CalendarHelper.convertJsonDateToSmall;
+import static com.example.test.nuvoco3.helpers.CalendarHelper.convertJsonTimToStandardDateTime;
+
 /**
  * Created by gagandeep on 24/12/17.
  */
@@ -42,8 +45,8 @@ public class CustomerContactAdapter extends RecyclerView.Adapter<CustomerContact
         holder.mTextViewName.append(mCurrentContact.getCustomerContactName());
         holder.mTextViewPhone.append(mCurrentContact.getCustomerContactPhone());
         holder.mTextViewEmail.append(mCurrentContact.getCustomerContactEmail());
-        holder.mTextViewDOB.append(mCurrentContact.getCustomerContactDOB());
-        holder.mTextViewDOA.append(mCurrentContact.getCustomerContactDOA());
+        holder.mTextViewDOB.append(convertJsonDateToSmall(mCurrentContact.getCustomerContactDOB()));
+        holder.mTextViewDOA.append(convertJsonDateToSmall(mCurrentContact.getCustomerContactDOA()));
     }
 
     //  Provides count of Items in The View

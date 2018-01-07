@@ -1,8 +1,12 @@
 package com.example.test.nuvoco3.visits;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -45,6 +49,7 @@ import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
 import static com.example.test.nuvoco3.helpers.Contract.INSERT_JCP_VISIT_DETAILS;
 import static com.example.test.nuvoco3.helpers.Contract.MASTER_PRODUCT;
 import static com.example.test.nuvoco3.helpers.Contract.MASTER_VISIT_STATUS;
+import static com.example.test.nuvoco3.helpers.Contract.PROGRESS_DIALOG_DURATION;
 
 public class VisitDetailsActivity extends AppCompatActivity {
     private static final String TAG = "VisitDetails Activity";
@@ -62,6 +67,8 @@ public class VisitDetailsActivity extends AppCompatActivity {
 
     RequestQueue queue;
     LinearLayout mLinearLayout;
+    ProgressDialog progressDialog;
+    CoordinatorLayout mCoordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,10 +134,10 @@ public class VisitDetailsActivity extends AppCompatActivity {
 
 
     private void storeDataToServer() {
+        showProgressDialogue();
 
         Map<String, String> postParam = new HashMap<>();
-        Log.i(TAG, "storeDataToServer: " + " " + mJcpId + " " + mDate + " " + mCustomerId + " " + mCustomerName + " " + mObjective + " " + mVisitStatus + " " + mOrderStatus + " " + mOrderQuantity + " " + mUpdatedOn);
-//
+
         postParam.put("2", mJcpId);
         postParam.put("3", convertJsonTimToStandardDateTime(mDate));
         postParam.put("4", mCustomerId);
@@ -229,7 +236,7 @@ public class VisitDetailsActivity extends AppCompatActivity {
         mProductHelper = new MasterHelper(this, MASTER_PRODUCT);
         mStatusArrayList = mStatusHelper.getRecordName();
         mProductList = mProductHelper.getRecordName();
-
+        progressDialog = new ProgressDialog(this);
         queue = Volley.newRequestQueue(this);
 
         if (getIntent().getStringExtra("CustomerName") != null) {
@@ -276,6 +283,7 @@ public class VisitDetailsActivity extends AppCompatActivity {
         mQuantityLayout = findViewById(R.id.textInputLayoutQuantity);
         mLinearLayout = findViewById(R.id.linearLayout);
         mProductSpinner = findViewById(R.id.searchProduct);
+        mCoordinatorLayout = findViewById(R.id.coordinator);
     }
 
     @Override
@@ -307,6 +315,30 @@ public class VisitDetailsActivity extends AppCompatActivity {
 //            return true;
 //        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showProgressDialogue() {
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                    Snackbar snackbar = Snackbar.make(mCoordinatorLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            validateData();
+                        }
+                    });
+                    snackbar.show();
+                }
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, PROGRESS_DIALOG_DURATION);
+
     }
 
 

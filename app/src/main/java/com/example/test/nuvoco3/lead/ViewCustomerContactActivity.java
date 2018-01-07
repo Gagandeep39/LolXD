@@ -49,6 +49,8 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
     RecyclerView mRecyclerView;
     CoordinatorLayout mCoordinaterLayout;
     ProgressDialog progressDialog;
+    int size = 25;
+    int count = 0;
     String mContactId, mCustomerId, mCustomerName, mContactName, mContactPhone, mContactEmail, mContactDOB, mContactDOA, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy;
     private boolean isChecked = false;
     @Override
@@ -65,6 +67,7 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
             public boolean onQueryTextSubmit(String query) {
                 mCustomerContactArrayList.clear();
                 mSearchText = query;
+
                 readData();
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(mSearchView.getWindowToken(), 0);
@@ -111,7 +114,18 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
                     }
                     JSONArray jsonArray = response.getJSONArray("message");
                     Log.i(TAG, "onResponse: " + response);
-                    for (int i = 0; i < jsonArray.length(); i++) {
+                   if (count==0){
+                       count=1;
+                       if (size>jsonArray.length()){
+                           size = jsonArray.length();
+
+                       }else {
+                           size = 25;
+                       }
+
+                   }
+                   else size = jsonArray.length();
+                    for (int i = 0; i < size; i++) {
 
                         JSONObject object = jsonArray.getJSONObject(i);
 
@@ -249,6 +263,9 @@ public class ViewCustomerContactActivity extends AppCompatActivity {
             finish();
             return true;
         } else if (item.getItemId() == R.id.checkable_menu) {
+            if (progressDialog.isShowing()){
+                progressDialog.dismiss();
+            }
             isChecked = !item.isChecked();
             item.setChecked(isChecked);
             mCustomerContactArrayList.clear();

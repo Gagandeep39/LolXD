@@ -1,10 +1,8 @@
 package com.example.test.nuvoco3.visits;
 
 import android.app.ProgressDialog;
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.SyncStateContract;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -38,20 +36,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.example.test.nuvoco3.helpers.CalendarHelper.convertSmallDateToJson;
+import static com.example.test.nuvoco3.helpers.CalendarHelper.getDateTime;
 import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
 import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_JCP_VISIT;
 import static com.example.test.nuvoco3.helpers.Contract.MASTER_VISIT_STATUS;
 import static com.example.test.nuvoco3.helpers.Contract.PROGRESS_DIALOG_DURATION;
+import static com.example.test.nuvoco3.helpers.Contract.UPDATE_JCP_VISIT_DETAILS;
 import static com.example.test.nuvoco3.helpers.Contract.VISIT_STATUS_COMPLETED;
 
 public class ViewVisitDetailsActivity extends AppCompatActivity {
     private static final String TAG = "ViewVisitDetails";
     CoordinatorLayout mCoordinatorLayout;
-    TextInputEditText mEditTextRepresentative, mEditTextJcpId, mEditTextCustomerName, mEditTextDate, mEditTextStartTime, mEditTextEndTime, mEditTextOrderTaken, mEditTextProduct, mEditTextOrderQuantity, mEditTextVisitRemark, mEditTextVisitStatus, mEditTextObjective;
+    TextInputEditText mEditTextCustomerId, mEditTextJcpId, mEditTextCustomerName, mEditTextDate, mEditTextStartTime, mEditTextEndTime, mEditTextOrderTaken, mEditTextProduct, mEditTextOrderQuantity, mEditTextVisitRemark, mEditTextVisitStatus, mEditTextObjective;
     SearchableSpinner mVisitStatusSpinner;
     LinearLayout mOrderTakenLayout, mVisitStatusLayout;
-    String mRepresentative, mJcpId, mCustomerId, mCustomerName, mStatus, mDate, mStartTime, mEndTime, mQuantity, mOrderTaken, mProduct, mRemark, mObjective;
+    String mRecordId, mJcpId, mCustomerId, mCustomerName, mVisitStatus, mDate, mStartTime, mEndTime, mQuantity, mOrderTaken, mProduct, mRemark, mObjective, mUpdatedOn, mUpdatedBy;
 ProgressDialog progressDialog;
 RequestQueue queue;
 
@@ -70,20 +69,97 @@ RequestQueue queue;
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                validateData();
             }
         });
     }
+
+    private void validateData() {
+        mUpdatedOn = getDateTime();
+        mUpdatedBy = new UserInfoHelper(this).getUserId();
+        if (mVisitStatusLayout.getVisibility()==View.VISIBLE){
+            if (mVisitStatus.equals(getString(R.string.default_name)))
+                Toast.makeText(this, "Update Visit Status", Toast.LENGTH_SHORT).show();
+            else
+                sendDataToServer();
+        }else if(mVisitStatusLayout.getVisibility()==View.GONE){
+
+            Toast.makeText(this, "The Visit is already Completed" , Toast.LENGTH_SHORT).show();
+            finish();
+        }
+    }
+
+
+    private void sendDataToServer() {
+        startProgressDialog();
+        Map<String, String> postParam = new HashMap<>();
+
+        postParam.put("1", mRecordId);
+        postParam.put("7", mRemark);
+        postParam.put("8", mVisitStatus);
+        postParam.put("11", mUpdatedOn);
+        postParam.put("12", mUpdatedBy);
+        postParam.put("13", mOrderTaken);
+        postParam.put("14", mQuantity);
+        postParam.put("15", mProduct);
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, BASE_URL + UPDATE_JCP_VISIT_DETAILS, new JSONObject(postParam),
+                new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        if (progressDialog.isShowing()) {
+                            progressDialog.dismiss();
+                        }
+                        Log.i(TAG, response.toString());
+                        try {
+                            if (response.getString("status").equals("updated")) {
+                                Toast.makeText(ViewVisitDetailsActivity.this, "Successfully Inserted New Contact", Toast.LENGTH_SHORT).show();
+                                finish();
+                            } else if (response.getString("status").equals(getString(R.string.something_went_wrong))) {
+                                Toast.makeText(ViewVisitDetailsActivity.this, "" + getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(ViewVisitDetailsActivity.this, "" + response, Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(ViewVisitDetailsActivity.this, "" + error, Toast.LENGTH_SHORT).show();
+                VolleyLog.d(TAG, "Error with Connection: " + error.getMessage());
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                // add headers <key,value>
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("x-access-token", new UserInfoHelper(ViewVisitDetailsActivity.this).getUserToken());
+                return headers;
+            }
+        };
+        // Adding request to request queue
+        queue.add(jsonObjReq);
+    }
+
 
     private void initializeVariables(){
         progressDialog = new ProgressDialog(this);
         queue = Volley.newRequestQueue(this);
         if (getIntent().getStringExtra("JcpId")!=null){
-            mStatus = getIntent().getStringExtra("VisitStatus");
+            mVisitStatus = getIntent().getStringExtra("VisitStatus");
             mRemark = getIntent().getStringExtra("VisitRemark");
             mOrderTaken =getIntent().getStringExtra("OrderTaken") ;
             mJcpId =getIntent().getStringExtra("JcpId") ;
+            mRecordId = getIntent().getStringExtra("RecordId");
             mEditTextJcpId.setText(mJcpId);
-            mEditTextVisitStatus.setText(mStatus);
+            mEditTextVisitStatus.setText(mVisitStatus);
             mEditTextVisitRemark.setText(mRemark);
             mEditTextOrderTaken.setText(mOrderTaken);
             Log.i(TAG, "initializeVariables: " + getIntent().getStringExtra("OrderTaken"));
@@ -92,9 +168,9 @@ RequestQueue queue;
                 mEditTextOrderQuantity.setText(getIntent().getStringExtra("OrderQuantity"));
                 mEditTextProduct.setText(getIntent().getStringExtra("OrderedProduct"));
             }
-            if (!mStatus.equals(VISIT_STATUS_COMPLETED)){
+            if (!mVisitStatus.equals(VISIT_STATUS_COMPLETED)){
                 mVisitStatusLayout.setVisibility(View.VISIBLE);
-                mStatus = getString(R.string.default_name);
+                mVisitStatus = getString(R.string.default_name);
                 populateSpinners();
             }
         }
@@ -110,12 +186,12 @@ RequestQueue queue;
         mVisitStatusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                mStatus = mVisitStatusList.get(i);
+                mVisitStatus = mVisitStatusList.get(i);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-                mStatus = getString(R.string.default_name);
+                mVisitStatus = getString(R.string.default_name);
 
             }
         });
@@ -128,7 +204,7 @@ RequestQueue queue;
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        mEditTextRepresentative = findViewById(R.id.editTextRepresentative);
+        mEditTextCustomerId = findViewById(R.id.editTextCustomerId);
         mEditTextJcpId = findViewById(R.id.editTextJcpId);
         mEditTextCustomerName = findViewById(R.id.editTextCustomerName);
         mEditTextDate = findViewById(R.id.editTextDate);
@@ -216,6 +292,7 @@ RequestQueue queue;
                 mEndTime = object.getString("end_Time") + "";
                 mStartTime = object.getString("start_Time") + "";
             }
+            mEditTextCustomerId.setText(mCustomerId);
             mEditTextDate.setText(mDate);
             mEditTextObjective.setText(mObjective);
             mEditTextCustomerName.setText(mCustomerName);

@@ -17,10 +17,10 @@
             android:layout_height="wrap_content">
             <android.support.design.widget.TextInputEditText
                 android:layout_width="match_parent"
-                android:id="@+id/editTextRepresentative"
                 android:focusable="false"
                 android:clickable="false"
-                android:hint="Representative"
+                android:id="@+id/editTextJcpId"
+                android:hint="JCP ID"
                 android:layout_height="wrap_content" />
 
         </android.support.design.widget.TextInputLayout>
@@ -29,13 +29,14 @@
             android:layout_height="wrap_content">
             <android.support.design.widget.TextInputEditText
                 android:layout_width="match_parent"
+                android:id="@+id/editTextCustomerId"
                 android:focusable="false"
                 android:clickable="false"
-                android:id="@+id/editTextJcpId"
-                android:hint="JCP ID"
+                android:hint="Customer ID"
                 android:layout_height="wrap_content" />
 
         </android.support.design.widget.TextInputLayout>
+
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"

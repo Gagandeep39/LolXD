@@ -117,7 +117,7 @@
                     android:inputType="phone"
                     android:layout_height="wrap_content"
                     android:hint="Phone Number"
-                    android:maxLength="13"
+                    android:maxLength="10"
                     android:nextFocusForward="@+id/textInputEditContactEmail" />
             </android.support.design.widget.TextInputLayout>
 

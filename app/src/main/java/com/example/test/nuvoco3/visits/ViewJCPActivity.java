@@ -142,15 +142,9 @@ public class ViewJCPActivity extends AppCompatActivity {
                         JSONObject object = jsonArray.getJSONObject(i);
 
 
-                        if (isChecked) {
-                            if (object.getString("createdBy").equals(new UserInfoHelper(ViewJCPActivity.this).getUserId())) {
-                                fetchData(object);
-                            }
-                        } else {
+                        if (object.getString("createdBy").equals(new UserInfoHelper(ViewJCPActivity.this).getUserId())) {
                             fetchData(object);
-
                         }
-
                     }
 
                 } catch (JSONException e1) {
@@ -234,6 +228,7 @@ public class ViewJCPActivity extends AppCompatActivity {
                         Date date = new Date();
 
                         mSearchDate = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth + " " + dateFormat.format(date);
+                        readData();
                         Log.i(TAG, "onDateSet: " + mSearchDate);
 
                     }
@@ -242,36 +237,7 @@ public class ViewJCPActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.view_customer_menu, menu);
 
-        return super.onCreateOptionsMenu(menu);
-    }
-
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem checkable = menu.findItem(R.id.checkable_menu);
-        checkable.setChecked(isChecked);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-            return true;
-        }
-//        else if (item.getItemId() == R.id.checkable_menu) {
-//            isChecked = !item.isChecked();
-//            item.setChecked(isChecked);
-//            mCustomerArrayList.clear();
-//            populateCustomers();
-//            return true;
-//        }
-        return super.onOptionsItemSelected(item);
-    }
 
 
     private void startProgressDialog() {

@@ -53,7 +53,9 @@ public class JCPDetailsAdapter extends RecyclerView.Adapter<JCPDetailsAdapter.Vi
                         .putExtra("VisitStatus", mCurrentJCP.getVisitStatus())
                         .putExtra("OrderTaken", mCurrentJCP.getOrder())
                         .putExtra("OrderQuantity", mCurrentJCP.getOrderQuantity())
-                        .putExtra("OrderedProduct", mCurrentJCP.getProductName()));
+                        .putExtra("OrderedProduct", mCurrentJCP.getProductName())
+                        .putExtra("RecordId", mCurrentJCP.getRecordId()));
+                ((CalendarActivity)mContext).finish();
             }
         });
 

@@ -395,6 +395,9 @@ public class InsertCampaignActivity extends AppCompatActivity {
             finish();
             return true;
         } else if (item.getItemId() == R.id.checkable_menu) {
+            if (progressDialog.isShowing()){
+                progressDialog.dismiss();
+            }
             isChecked = !item.isChecked();
             item.setChecked(isChecked);
             mCustomerList.clear();

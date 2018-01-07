@@ -180,22 +180,6 @@ public class CalendarActivity extends AppCompatActivity {
         return mEvent;
 
     }
-//
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.view_customer_menu, menu);
-//
-//        return super.onCreateOptionsMenu(menu);
-//    }
-
-//
-//    @Override
-//    public boolean onPrepareOptionsMenu(Menu menu) {
-//        MenuItem checkable = menu.findItem(R.id.checkable_menu);
-//        checkable.setChecked(isChecked);
-//        return true;
-//    }
-//
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -237,9 +221,9 @@ public class CalendarActivity extends AppCompatActivity {
                         JSONObject object = jsonArray.getJSONObject(i);
 
 
-//                            if (object.getString("createdBy").equals(new UserInfoHelper(CalendarActivity.this).getUserId())) {
+                            if (object.getString("createdBy").equals(new UserInfoHelper(CalendarActivity.this).getUserId())) {
                         fetchData(object);
-//                            }
+                            }
 
 
                     }

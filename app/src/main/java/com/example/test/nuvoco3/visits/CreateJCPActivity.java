@@ -413,6 +413,9 @@ public class CreateJCPActivity extends AppCompatActivity {
 
 
     private void showProgressDialogue() {
+        if (progressDialog.isShowing()){
+            progressDialog.dismiss();
+        }
         progressDialog.setMessage("Please Wait...");
         progressDialog.setCancelable(false);
         progressDialog.show();
