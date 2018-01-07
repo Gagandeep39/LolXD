@@ -1,11 +1,14 @@
 package com.example.test.nuvoco3.visits;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.test.nuvoco3.R;
@@ -34,12 +37,25 @@ public class JCPDetailsAdapter extends RecyclerView.Adapter<JCPDetailsAdapter.Vi
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.setIsRecyclable(false);
-        JCPDetails mCurrentJCP = mDetailsList.get(position);
+        final JCPDetails mCurrentJCP = mDetailsList.get(position);
         holder.mTextViewJcpId.append(mCurrentJCP.getJcpId());
+        Log.i("dc", "onBindViewHolder: " + mCurrentJCP.getOrder());
         holder.mTextViewName.append(mCurrentJCP.getCustomerName());
         holder.mTextViewObjective.append(mCurrentJCP.getObjective());
         holder.mTextViewVisitStatus.append(mCurrentJCP.getVisitStatus());
         holder.mViewDecorator.setBackgroundColor(mContext.getResources().getColor(selectColor(mCurrentJCP.getVisitStatus())));
+        holder.mLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {        //RecordID  Customer ID  Customer Name   Date  Start TIME   END TIME Objective
+                mContext.startActivity(new Intent(mContext, ViewVisitDetailsActivity.class)
+                        .putExtra("JcpId", mCurrentJCP.getJcpId())
+                        .putExtra("VisitRemark", mCurrentJCP.getVisitRemark())
+                        .putExtra("VisitStatus", mCurrentJCP.getVisitStatus())
+                        .putExtra("OrderTaken", mCurrentJCP.getOrder())
+                        .putExtra("OrderQuantity", mCurrentJCP.getOrderQuantity())
+                        .putExtra("OrderedProduct", mCurrentJCP.getProductName()));
+            }
+        });
 
     }
 
@@ -66,6 +82,7 @@ public class JCPDetailsAdapter extends RecyclerView.Adapter<JCPDetailsAdapter.Vi
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView mTextViewJcpId, mTextViewName, mTextViewObjective, mTextViewVisitStatus;
         View mViewDecorator;
+        LinearLayout mLinearLayout;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -74,6 +91,7 @@ public class JCPDetailsAdapter extends RecyclerView.Adapter<JCPDetailsAdapter.Vi
             mTextViewObjective = itemView.findViewById(R.id.textViewObjective);
             mViewDecorator = itemView.findViewById(R.id.viewDecorate);
             mTextViewVisitStatus = itemView.findViewById(R.id.textViewVisitStatus);
+            mLinearLayout = itemView.findViewById(R.id.linearLayout);
         }
     }
 }

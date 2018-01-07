@@ -129,7 +129,10 @@ public class CalendarActivity extends AppCompatActivity {
         mJcpArrayList = new ArrayList<>();
         mDayArrayList = new ArrayList<>();
         mJcpAdapter = new JCPDetailsAdapter(mDayArrayList, this);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
+        mLayoutManager.setSmoothScrollbarEnabled(true);
+        mLayoutManager.setAutoMeasureEnabled(true);
+        mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mJcpAdapter);
 //        setupRecyclerView();
