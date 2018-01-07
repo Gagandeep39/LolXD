@@ -21,8 +21,8 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/imageViewIcon"
-            android:layout_width="100sp"
-            android:layout_height="100sp"
+            android:layout_width="80sp"
+            android:layout_height="80sp"
             android:padding="@dimen/padding_medium"
             android:src="@color/colorAccent"
             app:layout_constraintStart_toStartOf="parent"

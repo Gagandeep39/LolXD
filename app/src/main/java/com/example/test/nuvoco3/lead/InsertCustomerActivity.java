@@ -99,7 +99,6 @@ public class InsertCustomerActivity extends AppCompatActivity {
     private void initializeSpinners() {
         ArrayAdapter mAreaAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mAreaArray);
         ArrayAdapter mStateAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mStateArray);
-//        ArrayAdapter mTypeAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mTypeArray);
         ArrayAdapter mCategoryAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mCategoryArray);
         ArrayAdapter mDistrictAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mDistrictArray);
 
@@ -135,7 +134,7 @@ public class InsertCustomerActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                mArea = getString(R.string.default_name);
+                mDistrict = getString(R.string.default_name);
             }
         });
 
@@ -149,7 +148,7 @@ public class InsertCustomerActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                mArea = getString(R.string.default_name);
+                mState = getString(R.string.default_name);
             }
         });
 
@@ -163,7 +162,7 @@ public class InsertCustomerActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                mArea = getString(R.string.default_name);
+                mCategory = getString(R.string.default_name);
             }
         });
 
@@ -221,18 +220,37 @@ public class InsertCustomerActivity extends AppCompatActivity {
             if (!isEmailValid(mEmail))
                 editTextEmail.setError("Enter a valid Email Address");
         }
-        if (TextUtils.equals(mArea, "default"))
+
+
+        if (TextUtils.equals(mArea, getString(R.string.default_name))) {
+            Log.i(TAG, "validateData: " + mArea);
             Toast.makeText(this, "Select Area", Toast.LENGTH_SHORT).show();
-        if (TextUtils.equals(mDistrict, "default"))
+        }
+
+        if (TextUtils.equals(mDistrict, getString(R.string.default_name))) {
             Toast.makeText(this, "Select Category", Toast.LENGTH_SHORT).show();
-        if (TextUtils.equals(mState, "default"))
+            Log.i(TAG, "validateData: " + mDistrict);
+        }
+
+        if (TextUtils.equals(mState, getString(R.string.default_name))) {
+            Log.i(TAG, "validateData: " + mState);
             Toast.makeText(this, "Select State", Toast.LENGTH_SHORT).show();
-        if (TextUtils.equals(mType, "default"))
+        }
+
+        if (TextUtils.equals(mType, getString(R.string.default_name))) {
+            Log.i(TAG, "validateData: " + mType);
             Toast.makeText(this, "Select Type", Toast.LENGTH_SHORT).show();
-        if (TextUtils.equals(mCategory, "default"))
+        }
+
+        if (TextUtils.equals(mCategory, getString(R.string.default_name))) {
             Toast.makeText(this, "Select Category", Toast.LENGTH_SHORT).show();
-        if (!TextUtils.isEmpty(mName) && !TextUtils.isEmpty(mAddress) && !TextUtils.isEmpty(mPhone) && !TextUtils.isEmpty(mEmail) && !TextUtils.equals(mArea, "default") && !TextUtils.equals(mState, "default") && !TextUtils.equals(mDistrict, "default") && !TextUtils.equals(mType, "default") && !TextUtils.equals(mCategory, "default") && isEmailValid(mEmail))
+            Log.i(TAG, "validateData: " + mCategory);
+        }
+
+        if (!TextUtils.isEmpty(mName) && !TextUtils.isEmpty(mAddress) && !TextUtils.isEmpty(mPhone) && !TextUtils.isEmpty(mEmail) && !TextUtils.equals(mArea, getString(R.string.default_name)) && !TextUtils.equals(mState, "default") && !TextUtils.equals(mDistrict, getString(R.string.default_name)) && !TextUtils.equals(mType, getString(R.string.default_name)) && !TextUtils.equals(mCategory, getString(R.string.default_name)) && isEmailValid(mEmail) && !TextUtils.equals(mCategory, getString(R.string.default_name))) {
+
             storeData();
+        }
 
     }
 

@@ -46,7 +46,7 @@ public class RecordManagementActivity extends AppCompatActivity {
     String mCategory, mType, mStatus, mName, mUpdatedOn, mCreatedOn, mCreatedBy, mUpdatedBy;
     RequestQueue queue;
     SearchableSpinner mTypeSearch, mStatusSearch;
-    String mTypeArray[] = {"District", "Area", "State", "CustomerType", "Category", "ComplaintType", "Brand", "Product", "Department", MASTER_VISIT_STATUS};
+    String mTypeArray[] = {"District", "Area", "State", "CustomerType", "Category", "ComplaintType", "Brand", "Product", "Department", MASTER_VISIT_STATUS, "Objective", "ComplaintStatus"};
     String mStatusArray[] = {"True", "False"};
     ProgressDialog progressDialog;
     CoordinatorLayout mCoordinatorLayout;
@@ -104,7 +104,7 @@ public class RecordManagementActivity extends AppCompatActivity {
         if (TextUtils.equals(mStatus, getString(R.string.default_name)))
             Toast.makeText(this, "Select Status", Toast.LENGTH_SHORT).show();
 
-        if (!TextUtils.isEmpty(mCategory) && !TextUtils.isEmpty(mName) && !TextUtils.isEmpty(mType) && !TextUtils.equals(mStatus, getString(R.string.default_name))) {
+        if (!TextUtils.isEmpty(mCategory) && !TextUtils.isEmpty(mName) && !TextUtils.equals(mType, getString(R.string.default_name)) && !TextUtils.equals(mStatus, getString(R.string.default_name))) {
             sendDataToServer();
         }
     }

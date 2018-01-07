@@ -232,8 +232,8 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
 
         postParam.put("2", mCustomerName);
         postParam.put("3", mContactName);
-        postParam.put("4", mContactEmail);
-        postParam.put("5", mContactPhone);
+        postParam.put("4", mContactPhone);
+        postParam.put("5", mContactEmail);
         postParam.put("6", mContactDOB);
         postParam.put("7", mContactDOA);
         postParam.put("8", mCreatedOn);
@@ -293,14 +293,17 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                progressDialog.dismiss();
-                Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        storeData();
-                    }
-                });
-                snackbar.show();
+                if (progressDialog.isShowing()) {
+
+                    progressDialog.dismiss();
+                    Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            storeData();
+                        }
+                    });
+                    snackbar.show();
+                }
             }
         };
         Handler handler = new Handler();
@@ -310,6 +313,31 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
 
 
     public void populateCustomers() {
+
+
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (progressDialog.isShowing()) {
+
+                    progressDialog.dismiss();
+                    Snackbar snackbar = Snackbar.make(mCoordinaterLayout, "Connection Time-out! Reload Customers !", Snackbar.LENGTH_LONG).setAction("Retry", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            populateCustomers();
+                        }
+                    });
+                    snackbar.show();
+                }
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, PROGRESS_DIALOG_DURATION);
+
+
         mCustomerList = new ArrayList<String>();
         mIdList = new ArrayList<>();
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,

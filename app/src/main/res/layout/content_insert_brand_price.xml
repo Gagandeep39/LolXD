@@ -158,7 +158,9 @@
         <android.support.design.widget.TextInputEditText
             android:id="@+id/textInputEditWSP"
             android:layout_width="match_parent"
+            android:nextFocusDown="@+id/textInputEditRSP"
             android:nextFocusForward="@+id/textInputEditRSP"
+            android:nextFocusRight="@+id/textInputEditRSP"
             android:layout_height="wrap_content"
             android:hint="WSP"
             android:inputType="numberDecimal" />
@@ -209,18 +211,12 @@
             android:id="@+id/textInputLayoutRemark"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-            <!--<android.support.design.widget.TextInputEditText-->
-            <!--android:id="@+id/textInputEditRemark"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:hint="Counter" />-->
             <EditText
                 android:id="@+id/editTextRemark"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="top"
-                android:inputType="text"
+                android:inputType="textCapSentences"
                 android:nextFocusForward="@id/fab"
                 android:hint="Remarks"
                 android:minLines="2" />

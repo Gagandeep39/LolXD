@@ -137,8 +137,8 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
 
         if (TextUtils.isEmpty(mRepresentative))
             Toast.makeText(this, "Enter Representative's ID", Toast.LENGTH_SHORT).show();
-        if (TextUtils.isEmpty(mCounter))
-            mEditTextCounter.setError("Enter Counter's name");
+        if (TextUtils.equals(mCounter, getString(R.string.default_name)))
+            Toast.makeText(this, "Select Customer", Toast.LENGTH_SHORT).show();
         if (TextUtils.isEmpty(mWSP))
             mEditTextWSP.setError("Enter WSP");
         if (TextUtils.isEmpty(mRSP))
@@ -196,6 +196,9 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
                                 Toast.makeText(InsertBrandPriceActivity.this, "Successfully Inserted Data", Toast.LENGTH_SHORT).show();
                                 mBrandPricePriceList.add(new BrandPrice("1", mRepresentative, mCounter, mDate, mBrand, mProduct, mWSP, mRSP, mStock, mRemarks, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy));
                                 mDetailsAdapter.notifyDataSetChanged();
+                                mEditTextWSP.setText("");
+                                mEditTextRSP.setText("");
+                                mEditTextRemarks.setText("");
 
                             } else {
                                 Toast.makeText(InsertBrandPriceActivity.this, "" + response.getString("status"), Toast.LENGTH_SHORT).show();

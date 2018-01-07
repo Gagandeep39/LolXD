@@ -77,7 +77,7 @@
                     android:focusable="false"
                     android:hint="Customer Name"
                     android:layout_width="match_parent"
-                    android:inputType="textPersonName"
+                    android:inputType="textCapWords"
                     android:longClickable="false"
                     android:layout_height="wrap_content"
                     android:nextFocusForward="@+id/textInputEditContactName" />
@@ -87,16 +87,12 @@
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/textInputLayoutContactName"
                 android:layout_width="match_parent"
-                android:layout_height="59dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.413"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:layout_height="wrap_content">
 
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/textInputEditContactName"
                     android:layout_width="match_parent"
-                    android:inputType="textPersonName"
+                    android:inputType="textCapWords"
                     android:nextFocusForward="@+id/textInputEditContactPhone"
                     android:layout_height="wrap_content"
                     android:hint="Name of Contact Person" />
@@ -105,11 +101,7 @@
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/textInputLayoutContactPhone"
                 android:layout_width="match_parent"
-                android:layout_height="59dp"
-                app:layout_constraintEnd_toEndOf="@+id/textInputLayoutCategory"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/textInputLayoutCategory"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayoutCategory">
+                android:layout_height="wrap_content">
 
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/textInputEditContactPhone"
@@ -124,11 +116,7 @@
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/textInputLayoutContactEmail"
                 android:layout_width="match_parent"
-                android:layout_height="59dp"
-                app:layout_constraintEnd_toEndOf="@+id/textInputLayoutAddress"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/textInputLayoutAddress"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayoutAddress">
+                android:layout_height="59dp">
 
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/textInputEditContactEmail"

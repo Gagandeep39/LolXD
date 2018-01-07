@@ -13,7 +13,6 @@ import com.example.test.nuvoco3.R;
 import java.util.List;
 
 import static com.example.test.nuvoco3.helpers.CalendarHelper.convertJsonDateToSmall;
-import static com.example.test.nuvoco3.helpers.CalendarHelper.convertJsonTimToStandardDateTime;
 
 /**
  * Created by gagandeep on 24/12/17.
@@ -47,6 +46,21 @@ public class CustomerContactAdapter extends RecyclerView.Adapter<CustomerContact
         holder.mTextViewEmail.append(mCurrentContact.getCustomerContactEmail());
         holder.mTextViewDOB.append(convertJsonDateToSmall(mCurrentContact.getCustomerContactDOB()));
         holder.mTextViewDOA.append(convertJsonDateToSmall(mCurrentContact.getCustomerContactDOA()));
+    }
+
+    private void expandOrReduce(CustomerAdapter.ViewHolder holder) {
+
+        if (holder.mLinearLayout.getVisibility() == View.GONE && holder.mImageExpand.getVisibility() == View.VISIBLE && holder.mImageExpandLess.getVisibility() == View.GONE) {
+
+            holder.mLinearLayout.setVisibility(View.VISIBLE);
+            holder.mImageExpand.setVisibility(View.GONE);
+            holder.mImageExpandLess.setVisibility(View.VISIBLE);
+        } else if (holder.mLinearLayout.getVisibility() == View.VISIBLE && holder.mImageExpand.getVisibility() == View.GONE && holder.mImageExpandLess.getVisibility() == View.VISIBLE) {
+
+            holder.mLinearLayout.setVisibility(View.GONE);
+            holder.mImageExpand.setVisibility(View.VISIBLE);
+            holder.mImageExpandLess.setVisibility(View.GONE);
+        }
     }
 
     //  Provides count of Items in The View

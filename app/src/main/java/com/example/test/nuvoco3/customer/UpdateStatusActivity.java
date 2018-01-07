@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,7 +62,7 @@ public class UpdateStatusActivity extends AppCompatActivity {
     int size = 50;
     String mRecordId, mType, mDate, mRepresentative, mCustomerId, mCustomerName, mStatus, mDetails, mRemark, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy, mClosedOn;
     CoordinatorLayout mCoordinatorLayout;
-    TextInputEditText mEditTextComplaintId, mEditTextCustomerId, mEditTextCustomerName, mEditTextDetails, mEditTextRemark;
+    TextInputEditText mEditTextStatus, mEditTextComplaintId, mEditTextCustomerId, mEditTextCustomerName, mEditTextDetails, mEditTextRemark;
 
     //Master Helper
     MasterHelper mComplaintTypeHelper;
@@ -72,6 +73,8 @@ public class UpdateStatusActivity extends AppCompatActivity {
     NestedScrollView mScrollView;
     SearchView mSearchView;
     TextView mTextView;
+    LinearLayout mStatusLayout;
+    int count = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,11 +100,6 @@ public class UpdateStatusActivity extends AppCompatActivity {
                     readData();
                     viewComplaintsNormal();
                     populateSpinner();
-                    mSearchView.requestFocus();
-                    mTextView.setVisibility(View.GONE);
-                    mScrollView.setVisibility(View.VISIBLE);
-                    fab.setVisibility(View.VISIBLE);
-                    mSearchView.setVisibility(View.GONE);
                     return true;
                 }
 
@@ -123,13 +121,17 @@ public class UpdateStatusActivity extends AppCompatActivity {
 
                 if (TextUtils.isEmpty(mRemark))
                     mEditTextRemark.setError("Enter Remark");
-                else {
+                else if (TextUtils.equals(mStatus, getString(R.string.default_name))) {
+                    Toast.makeText(UpdateStatusActivity.this, "Select Visit Status", Toast.LENGTH_SHORT).show();
+                } else if (count == 1) {
+                    Toast.makeText(UpdateStatusActivity.this, "Complaint is Already Closed", Toast.LENGTH_SHORT).show();
+                } else {
 
                     if (mStatus.equals("Closed")) {
                         mClosedOn = getDate();
 
                     } else if (mStatus.equals(getString(R.string.default_name))) {
-                        Toast.makeText(UpdateStatusActivity.this, "Select Status", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(UpdateStatusActivity.this, "Update Complaint Status", Toast.LENGTH_SHORT).show();
                     } else {
                         mClosedOn = "2019-01-01";
                     }
@@ -164,6 +166,17 @@ public class UpdateStatusActivity extends AppCompatActivity {
         mEditTextComplaintId.setText(mComplaintId);
         mEditTextCustomerId.setText(mCustomerId);
         mEditTextCustomerName.setText(mCustomerName);
+        mEditTextStatus.setText(mStatus);
+        if (TextUtils.equals(mStatus, "Closed")) {
+            mStatusLayout.setVisibility(View.GONE);
+            count = 1;
+        } else {
+            mStatus = getString(R.string.default_name);
+            mStatusLayout.setVisibility(View.VISIBLE);
+        }
+
+
+
         if (!TextUtils.isEmpty(mRemark))
             mEditTextRemark.setText(mRemark);
         mEditTextDetails.setText(mDetails);
@@ -208,6 +221,8 @@ public class UpdateStatusActivity extends AppCompatActivity {
         mScrollView = findViewById(R.id.nestedScrollView);
         mSearchView = findViewById(R.id.searchView);
         mTextView = findViewById(R.id.textView);
+        mEditTextStatus = findViewById(R.id.editTextStatus);
+        mStatusLayout = findViewById(R.id.statusLayout);
 
     }
 
@@ -237,12 +252,20 @@ public class UpdateStatusActivity extends AppCompatActivity {
                             mRepresentative = object.getString("Representative");
                             mDetails = object.getString("complaint_details") + "";
                             mRemark = object.getString("resolution_remark");
-//                            mCreatedOn = object.getString("createdOn") + "";
-//                            mCreatedBy = object.getString("creayedBy") + "";
-//                            mUpdatedBy = object.getString("updatedBy") + "";
-//                            mUpdatedOn = object.getString("updatedOn") + "";
-//                            mClosedOn = object.getString("complaint_closedOn") + "";
                             mStatus = object.getString("complaint_status") + "";
+
+
+                            mSearchView.requestFocus();
+                            mTextView.setVisibility(View.GONE);
+                            mScrollView.setVisibility(View.VISIBLE);
+                            fab.setVisibility(View.VISIBLE);
+                            mSearchView.setVisibility(View.GONE);
+                        } else {
+                            mTextView.setVisibility(View.VISIBLE);
+                            mTextView.setText("Not Found");
+                            mScrollView.setVisibility(View.GONE);
+                            fab.setVisibility(View.GONE);
+                            mSearchView.setVisibility(View.VISIBLE);
                         }
 
                     }
@@ -402,14 +425,6 @@ public class UpdateStatusActivity extends AppCompatActivity {
         postParam.put("9", mUpdatedOn);    //updated on
         postParam.put("10", mUpdatedBy);
         postParam.put("11", mStatus);
-//        postParam.put("1","1001");
-////        postParam.put("2", "2017-01-01 00:00:10");  //date
-//        postParam.put("4", "Rajdeep");
-//        postParam.put("5", "Logistics");
-//        postParam.put("6", "lol xD");
-//        postParam.put("9", getDateTime());    //updated on
-//        postParam.put("10", new UserInfoHelper(this).getUserId());
-//        postParam.put("11", "Resolved");
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, BASE_URL + UPDATE_COMPLAINT, new JSONObject(postParam),
                 new Response.Listener<JSONObject>() {
