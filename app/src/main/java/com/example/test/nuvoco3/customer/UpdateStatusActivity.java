@@ -63,7 +63,7 @@ public class UpdateStatusActivity extends AppCompatActivity {
     String mRecordId, mType, mDate, mRepresentative, mCustomerId, mCustomerName, mStatus, mDetails, mRemark, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy, mClosedOn;
     CoordinatorLayout mCoordinatorLayout;
     TextInputEditText mEditTextStatus, mEditTextComplaintId, mEditTextCustomerId, mEditTextCustomerName, mEditTextDetails, mEditTextRemark;
-
+boolean complaintFound = false;
     //Master Helper
     MasterHelper mComplaintTypeHelper;
     ArrayList<String> mComplaintList;
@@ -82,7 +82,8 @@ public class UpdateStatusActivity extends AppCompatActivity {
         setContentView(R.layout.activity_update_status);
         initializeViews();
         initializeVariables();
-        if (mComplaintId != null) {
+        Log.i(TAG, "onCreate: " + mComplaintId);
+        if (getIntent().getStringExtra("ComplaintId") != null) {
             readData();
             viewComplaintsNormal();
             populateSpinner();
@@ -91,7 +92,7 @@ public class UpdateStatusActivity extends AppCompatActivity {
             fab.setVisibility(View.VISIBLE);
             mSearchView.setVisibility(View.GONE);
 
-        } else {
+        } else if (getIntent().getStringExtra("ComplaintId") == null) {
             mSearchView.setIconified(false);
             mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
@@ -125,6 +126,7 @@ public class UpdateStatusActivity extends AppCompatActivity {
                     Toast.makeText(UpdateStatusActivity.this, "Select Visit Status", Toast.LENGTH_SHORT).show();
                 } else if (count == 1) {
                     Toast.makeText(UpdateStatusActivity.this, "Complaint is Already Closed", Toast.LENGTH_SHORT).show();
+                        finish();
                 } else {
 
                     if (mStatus.equals("Closed")) {
@@ -211,6 +213,7 @@ public class UpdateStatusActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         fab = findViewById(R.id.fab);
         mComplaintId = getIntent().getStringExtra("ComplaintId");
+        Log.i(TAG, "initializeViews: " + mComplaintId);
         mCoordinatorLayout = findViewById(R.id.coordinator);
         mEditTextComplaintId = findViewById(R.id.editTextComplaintId);
         mEditTextCustomerId = findViewById(R.id.editTextCustomerId);
@@ -244,8 +247,8 @@ public class UpdateStatusActivity extends AppCompatActivity {
                     for (int i = 0; i < size; i++) {
 
                         JSONObject object = jsonArray.getJSONObject(i);
-                        if (object.getString("Complaint_id").toLowerCase().equals(mComplaintId)) {
-
+                        if (object.getString("Complaint_id").equals(mComplaintId)) {
+                            Log.i(TAG, "onResponse: " + "");
 
                             mCustomerId = object.getString("Customer_id") + "";
                             mCustomerName = object.getString("Customer_name") + "";
@@ -255,12 +258,14 @@ public class UpdateStatusActivity extends AppCompatActivity {
                             mStatus = object.getString("complaint_status") + "";
 
 
+
                             mSearchView.requestFocus();
                             mTextView.setVisibility(View.GONE);
                             mScrollView.setVisibility(View.VISIBLE);
                             fab.setVisibility(View.VISIBLE);
                             mSearchView.setVisibility(View.GONE);
-                        } else {
+                            complaintFound = true;
+                        } else if (!complaintFound){
                             mTextView.setVisibility(View.VISIBLE);
                             mTextView.setText("Not Found");
                             mScrollView.setVisibility(View.GONE);

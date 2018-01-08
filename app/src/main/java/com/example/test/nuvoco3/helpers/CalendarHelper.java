@@ -140,22 +140,25 @@ public class CalendarHelper {
      * This function just removes that extra portion of GMT+00 from the date
      */
 
-    public static String trimDate(String start_dt) {
-        String pattern = "E, dd MMM yyyy HH:mm:ss 'GMT'";
+    public static boolean compareSmallDate(String stringDate1, String stringDate2) {
+        String pattern = "yyyy-MM-dd";
         DateFormat formatter = new SimpleDateFormat(pattern);
-        Date date = null;
+        Date date1 = null;
+        Date date2 = null;
         try {
-            date = formatter.parse(start_dt);
+            date1 = formatter.parse(stringDate1);
+            date2 = formatter.parse(stringDate2);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
-        SimpleDateFormat newFormat = new SimpleDateFormat("E, dd MMM yyyy");
-        String finalString = newFormat.format(date);
-//        Log.i("lol", "convertSmallDateToJson: " + finalString);
-        return finalString;
+            if (date1.after(date2))
+                return true;
+        else return false;
 
 
     }
+
+
+
 
 }

@@ -78,6 +78,7 @@ public class ViewComplaintActivity extends AppCompatActivity {
                 }
                 try {
                     JSONArray jsonArray = response.getJSONArray("message");
+                    Log.i("s" , "onResponse: " + jsonArray.length());
                     if (mSearchText.equals("0")) {
                         if (jsonArray.length() > 25)
                             size = 25;

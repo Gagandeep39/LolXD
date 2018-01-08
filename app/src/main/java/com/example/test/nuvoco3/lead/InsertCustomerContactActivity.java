@@ -44,6 +44,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.example.test.nuvoco3.helpers.CalendarHelper.compareSmallDate;
+import static com.example.test.nuvoco3.helpers.CalendarHelper.getDate;
 import static com.example.test.nuvoco3.helpers.CalendarHelper.getDateTime;
 import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
 import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_CUSTOMER;
@@ -200,13 +202,17 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
                     @Override
                     public void onDateSet(DatePicker view, int year,
                                           int monthOfYear, int dayOfMonth) {
+                        if (compareSmallDate(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth, getDate())){
 
-                        if (buttonClicked.getId() == R.id.textViewSelectDOB) {
-                            mContactDOB = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
-                            textViewDOB.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-                        } else if (buttonClicked.getId() == R.id.textViewSelectDOA) {
-                            mContactDOA = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
-                            textViewDOA.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                            Toast.makeText(InsertCustomerContactActivity.this, "Date cannot Exceed Current Date", Toast.LENGTH_SHORT).show();
+                        }else {
+                            if (buttonClicked.getId() == R.id.textViewSelectDOB || buttonClicked.getId() == R.id.imageViewCalendar1) {
+                                mContactDOB = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
+                                textViewDOB.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                            } else if (buttonClicked.getId() == R.id.textViewSelectDOA || buttonClicked.getId() == R.id.imageViewCalendar2) {
+                                mContactDOA = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
+                                textViewDOA.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                            }
                         }
 
                     }

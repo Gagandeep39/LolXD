@@ -33,6 +33,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.helpers.MasterHelper;
 import com.example.test.nuvoco3.helpers.UserInfoHelper;
+import com.example.test.nuvoco3.lead.InsertCustomerContactActivity;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import org.json.JSONArray;
@@ -47,6 +48,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.example.test.nuvoco3.helpers.CalendarHelper.compareSmallDate;
+import static com.example.test.nuvoco3.helpers.CalendarHelper.getDate;
 import static com.example.test.nuvoco3.helpers.CalendarHelper.getDateTime;
 import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
 import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_CUSTOMER;
@@ -377,16 +380,19 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
                     @Override
                     public void onDateSet(DatePicker view, int year,
                                           int monthOfYear, int dayOfMonth) {
+                        if (compareSmallDate(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth, getDate())){
 
+                            Toast.makeText(InsertGeneralMarketActivity.this, "Date cannot Exceed Current Date", Toast.LENGTH_SHORT).show();
+                        }else {
 
-                        mTextViewDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-                        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+                            mTextViewDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                            DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 //        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                        Date date = new Date();
+                            Date date = new Date();
 
-                        mDate = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth + " " + dateFormat.format(date);
-                        Log.i(TAG, "onDateSet: " + mDate);
-
+                            mDate = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth + " " + dateFormat.format(date);
+                            Log.i(TAG, "onDateSet: " + mDate);
+                        }
                     }
                 }, mYear, mMonth, mDay);
         datePickerDialog.show();
