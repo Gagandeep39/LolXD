@@ -136,7 +136,8 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
         }
         if (TextUtils.isEmpty(mContactPhone)) {
             editTextContactPhone.setError("Enter Contact's Phone Number");
-        }
+        } else if(mContactPhone.length()<10)
+           editTextContactPhone.setError("Phone number must of 10 digit only");
         if (TextUtils.isEmpty(mContactEmail)) {
             editTextContactEmail.setError("Enter Contact's Email ID");
         } else {
@@ -153,7 +154,7 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
         if (TextUtils.equals(mCustomerName, getString(R.string.default_name)))
             Toast.makeText(this, "Select Customer", Toast.LENGTH_SHORT).show();
 
-        if (!TextUtils.isEmpty(mContactName) && !TextUtils.isEmpty(mContactPhone) && !TextUtils.isEmpty(mContactEmail) && !TextUtils.isEmpty(mContactDOB) && !TextUtils.isEmpty(mContactDOA) && !TextUtils.isEmpty(mCustomerId) && !TextUtils.isEmpty(mCustomerName) && isEmailValid(mContactEmail))
+        if (mContactPhone.length()>10&&!TextUtils.isEmpty(mContactName) && !TextUtils.isEmpty(mContactPhone) && !TextUtils.isEmpty(mContactEmail) && !TextUtils.isEmpty(mContactDOB) && !TextUtils.isEmpty(mContactDOA) && !TextUtils.isEmpty(mCustomerId) && !TextUtils.isEmpty(mCustomerName) && isEmailValid(mContactEmail))
             storeData();
     }
 

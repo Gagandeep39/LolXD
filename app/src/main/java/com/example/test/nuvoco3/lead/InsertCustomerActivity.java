@@ -41,6 +41,9 @@ import java.util.Map;
 import static com.example.test.nuvoco3.helpers.CalendarHelper.getDateTime;
 import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
 import static com.example.test.nuvoco3.helpers.Contract.INSERT_CUSTOMER;
+import static com.example.test.nuvoco3.helpers.Contract.MASTER_AREA;
+import static com.example.test.nuvoco3.helpers.Contract.MASTER_DISTRICT;
+import static com.example.test.nuvoco3.helpers.Contract.MASTER_STATE;
 import static com.example.test.nuvoco3.helpers.Contract.PROGRESS_DIALOG_DURATION;
 import static com.example.test.nuvoco3.helpers.UserInfoHelper.isEmailValid;
 
@@ -80,11 +83,11 @@ public class InsertCustomerActivity extends AppCompatActivity {
         queue = Volley.newRequestQueue(this);
 
         //initialize Helpers
-        mAreaHelper = new MasterHelper(this, "Area");
-        mStateHelper = new MasterHelper(this, "State");
+        mAreaHelper = new MasterHelper(this, MASTER_AREA);
+        mStateHelper = new MasterHelper(this, MASTER_STATE);
         mTypeHelper = new MasterHelper(this, "CustomerType");
         mCategoryHelper = new MasterHelper(this, "Category");
-        mDistrictHelper = new MasterHelper(this, "District");
+        mDistrictHelper = new MasterHelper(this, MASTER_DISTRICT);
 
         //initialize Arrays
 
@@ -212,7 +215,8 @@ public class InsertCustomerActivity extends AppCompatActivity {
         }
         if (TextUtils.isEmpty(mPhone)) {
             editTextPhone.setError("Enter Phone Number");
-        }
+        }else if(mPhone.length()<10)
+            editTextPhone.setError("Phone number must of 10 digit only");
         if (TextUtils.isEmpty(mEmail)) {
             editTextEmail.setError("Enter Email Address");
         } else {
@@ -247,7 +251,7 @@ public class InsertCustomerActivity extends AppCompatActivity {
             Log.i(TAG, "validateData: " + mCategory);
         }
 
-        if (!TextUtils.isEmpty(mName) && !TextUtils.isEmpty(mAddress) && !TextUtils.isEmpty(mPhone) && !TextUtils.isEmpty(mEmail) && !TextUtils.equals(mArea, getString(R.string.default_name)) && !TextUtils.equals(mState, "default") && !TextUtils.equals(mDistrict, getString(R.string.default_name)) && !TextUtils.equals(mType, getString(R.string.default_name)) && !TextUtils.equals(mCategory, getString(R.string.default_name)) && isEmailValid(mEmail) && !TextUtils.equals(mCategory, getString(R.string.default_name))) {
+        if (!TextUtils.isEmpty(mName) && !TextUtils.isEmpty(mAddress) && !TextUtils.isEmpty(mPhone) && !TextUtils.isEmpty(mEmail) && !TextUtils.equals(mArea, getString(R.string.default_name)) && !TextUtils.equals(mState, "default") && !TextUtils.equals(mDistrict, getString(R.string.default_name)) && !TextUtils.equals(mType, getString(R.string.default_name)) && !TextUtils.equals(mCategory, getString(R.string.default_name)) && isEmailValid(mEmail) && !TextUtils.equals(mCategory, getString(R.string.default_name))&&mPhone.length()>=10) {
 
             storeData();
         }

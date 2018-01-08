@@ -106,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 sharedPreferences.edit().clear().apply();
 
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                finish();
                 break;
             case R.id.action_product:
                 startActivity(new Intent(getApplicationContext(), RecordManagementActivity.class));

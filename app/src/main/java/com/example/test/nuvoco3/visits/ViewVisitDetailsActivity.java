@@ -115,7 +115,7 @@ RequestQueue queue;
                         Log.i(TAG, response.toString());
                         try {
                             if (response.getString("status").equals("updated")) {
-                                Toast.makeText(ViewVisitDetailsActivity.this, "Successfully Inserted New Contact", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ViewVisitDetailsActivity.this, "Successfully Updated Visit Status", Toast.LENGTH_SHORT).show();
                                 finish();
                             } else if (response.getString("status").equals(getString(R.string.something_went_wrong))) {
                                 Toast.makeText(ViewVisitDetailsActivity.this, "" + getString(R.string.connection_error), Toast.LENGTH_SHORT).show();

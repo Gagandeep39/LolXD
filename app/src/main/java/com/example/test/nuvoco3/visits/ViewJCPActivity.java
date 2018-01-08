@@ -13,7 +13,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -43,10 +42,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.example.test.nuvoco3.helpers.CalendarHelper.compareSmallDate;
 import static com.example.test.nuvoco3.helpers.CalendarHelper.convertSmallDateToJson;
 import static com.example.test.nuvoco3.helpers.CalendarHelper.getDate;
 import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
 import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_JCP_VISIT;
+import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_JCP_VISIT_DETAILS;
 import static com.example.test.nuvoco3.helpers.Contract.PROGRESS_DIALOG_DURATION;
 
 public class ViewJCPActivity extends AppCompatActivity {
@@ -66,6 +67,12 @@ public class ViewJCPActivity extends AppCompatActivity {
     CoordinatorLayout mCoordinatorLayout;
     int size = 25;
     JCPAdapter mJcpAdapter;
+
+
+    //New Modification
+    ArrayList<String> mDetailsArray;
+    String mDetailsJcpId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +99,7 @@ public class ViewJCPActivity extends AppCompatActivity {
 
     private void initializeVariables() {
 
+        mDetailsArray = new ArrayList<>();
         queue = Volley.newRequestQueue(this);
         progressDialog = new ProgressDialog(this);
         mJCPArrayList = new ArrayList<>();
@@ -140,8 +148,12 @@ public class ViewJCPActivity extends AppCompatActivity {
 
 
                         JSONObject object = jsonArray.getJSONObject(i);
-
-
+//                            for(int j=0; j<mDetailsArray.size(); j++){
+////                                if (mDetailsArray.get(j)==object.getString("record_id")){
+////                                    count
+////                                }
+//
+//                            }
                         if (object.getString("createdBy").equals(new UserInfoHelper(ViewJCPActivity.this).getUserId())) {
                             fetchData(object);
                         }
@@ -220,17 +232,21 @@ public class ViewJCPActivity extends AppCompatActivity {
                     @Override
                     public void onDateSet(DatePicker view, int year,
                                           int monthOfYear, int dayOfMonth) {
+                        if (compareSmallDate(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth, getDate())) {
+
+                            Toast.makeText(ViewJCPActivity.this, "Date cannot Exceed Current Date", Toast.LENGTH_SHORT).show();
+                        } else {
 
 
-                        mEditTextDate.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
-                        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+                            mEditTextDate.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
+                            DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 //        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                        Date date = new Date();
+                            Date date = new Date();
 
-                        mSearchDate = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth + " " + dateFormat.format(date);
-                        readData();
-                        Log.i(TAG, "onDateSet: " + mSearchDate);
-
+                            mSearchDate = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth + " " + dateFormat.format(date);
+                            readData();
+                            Log.i(TAG, "onDateSet: " + mSearchDate);
+                        }
                     }
                 }, mYear, mMonth, mDay);
         datePickerDialog.show();
@@ -272,6 +288,66 @@ public class ViewJCPActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+
+
+    void readDataFromDetailsServer(){
+       startProgressDialog();
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
+                BASE_URL + DISPLAY_JCP_VISIT_DETAILS, null, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                if (progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
+
+                try {
+                    Log.i(TAG, "onResponse: " + response);
+
+                    JSONArray jsonArray = response.getJSONArray("message");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject object = jsonArray.getJSONObject(i);
+
+                        try {
+
+                            mDetailsJcpId = object.getString("JCP_id");
+                            mDetailsArray.add(mDetailsJcpId);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } catch (JSONException e1) {
+                    e1.printStackTrace();
+                }
+            }
+
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(ViewJCPActivity.this, "" + error, Toast.LENGTH_SHORT).show();
+                VolleyLog.d("lol", "Error with Internet : " + error.getMessage());
+                // hide the progress dialog
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                // add headers <key,value>
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("x-access-token", new UserInfoHelper(ViewJCPActivity.this).getUserToken());
+                return headers;
+            }
+
+
+        };
+
+        // Adding request to request queue
+        queue.add(jsonObjReq);
     }
 
 }

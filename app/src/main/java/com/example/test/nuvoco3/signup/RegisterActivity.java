@@ -34,6 +34,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.example.test.nuvoco3.helpers.Contract.MASTER_AREA;
+import static com.example.test.nuvoco3.helpers.Contract.MASTER_DEPARTMENT;
+import static com.example.test.nuvoco3.helpers.Contract.MASTER_DISTRICT;
 import static com.example.test.nuvoco3.helpers.Contract.PROGRESS_DIALOG_DURATION;
 import static com.example.test.nuvoco3.signup.LoginActivity.DATABASE_URL;
 
@@ -49,8 +52,8 @@ public class RegisterActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
 
     //MasterClass
-    MasterHelper mCityHelper, mDepartmentHelper, mAreaHelper;
-    ArrayList<String> mCityArray, mDepartmentArray, mAreaArray;
+    MasterHelper mDistrictHelper, mDepartmentHelper, mAreaHelper;
+    ArrayList<String> mDistrictArray, mDepartmentArray, mAreaArray;
 
 
     @Override
@@ -73,12 +76,12 @@ public class RegisterActivity extends AppCompatActivity {
     //  Populates Spinners
     private void initializeSpinners() {
         ArrayAdapter mDepartmentAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mDepartmentArray);
-        ArrayAdapter mCityAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mCityArray);
+        ArrayAdapter mDistrictAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mDistrictArray);
         ArrayAdapter mAreaAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mAreaArray);
 
 
         mSearchableSpinnerDepartment.setAdapter(mDepartmentAdapter);
-        mSearchableSpinnerCity.setAdapter(mCityAdapter);
+        mSearchableSpinnerCity.setAdapter(mDistrictAdapter);
         mSearchableSpinnerArea.setAdapter(mAreaAdapter);
 
         mSearchableSpinnerDepartment.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -108,7 +111,7 @@ public class RegisterActivity extends AppCompatActivity {
         mSearchableSpinnerCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mCity = mCityArray.get(position);
+                mCity = mDistrictArray.get(position);
             }
 
             @Override
@@ -139,6 +142,8 @@ public class RegisterActivity extends AppCompatActivity {
             mTextInputEditTextName.setError("Enter Name");
         if (TextUtils.isEmpty(mPhone))
             mTextInputEditTextPhone.setError("Enter Phone number");
+        else if(mPhone.length()<10)
+            mTextInputEditTextPhone.setError("Phone number must of 10 digit only");
         if (TextUtils.isEmpty(mEmail)) {
 
             mTextInputEditTextEmail.setError("Enter Email");
@@ -168,7 +173,7 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(this, "Select Department", Toast.LENGTH_SHORT).show();
 
 
-        if (!TextUtils.isEmpty(mName) && !TextUtils.isEmpty(mPhone) && isEmailValid(mEmail) && !TextUtils.isEmpty(mEmail) && !TextUtils.isEmpty(mAddress) && !TextUtils.isEmpty(mPassword1) && TextUtils.equals(mPassword1, mPassword2) && !TextUtils.equals(mArea, getString(R.string.default_name)) && !TextUtils.equals(mCity, getString(R.string.default_name)) && !TextUtils.equals(mDepartment, getString(R.string.default_name)))
+        if (!TextUtils.isEmpty(mName) && !TextUtils.isEmpty(mPhone) && isEmailValid(mEmail) && !TextUtils.isEmpty(mEmail) && !TextUtils.isEmpty(mAddress) && !TextUtils.isEmpty(mPassword1) && TextUtils.equals(mPassword1, mPassword2) && !TextUtils.equals(mArea, getString(R.string.default_name)) && !TextUtils.equals(mCity, getString(R.string.default_name)) && !TextUtils.equals(mDepartment, getString(R.string.default_name))&&mPhone.length()>10)
             makeJsonObjReq();
     }
 
@@ -240,6 +245,7 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             public void onErrorResponse(VolleyError error) {
+                Toast.makeText(RegisterActivity.this, "" + error, Toast.LENGTH_SHORT).show();
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
             }
         }) {
@@ -292,14 +298,14 @@ public class RegisterActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(this);
 
         //Initializing helper class for different spinners
-        mCityHelper = new MasterHelper(this, "City");
-        mDepartmentHelper = new MasterHelper(this, "Department");
-        mAreaHelper = new MasterHelper(this, "Area");
+        mDistrictHelper = new MasterHelper(this, MASTER_DISTRICT);
+        mDepartmentHelper = new MasterHelper(this, MASTER_DEPARTMENT);
+        mAreaHelper = new MasterHelper(this, MASTER_AREA);
 
         //Initializing their Arrays
         mAreaArray = mAreaHelper.getRecordName();
         mDepartmentArray = mDepartmentHelper.getRecordName();
-        mCityArray = mCityHelper.getRecordName();
+        mDistrictArray = mDistrictHelper.getRecordName();
 
     }
 

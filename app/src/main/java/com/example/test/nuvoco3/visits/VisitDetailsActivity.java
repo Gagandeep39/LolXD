@@ -70,6 +70,12 @@ public class VisitDetailsActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     CoordinatorLayout mCoordinatorLayout;
 
+
+
+    //New Modification
+    ArrayList<String> mDetailsArray;
+    String mDetailsJcpId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,7 +141,6 @@ public class VisitDetailsActivity extends AppCompatActivity {
 
     private void storeDataToServer() {
         showProgressDialogue();
-
         Map<String, String> postParam = new HashMap<>();
 
         postParam.put("2", mJcpId);
@@ -232,6 +237,7 @@ public class VisitDetailsActivity extends AppCompatActivity {
     }
 
     private void initializeVariables() {
+
         mStatusHelper = new MasterHelper(this, MASTER_VISIT_STATUS);
         mProductHelper = new MasterHelper(this, MASTER_PRODUCT);
         mStatusArrayList = mStatusHelper.getRecordName();
@@ -342,4 +348,8 @@ public class VisitDetailsActivity extends AppCompatActivity {
     }
 
 
-}
+    }
+
+
+
+
