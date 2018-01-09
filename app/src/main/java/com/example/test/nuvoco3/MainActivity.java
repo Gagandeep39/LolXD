@@ -26,6 +26,7 @@ import com.example.test.nuvoco3.fragments.FragmentCustomer;
 import com.example.test.nuvoco3.fragments.FragmentLead;
 import com.example.test.nuvoco3.fragments.FragmentMarket;
 import com.example.test.nuvoco3.fragments.FragmentVisit;
+import com.example.test.nuvoco3.helpers.UserInfoHelper;
 import com.example.test.nuvoco3.signup.LoginActivity;
 import com.example.test.nuvoco3.signup.ObjectSerializer;
 import com.example.test.nuvoco3.signup.UserAccountActivity;
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FragmentMarket.OnFragmentInteractionListener,
         FragmentCustomer.OnFragmentInteractionListener,
         FragmentVisit.OnFragmentInteractionListener,
-        FragmentLead.OnFragmentInteractionListener {
+        FragmentLead.OnFragmentInteractionListener{
     public static final String TAG = "MAIN ACTIVITY";
     String mName, mEmail;
     TextView mTextViewName, mTextViewEmail;
@@ -192,6 +193,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     //Starts a Fragment Activity on Selecting One of The Fragments
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
+        String data = new UserInfoHelper(MainActivity.this).getUserDepartment();
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -218,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //Keeps Count of total Number of Fragments available on Swipe
         @Override
         public int getCount() {
-            return 4;
+            return 5;
         }
     }
 

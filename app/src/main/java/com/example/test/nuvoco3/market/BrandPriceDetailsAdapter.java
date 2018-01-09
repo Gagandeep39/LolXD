@@ -32,12 +32,12 @@ public class BrandPriceDetailsAdapter extends RecyclerView.Adapter<BrandPriceDet
     public void onBindViewHolder(BrandPriceDetailsAdapter.ViewHolder holder, int position) {
         holder.setIsRecyclable(false);
         BrandPrice mCurrentPrice = mPriceList.get(position);
-        holder.mTextViewBrand.append(mCurrentPrice.getBrand());
-        holder.mTextViewProduct.append(mCurrentPrice.getProduct());
-        holder.mTextViewRemark.append(mCurrentPrice.getRemarks());
-        holder.mTextViewWSP.append(mCurrentPrice.getWSP());
-        holder.mTextViewRSP.append(mCurrentPrice.getRSP());
-        holder.mTextViewStock.append(mCurrentPrice.getStock());
+        holder.mTextViewBrand.setText(mCurrentPrice.getBrand());
+        holder.mTextViewProduct.setText(mCurrentPrice.getProduct());
+        holder.mTextViewRemark.setText(mCurrentPrice.getRemarks());
+        holder.mTextViewWSP.setText(mCurrentPrice.getWSP());
+        holder.mTextViewRSP.setText(mCurrentPrice.getRSP());
+        holder.mTextViewStock.setText(mCurrentPrice.getStock());
 
     }
 

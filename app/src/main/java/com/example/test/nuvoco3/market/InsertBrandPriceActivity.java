@@ -3,26 +3,35 @@ package com.example.test.nuvoco3.market;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +44,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.test.nuvoco3.R;
 import com.example.test.nuvoco3.helpers.MasterHelper;
+import com.example.test.nuvoco3.helpers.ProductHelper;
 import com.example.test.nuvoco3.helpers.UserInfoHelper;
 import com.example.test.nuvoco3.lead.InsertCustomerContactActivity;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
@@ -52,6 +62,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.example.test.nuvoco3.helpers.CalendarHelper.compareSmallDate;
+import static com.example.test.nuvoco3.helpers.CalendarHelper.convertClickedDate;
 import static com.example.test.nuvoco3.helpers.CalendarHelper.getDate;
 import static com.example.test.nuvoco3.helpers.CalendarHelper.getDateTime;
 import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
@@ -69,8 +80,12 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
     ArrayList<String> mBrandArrayList, mProductArrayList, mCustomerArrayList;
     CoordinatorLayout mCoordinaterLayout;
     ProgressDialog progressDialog;
-    MasterHelper mBrandHelper, mProductHelper;
+    MasterHelper mBrandHelper;
     boolean isChecked = false;
+    TextView mTextViewMessage;
+
+    ArrayAdapter<String> mBrandAdapter;
+    LinearLayout mDynamicRootLayout;
 
     //Date picker
     TextView mTextViewDate;
@@ -80,6 +95,12 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
     ArrayList<BrandPrice> mBrandPricePriceList;
     int mDay, mYear, mMonth;
 
+    //Dynamic Layout
+    ArrayList<DynamicPrice> mDynamicList;
+
+    //Product Helper
+    ProductHelper mProductHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,7 +109,6 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
         initializeVariables();
         initializeBottomViews();
         populateSpinners();
-
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,11 +135,14 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
         mCustomerArrayList = new ArrayList<>();
         mBrandPricePriceList = new ArrayList<>();
 
+        mDynamicList = new ArrayList<>();
+
         mBrandHelper = new MasterHelper(this, "Brand");
-        mProductHelper = new MasterHelper(this, "Product");
 
         mBrandArrayList = mBrandHelper.getRecordName();
-        mProductArrayList = mProductHelper.getRecordName();
+
+        mTextViewDate.setText(getDate());
+        mDate = getDate();
 
         populateCustomers();
 
@@ -199,9 +222,8 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
                                 Toast.makeText(InsertBrandPriceActivity.this, "Successfully Inserted Data", Toast.LENGTH_SHORT).show();
                                 mBrandPricePriceList.add(new BrandPrice("1", mRepresentative, mCounter, mDate, mBrand, mProduct, mWSP, mRSP, mStock, mRemarks, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy));
                                 mDetailsAdapter.notifyDataSetChanged();
-                                mEditTextWSP.setText("");
-                                mEditTextRSP.setText("");
-                                mEditTextRemarks.setText("");
+
+
 
                             } else {
                                 Toast.makeText(InsertBrandPriceActivity.this, "" + response.getString("status"), Toast.LENGTH_SHORT).show();
@@ -259,22 +281,25 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
     }
 
 
+   int count =0;
     // Populates Spinner with Data and allows Selection of Items
     private void populateSpinners() {
 
         ArrayAdapter<String> mProductAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mProductArrayList);
-        ArrayAdapter<String> mBrandAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mBrandArrayList);
-        ArrayAdapter<String> mCustomerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mCustomerArrayList);
+        mBrandAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, mBrandArrayList);
+        final ArrayAdapter<String> mCustomerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mCustomerArrayList);
 
         progressDialog.dismiss();
         mSearchProduct.setAdapter(mProductAdapter);
         mSearchBrand.setAdapter(mBrandAdapter);
         mSearchCustomers.setAdapter(mCustomerAdapter);
-
         mSearchBrand.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mBrand = mBrandArrayList.get(position);
+                initializeProducts(mBrand);
+                mDynamicRootLayout.setVisibility(View.VISIBLE);
+                mTextViewMessage.setVisibility(View.GONE);
             }
 
             @Override
@@ -309,6 +334,10 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
 
     }
 
+    private void initializeProducts(String mBrand) {
+
+    }
+
     //Initialize Widgets on the Screen
     private void initializeViews() {
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -327,6 +356,9 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
         mSearchCustomers = findViewById(R.id.searchCounter);
         mTextViewDate = findViewById(R.id.textViewDate);
         mRecyclerView = findViewById(R.id.recyclerView);
+        mDynamicRootLayout = findViewById(R.id.dynamicLayout);
+        mTextViewMessage = findViewById(R.id.textViewMessage);
+
         mEditTextRepresentative.setText(new UserInfoHelper(this).getUserId());
         mEditTextRepresentative.setKeyListener(null);
         mUserName.setText(new UserInfoHelper(this).getUserName());
@@ -434,10 +466,6 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
                 // hide the progress dialog
             }
         }) {
-
-            /**
-             * Passing some request headers
-             */
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
@@ -446,8 +474,6 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
                 headers.put("x-access-token", new UserInfoHelper(InsertBrandPriceActivity.this).getUserToken());
                 return headers;
             }
-
-
         };
 
         // Adding request to request queue
@@ -460,7 +486,6 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
 
         return super.onCreateOptionsMenu(menu);
     }
-
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -486,6 +511,125 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
+    void addNewDataSet(){
+        LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        cardParams.setMargins(8,8,8,8);
+        CardView cardView = new CardView(this);
+        cardView.setCardElevation(8);
+        cardView.setRadius(8);
+        int pad = getResources().getDimensionPixelOffset(R.dimen.padding_standard);
+        cardView.setLayoutParams(cardParams);
+        LinearLayout rootLayout = new LinearLayout(this);
+        rootLayout.setOrientation(LinearLayout.VERTICAL);
+        rootLayout.setPadding(pad, pad, pad, pad);
+        cardView.addView(rootLayout);
+        TextView textView = new TextView(this);
+        textView.setPadding(pad,pad,pad,pad);
+        textView.setTextSize(12);
+        textView.setText(mBrand);
+        rootLayout.addView(textView);
+
+        for (int i=0; i<mProductArrayList.size(); i++){
+            LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    1
+            );
+            LinearLayout mChildLayout = new LinearLayout(this);
+            mChildLayout.setOrientation(LinearLayout.HORIZONTAL);
+            rootLayout.addView(mChildLayout);
+            TextView mDynamicProduct = new TextView(this);
+            mDynamicProduct.setText(mProductArrayList.get(i));
+
+            TextInputLayout mTextLayoutWSP = new TextInputLayout(this);
+            TextInputLayout mTextLayoutRSP = new TextInputLayout(this);
+            TextInputLayout mTextLayoutStock = new TextInputLayout(this);
+
+            EditText mDynamicEditTextRSP = new EditText(this);
+            EditText mDynamicEditTextWSP = new EditText(this);
+            EditText mDynamicEditTextStock = new EditText(this);
+
+            mTextLayoutRSP.addView(mDynamicEditTextRSP);
+            mTextLayoutWSP.addView(mDynamicEditTextWSP);
+            mTextLayoutStock.addView(mDynamicEditTextStock);
+
+            mDynamicEditTextRSP.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL);
+            mDynamicEditTextWSP.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL);
+            mDynamicEditTextStock.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL);
+
+            mTextLayoutRSP.setHint("RSP");
+            mTextLayoutWSP.setHint("WSP");
+            mTextLayoutStock.setHint("Stocks");
+
+            mDynamicProduct.setLayoutParams(param);
+            mTextLayoutRSP.setLayoutParams(param);
+            mTextLayoutWSP.setLayoutParams(param);
+            mTextLayoutStock.setLayoutParams(param);
+            mDynamicProduct.setGravity(Gravity.CENTER_VERTICAL);
+
+            mChildLayout.addView(mDynamicProduct);
+            mChildLayout.addView(mTextLayoutRSP);
+            mChildLayout.addView(mTextLayoutWSP);
+            mChildLayout.addView(mTextLayoutStock);
+
+            mDynamicList.add(new DynamicPrice(mDynamicProduct, mDynamicEditTextRSP, mDynamicEditTextWSP, mDynamicEditTextStock));
+        }
+        final Button button = new Button(this);
+        button.setText("Save Entries");
+        button.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int count = 0;
+                for(int i=0; i < mDynamicList.size(); i++){
+                    if (!TextUtils.isEmpty(mDynamicList.get(i).getEditTextRSP().getText().toString())&&!TextUtils.isEmpty(mDynamicList.get(i).getEditTextWSP().getText().toString())||(TextUtils.isEmpty(mDynamicList.get(i).getEditTextRSP().getText().toString())&&TextUtils.isEmpty(mDynamicList.get(i).getEditTextWSP().getText().toString()))){
+                        count++;
+                    }else{
+                        count =-1;
+                        break;
+                    }
+                }
+                if (count==-1){
+                    count = 0;
+                    Toast.makeText(InsertBrandPriceActivity.this, "Fill all details of a particular product", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    for (int i=0; i<mDynamicList.size(); i++){
+                        if (!TextUtils.isEmpty(mDynamicList.get(i).getEditTextRSP().getText().toString())){
+                            mProduct = mDynamicList.get(i).getTextView().getText().toString();
+                            mWSP = mDynamicList.get(i).getEditTextWSP().getText().toString();
+                            mRSP = mDynamicList.get(i).getEditTextRSP().getText().toString();
+                            mStock = mDynamicList.get(i).getEditTextStock().getText().toString();
+                            mRemarks = mEditTextRemarks.getText().toString();
+                            mCreatedBy = new UserInfoHelper(InsertBrandPriceActivity.this).getUserId();
+                            mCreatedOn = getDateTime();
+                            mUpdatedBy = new UserInfoHelper(InsertBrandPriceActivity.this).getUserId();
+                            mUpdatedOn = getDateTime();
+                            mRepresentative = mEditTextRepresentative.getText().toString();
+
+
+                            if (TextUtils.isEmpty(mRemarks))
+                                mEditTextRemarks.setError("Enter Remarks");
+                            else
+                            sendDataToServer();
+                        }
+                    }
+                    if (!TextUtils.isEmpty(mRemarks))
+                    button.setVisibility(View.GONE);
+//                    addNewDataSet();
+                }
+            }
+        });
+
+
+
+        rootLayout.addView(button);
+        mDynamicRootLayout.addView(cardView);
+
+    }
+
 
 
 

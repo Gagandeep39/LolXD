@@ -87,6 +87,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -144,6 +145,30 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </android.support.constraint.ConstraintLayout>
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/textInputLayoutRemark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/editTextRemark"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top"
+                android:inputType="textCapSentences"
+                android:nextFocusForward="@id/fab"
+                android:hint="Remarks"
+                android:minLines="2" />
+
+
+        </android.support.design.widget.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -207,22 +232,27 @@
 
         </android.support.design.widget.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/textInputLayoutRemark"
+
+
+    </LinearLayout>
+
+
+        <LinearLayout
+            android:visibility="gone"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <EditText
-                android:id="@+id/editTextRemark"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="top"
-                android:inputType="textCapSentences"
-                android:nextFocusForward="@id/fab"
-                android:hint="Remarks"
-                android:minLines="2" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/dynamicLayout">
+
+        </LinearLayout>
+        <TextView
+            android:id="@+id/textViewMessage"
+            android:layout_width="match_parent"
+            android:text="Select Brand"
+            android:gravity="center"
+            android:layout_height="50sp" />
 
 
-        </android.support.design.widget.TextInputLayout>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView"

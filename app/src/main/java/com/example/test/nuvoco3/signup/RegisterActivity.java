@@ -173,7 +173,7 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(this, "Select Department", Toast.LENGTH_SHORT).show();
 
 
-        if (!TextUtils.isEmpty(mName) && !TextUtils.isEmpty(mPhone) && isEmailValid(mEmail) && !TextUtils.isEmpty(mEmail) && !TextUtils.isEmpty(mAddress) && !TextUtils.isEmpty(mPassword1) && TextUtils.equals(mPassword1, mPassword2) && !TextUtils.equals(mArea, getString(R.string.default_name)) && !TextUtils.equals(mCity, getString(R.string.default_name)) && !TextUtils.equals(mDepartment, getString(R.string.default_name))&&mPhone.length()>10)
+        if (!TextUtils.isEmpty(mName) && !TextUtils.isEmpty(mPhone) && isEmailValid(mEmail) && !TextUtils.isEmpty(mEmail) && !TextUtils.isEmpty(mAddress) && !TextUtils.isEmpty(mPassword1) && TextUtils.equals(mPassword1, mPassword2) && !TextUtils.equals(mArea, getString(R.string.default_name)) && !TextUtils.equals(mCity, getString(R.string.default_name)) && !TextUtils.equals(mDepartment, getString(R.string.default_name))&&mPhone.length()==10)
             makeJsonObjReq();
     }
 

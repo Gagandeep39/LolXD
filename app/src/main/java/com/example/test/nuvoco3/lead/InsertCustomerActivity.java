@@ -251,7 +251,7 @@ public class InsertCustomerActivity extends AppCompatActivity {
             Log.i(TAG, "validateData: " + mCategory);
         }
 
-        if (!TextUtils.isEmpty(mName) && !TextUtils.isEmpty(mAddress) && !TextUtils.isEmpty(mPhone) && !TextUtils.isEmpty(mEmail) && !TextUtils.equals(mArea, getString(R.string.default_name)) && !TextUtils.equals(mState, "default") && !TextUtils.equals(mDistrict, getString(R.string.default_name)) && !TextUtils.equals(mType, getString(R.string.default_name)) && !TextUtils.equals(mCategory, getString(R.string.default_name)) && isEmailValid(mEmail) && !TextUtils.equals(mCategory, getString(R.string.default_name))&&mPhone.length()>=10) {
+        if (!TextUtils.isEmpty(mName) && !TextUtils.isEmpty(mAddress) && !TextUtils.isEmpty(mPhone) && !TextUtils.isEmpty(mEmail) && !TextUtils.equals(mArea, getString(R.string.default_name)) && !TextUtils.equals(mState, "default") && !TextUtils.equals(mDistrict, getString(R.string.default_name)) && !TextUtils.equals(mType, getString(R.string.default_name)) && !TextUtils.equals(mCategory, getString(R.string.default_name)) && isEmailValid(mEmail) && !TextUtils.equals(mCategory, getString(R.string.default_name))&&mPhone.length()==10) {
 
             storeData();
         }

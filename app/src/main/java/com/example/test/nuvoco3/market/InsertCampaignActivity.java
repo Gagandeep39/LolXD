@@ -373,7 +373,7 @@ public class InsertCampaignActivity extends AppCompatActivity {
         mEditTextRepresentative.setText(new UserInfoHelper(this).getUserId());
         mEditTextRepresentative.setKeyListener(null);
 
-
+        mTextViewDate.setText(getDate());
     }
 
 
@@ -434,7 +434,7 @@ public class InsertCampaignActivity extends AppCompatActivity {
                             Toast.makeText(InsertCampaignActivity.this, "Date cannot Exceed Current Date", Toast.LENGTH_SHORT).show();
                         }else {
 
-                            mTextViewDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                            mTextViewDate.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
                             DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 //        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                             Date date = new Date();

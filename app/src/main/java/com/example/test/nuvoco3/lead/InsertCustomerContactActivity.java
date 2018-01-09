@@ -154,7 +154,7 @@ public class InsertCustomerContactActivity extends AppCompatActivity {
         if (TextUtils.equals(mCustomerName, getString(R.string.default_name)))
             Toast.makeText(this, "Select Customer", Toast.LENGTH_SHORT).show();
 
-        if (mContactPhone.length()>10&&!TextUtils.isEmpty(mContactName) && !TextUtils.isEmpty(mContactPhone) && !TextUtils.isEmpty(mContactEmail) && !TextUtils.isEmpty(mContactDOB) && !TextUtils.isEmpty(mContactDOA) && !TextUtils.isEmpty(mCustomerId) && !TextUtils.isEmpty(mCustomerName) && isEmailValid(mContactEmail))
+        if (mContactPhone.length()==10&&!TextUtils.isEmpty(mContactName) && !TextUtils.isEmpty(mContactPhone) && !TextUtils.isEmpty(mContactEmail) && !TextUtils.isEmpty(mContactDOB) && !TextUtils.isEmpty(mContactDOA) && !TextUtils.isEmpty(mCustomerId) && !TextUtils.isEmpty(mCustomerName) && isEmailValid(mContactEmail))
             storeData();
     }
 
