@@ -51,6 +51,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.example.test.nuvoco3.helpers.CalendarHelper.compareSmallDate;
+import static com.example.test.nuvoco3.helpers.CalendarHelper.compareSmallDateEquality;
 import static com.example.test.nuvoco3.helpers.CalendarHelper.convertJsonTimToStandardDateTime;
 import static com.example.test.nuvoco3.helpers.CalendarHelper.getDate;
 import static com.example.test.nuvoco3.helpers.CalendarHelper.getDateTime;
@@ -294,16 +295,16 @@ public class CreateJCPActivity extends AppCompatActivity {
                     @Override
                     public void onDateSet(DatePicker view, int year,
                                           int monthOfYear, int dayOfMonth) {
-                        if (!compareSmallDate(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth, getDate())){
-
-                            Toast.makeText(CreateJCPActivity.this, "Cannot plan a visit for a Past date", Toast.LENGTH_SHORT).show();
-                        }else {
-
+                        if (compareSmallDate(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth, getDate())||compareSmallDateEquality(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth, getDate())){
                             mTextViewDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
                             DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
                             Date date = new Date();
 
                             mDate = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth + " " + dateFormat.format(date);
+
+                        }else {
+                            Toast.makeText(CreateJCPActivity.this, "Cannot plan a visit for a Past date", Toast.LENGTH_SHORT).show();
+
                         }
 
                     }

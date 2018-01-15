@@ -143,6 +143,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.startVisit:
                 mViewPager.setCurrentItem(3);
                 break;
+            case R.id.iconChangelog:
+                startActivity(new Intent(this, ChangelogActivity.class));
+                break;
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -220,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //Keeps Count of total Number of Fragments available on Swipe
         @Override
         public int getCount() {
-            return 5;
+            return 4;
         }
     }
 

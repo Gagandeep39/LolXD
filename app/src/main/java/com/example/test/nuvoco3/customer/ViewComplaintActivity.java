@@ -49,7 +49,7 @@ public class ViewComplaintActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     CoordinatorLayout mCoordinatorLayout;
     int size = 50;
-    private boolean isChecked = false;
+    private boolean isCheckedCustomer = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,10 +86,10 @@ public class ViewComplaintActivity extends AppCompatActivity {
                     }
                     else
                         size = jsonArray.length();
-                    for (int i = 0; i < size; i++) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
 
                         JSONObject object = jsonArray.getJSONObject(i);
-                        if (isChecked) {
+                        if (isCheckedCustomer) {
                             if (object.getString("createdBy").equals(new UserInfoHelper(ViewComplaintActivity.this).getUserId())) {
                                 fetchData(object);
                             }
@@ -130,19 +130,24 @@ public class ViewComplaintActivity extends AppCompatActivity {
     private void fetchData(JSONObject object) {
         try {
             if (object.getString("record_id").toLowerCase().contains(mSearchText.toLowerCase())) {
-                mComplaintId = object.getString("record_id") + "";
-                mCustomerId = object.getString("Customer_id") + "";
-                mCustomerName = object.getString("Customer_name") + "";
-                mDate = object.getString("Date") + "";
-                mType = object.getString("Type_Ofcomplaint") + "";
-                mDetails = object.getString("complaint_details") + "";
+                Log.i("dfghnjm", "fetchData: " + new UserInfoHelper(this).getUserDepartment());
+                if (new UserInfoHelper(this).getUserDepartment().contains(object.getString("Type_Ofcomplaint"))) {
 
-                mCreatedOn = object.getString("createdOn") + "";
-                mCreatedBy = object.getString("createdBy") + "";
-                mUpdatedBy = object.getString("upatedBy") + "";
-                mUpdatedOn = object.getString("upatedOn") + "";
-                mComplaintArrayList.add(new Complaints(mCustomerId, mCustomerName, mType, mDetails, mComplaintId, mDate, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy));
-                mComplaintAdapter.notifyDataSetChanged();
+                    mComplaintId = object.getString("record_id") + "";
+                    mCustomerId = object.getString("Customer_id") + "";
+                    mCustomerName = object.getString("Customer_name") + "";
+                    mDate = object.getString("Date") + "";
+                    mType = object.getString("Type_Ofcomplaint") + "";
+                    mDetails = object.getString("complaint_details") + "";
+                    Log.i("", "fetchData: wa here" );
+                    mCreatedOn = object.getString("createdOn") + "";
+                    mCreatedBy = object.getString("createdBy") + "";
+                    mUpdatedBy = object.getString("upatedBy") + "";
+                    mUpdatedOn = object.getString("upatedOn") + "";
+                    mComplaintArrayList.add(new Complaints(mCustomerId, mCustomerName, mType, mDetails, mComplaintId, mDate, mCreatedOn, mCreatedBy, mUpdatedOn, mUpdatedBy));
+                    mComplaintAdapter.notifyDataSetChanged();
+                }
+
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -184,8 +189,8 @@ public class ViewComplaintActivity extends AppCompatActivity {
             finish();
             return true;
         } else if (item.getItemId() == R.id.checkable_menu) {
-            isChecked = !item.isChecked();
-            item.setChecked(isChecked);
+            isCheckedCustomer = !item.isChecked();
+            item.setChecked(isCheckedCustomer);
             mComplaintArrayList.clear();
             mComplaintAdapter.notifyDataSetChanged();
             readData();
@@ -235,7 +240,7 @@ public class ViewComplaintActivity extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem checkable = menu.findItem(R.id.checkable_menu);
-        checkable.setChecked(isChecked);
+        checkable.setChecked(isCheckedCustomer);
         return true;
     }
 

@@ -158,6 +158,25 @@ public class CalendarHelper {
 
     }
 
+    public static boolean compareSmallDateEquality(String stringDate1, String stringDate2) {
+        String pattern = "yyyy-MM-dd";
+        DateFormat formatter = new SimpleDateFormat(pattern);
+        Date date1 = null;
+        Date date2 = null;
+        try {
+            date1 = formatter.parse(stringDate1);
+            date2 = formatter.parse(stringDate2);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if (date1.equals(date2))
+            return true;
+        else return false;
+
+
+    }
+
+
 
 
 

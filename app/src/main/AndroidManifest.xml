@@ -185,6 +185,11 @@
         <activity
             android:name=".visits.ViewVisitDetailsActivity"
             android:label="@string/title_activity_view_visit_details"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ChangelogActivity"
+            android:label="@string/title_activity_changelog"
             android:theme="@style/AppTheme"></activity>
     </application>
 

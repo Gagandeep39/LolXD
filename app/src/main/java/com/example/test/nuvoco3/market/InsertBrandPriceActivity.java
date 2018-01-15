@@ -66,9 +66,11 @@ import static com.example.test.nuvoco3.helpers.CalendarHelper.convertClickedDate
 import static com.example.test.nuvoco3.helpers.CalendarHelper.getDate;
 import static com.example.test.nuvoco3.helpers.CalendarHelper.getDateTime;
 import static com.example.test.nuvoco3.helpers.Contract.BASE_URL;
+import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_BRANDS;
 import static com.example.test.nuvoco3.helpers.Contract.DISPLAY_CUSTOMER;
 import static com.example.test.nuvoco3.helpers.Contract.INSERT_PRICES;
 import static com.example.test.nuvoco3.helpers.Contract.PROGRESS_DIALOG_DURATION;
+import static com.example.test.nuvoco3.lead.InsertCustomerActivity.TAG;
 
 public class InsertBrandPriceActivity extends AppCompatActivity {
     private static final String TAG = "BrandPrice Activity";
@@ -92,14 +94,13 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
     //Displaying recently Added items
     RecyclerView mRecyclerView;
     BrandPriceDetailsAdapter mDetailsAdapter;
-    ArrayList<BrandPrice> mBrandPricePriceList;
+    ArrayList<BrandPrice> mBrandPricePriceList, mProducatArrayList;
     int mDay, mYear, mMonth;
 
     //Dynamic Layout
     ArrayList<DynamicPrice> mDynamicList;
 
     //Product Helper
-    ProductHelper mProductHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,7 +132,6 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
         queue = Volley.newRequestQueue(this);
         progressDialog = new ProgressDialog(this);
         mBrandArrayList = new ArrayList<>();
-        mProductArrayList = new ArrayList<>();
         mCustomerArrayList = new ArrayList<>();
         mBrandPricePriceList = new ArrayList<>();
 
@@ -283,6 +283,7 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
 
    int count =0;
     // Populates Spinner with Data and allows Selection of Items
+    String tempProduct;
     private void populateSpinners() {
 
         ArrayAdapter<String> mProductAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mProductArrayList);
@@ -297,14 +298,14 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mBrand = mBrandArrayList.get(position);
-                initializeProducts(mBrand);
-                mDynamicRootLayout.setVisibility(View.VISIBLE);
+                populateProducts();
                 mTextViewMessage.setVisibility(View.GONE);
+                mDynamicRootLayout.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                mBrand = "default";
+                mBrand = getString(R.string.default_name);
 
             }
         });
@@ -316,7 +317,7 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                mProduct = "default";
+                mProduct = getString(R.string.default_name);
 
             }
         });
@@ -612,8 +613,14 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
 
                             if (TextUtils.isEmpty(mRemarks))
                                 mEditTextRemarks.setError("Enter Remarks");
-                            else
-                            sendDataToServer();
+                            else{
+
+                                mDynamicList.get(i).getEditTextWSP().setKeyListener(null);
+                                mDynamicList.get(i).getEditTextRSP().setKeyListener(null);
+                                mDynamicList.get(i).getEditTextStock().setKeyListener(null);
+                                sendDataToServer();
+
+                            }
                         }
                     }
                     if (!TextUtils.isEmpty(mRemarks))
@@ -629,6 +636,66 @@ public class InsertBrandPriceActivity extends AppCompatActivity {
         mDynamicRootLayout.addView(cardView);
 
     }
+
+
+    public void populateProducts() {
+        showProgressDialog();
+        mProductArrayList = new ArrayList<>();
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
+                BASE_URL + DISPLAY_BRANDS + "/" + mBrand, null, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.i("lol", "onResponse:  " + response);
+                if (progressDialog.isShowing()){
+                    progressDialog.dismiss();
+                }
+                try {
+                    JSONArray jsonArray = response.getJSONArray("message");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+
+                        JSONObject object = jsonArray.getJSONObject(i);
+                        tempProduct = object.getString("product");
+                        mProductArrayList.add(tempProduct);
+//                        Log.i(TAG, "onResponse: " + mRecordName);
+
+//                        }
+                    }
+                    addNewDataSet();
+
+                } catch (JSONException e1) {
+                    e1.printStackTrace();
+                }
+            }
+
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("lol", "Error with Internet : " + error.getMessage());
+                // hide the progress dialog
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                // add headers <key,value>
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("x-access-token", new UserInfoHelper(InsertBrandPriceActivity.this).getUserToken());
+                return headers;
+            }
+
+
+        };
+
+        // Adding request to request queue
+        queue.add(jsonObjReq);
+
+//            progressDialog.dismiss();
+        Log.d(TAG, "getRecordName: i" +"deftg;");
+    }
+
 
 
 

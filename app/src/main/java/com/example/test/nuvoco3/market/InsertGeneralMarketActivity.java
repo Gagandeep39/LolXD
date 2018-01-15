@@ -69,7 +69,7 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
     MasterHelper mBrandHelper, mProductHelper;
     ArrayList<String> mBrandList, mProductList;
     ArrayAdapter mBrandAdapter, mProductAdapter;
-    TextView mTextViewDate;
+    TextInputEditText mTextViewDate;
     int mYear, mMonth, mDay;
     boolean isChecked = false;
     ArrayAdapter<String> mCustomerAdapter;
@@ -298,7 +298,10 @@ public class InsertGeneralMarketActivity extends AppCompatActivity {
         mSearchCustomer = findViewById(R.id.searchCategoryCustomer);
         mSearchProduct = findViewById(R.id.searchCategoryProduct);
         mSearchBrand = findViewById(R.id.searchCategoryBrand);
-        mTextViewDate = findViewById(R.id.textViewDate);
+        mTextViewDate = findViewById(R.id.editTextDate);
+
+
+        mTextViewDate.setText(getDate());
         mEditTextRepresentative.setText(new UserInfoHelper(this).getUserId());
         mEditTextRepresentative.setKeyListener(null);
     }

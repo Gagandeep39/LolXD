@@ -84,4 +84,5 @@
     <string name="created_by_nuvoco">Created By Nuvoco IT Team</string>
     <string name="empty">Empty</string>
     <string name="title_activity_view_visit_details">ViewVisitDetailsActivity</string>
+    <string name="title_activity_changelog">ChangelogActivity</string>
 </resources>
