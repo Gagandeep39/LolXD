@@ -1,89 +1,230 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16sp"
-    tools:context=".lead.InsertCustomerContactActivity">
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/textInputLayoutName"
-        android:layout_width="match_parent"
-        android:layout_height="59dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.413"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+    android:fitsSystemWindows="true"
+    tools:context=".lead.ViewCustomerActivity">
 
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/textInputEditEmployName"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                app:title="Add new Contact" />
+
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Name of Employ" />
-    </android.support.design.widget.TextInputLayout>
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/textInputLayoutAddress"
-        android:layout_width="match_parent"
-        android:layout_height="59dp"
-        app:layout_constraintEnd_toEndOf="@+id/textInputLayoutCategory"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/textInputLayoutCategory"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutCategory">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="16sp"
+            tools:context=".lead.InsertCustomerContactActivity">
 
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/textInputEditEmployPhone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Phone Number of Employ"
-            android:inputType="phone" />
-    </android.support.design.widget.TextInputLayout>
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8sp"
+                android:visibility="gone">
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/textInputLayoutArea"
-        android:layout_width="match_parent"
-        android:layout_height="59dp"
-        app:layout_constraintEnd_toEndOf="@+id/textInputLayoutAddress"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/textInputLayoutAddress"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutAddress">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Select Customer" />
 
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/textInputEditEmployEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Email ID of Employ" />
-    </android.support.design.widget.TextInputLayout>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Date of Birth"/>
-    <TextView
-        android:id="@+id/textViewSelectDOB"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="datePickerFunction"
-        android:padding="16sp"
-        android:text="Select Date"
-        android:textSize="20sp" />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Date of A"/>
-    <TextView
-        android:id="@+id/textViewSelectDOA"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="datePickerFunction"
-        android:padding="16sp"
-        android:text="Select Date"
-        android:textSize="20sp" />
-    <Button
-        android:id="@+id/Done"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="insertData"
-        android:padding="16sp"
-        android:text="Done"/>
+                <com.toptoche.searchablespinnerlibrary.SearchableSpinner
 
-</LinearLayout>
+                    android:id="@+id/searchCustomer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:hintText="Default" />
+            </LinearLayout>
+
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/textInputLayoutCustomerName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.413"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/textInputEditCustomerName"
+                    android:focusable="false"
+                    android:hint="Customer Name"
+                    android:layout_width="match_parent"
+                    android:inputType="textCapWords"
+                    android:longClickable="false"
+                    android:layout_height="wrap_content"
+                    android:nextFocusForward="@+id/textInputEditContactName" />
+            </android.support.design.widget.TextInputLayout>
+
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/textInputLayoutContactName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/textInputEditContactName"
+                    android:layout_width="match_parent"
+                    android:inputType="textCapWords"
+                    android:nextFocusForward="@+id/textInputEditContactPhone"
+                    android:layout_height="wrap_content"
+                    android:hint="Name of Contact Person" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/textInputLayoutContactPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/textInputEditContactPhone"
+                    android:layout_width="match_parent"
+                    android:inputType="phone"
+                    android:layout_height="wrap_content"
+                    android:hint="Phone Number"
+                    android:maxLength="10"
+                    android:nextFocusForward="@+id/textInputEditContactEmail" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/textInputLayoutContactEmail"
+                android:layout_width="match_parent"
+                android:layout_height="59dp">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/textInputEditContactEmail"
+                    android:layout_width="match_parent"
+                    android:hint="@string/email_id"
+                    android:inputType="textEmailAddress"
+                    android:maxLength="50"
+                    android:layout_height="wrap_content"
+                    android:nextFocusForward="@+id/textViewSelectDOB" />
+            </android.support.design.widget.TextInputLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select Date" />
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textViewSelectDOB"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:onClick="datePickerFunction"
+                    android:padding="@dimen/padding_medium"
+                    android:text="Select Date of Birth"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/imageViewCalendar"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/imageViewCalendar1"
+                    android:layout_width="30sp"
+                    android:layout_height="30sp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:onClick="datePickerFunction"
+                    android:src="@drawable/ic_today_grey"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </android.support.constraint.ConstraintLayout>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select Date of Anniversary" />
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textViewSelectDOA"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:onClick="datePickerFunction"
+                    android:padding="@dimen/padding_medium"
+                    android:text="Select Date"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/imageViewCalendar"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/imageViewCalendar2"
+                    android:layout_width="30sp"
+                    android:layout_height="30sp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:clickable="true"
+                    android:onClick="datePickerFunction"
+                    android:src="@drawable/ic_today_grey"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </android.support.constraint.ConstraintLayout>
+
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabAddData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@drawable/ic_done_black_24dp" />
+
+</android.support.design.widget.CoordinatorLayout>
+
+
+

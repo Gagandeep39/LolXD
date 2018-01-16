@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8sp"
+    android:layout_marginEnd="8sp"
+    android:layout_marginStart="8sp"
+    android:elevation="18sp"
+    android:orientation="vertical"
+    android:padding="16sp">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/imageViewExpandLess"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:clickable="true"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_expand_less_black_24dp" />
+
+        <ImageView
+            android:id="@+id/imageViewExpand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:clickable="true"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_expand_more_black_24dp" />
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imageViewIcon"
+            android:padding="@dimen/padding_medium"
+            android:layout_width="100sp"
+            android:layout_height="100sp"
+            android:src="@color/colorAccent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageViewIcon"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:text="@string/counter"
+                android:id="@+id/textViewCounter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_medium" />
+
+            <TextView
+                android:text="@string/brand"
+                android:id="@+id/textViewBrand"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_small" />
+
+            <TextView
+                android:text="@string/product"
+                android:id="@+id/textViewProduct"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_small" />
+
+            <TextView
+                android:text="@string/stock"
+                android:id="@+id/textViewStock"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_small" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:padding="@dimen/padding_smallest"
+            android:id="@+id/linearLayoutExpanded"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageViewIcon">
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/padding_smallest">
+
+                <TextView
+                    android:id="@+id/textViewDetails"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:background="?attr/selectableItemBackground"
+                    android:padding="@dimen/padding_medium"
+                    android:text="@string/details"
+                    android:textAllCaps="true"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="@dimen/text_medium"
+                    android:textStyle="bold" />
+            </FrameLayout>
+
+
+        </LinearLayout>
+
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v7.widget.CardView>
