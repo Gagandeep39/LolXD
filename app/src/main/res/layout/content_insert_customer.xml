@@ -7,71 +7,52 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16sp"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.test.nuvoco3.lead.InsertCustomerActivity">
 
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/textInputLayoutName"
         android:layout_width="match_parent"
-        android:layout_height="59dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.413"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="wrap_content">
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/textInputEditName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Name" />
+            android:hint="Name"
+            android:inputType="textCapWords"
+            android:nextFocusForward="@+id/textInputEditPhone"
+            android:nextFocusDown="@id/textInputEditPhone" />
     </android.support.design.widget.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/textInputLayoutPhone"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="59dp"
-        app:layout_constraintEnd_toEndOf="@+id/textInputLayoutState"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/textInputLayoutState"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutState">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8sp">
 
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/textInputEditPhone"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Phone No. "
-            android:inputType="phone"
-            android:maxLength="13" />
-    </android.support.design.widget.TextInputLayout>
+            android:text="Customer Type" />
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/textInputLayoutEmail"
-        android:layout_width="match_parent"
-        android:layout_height="59dp"
-        app:layout_constraintEnd_toEndOf="@+id/textInputLayoutPhone"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/textInputLayoutPhone"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPhone">
+        <com.toptoche.searchablespinnerlibrary.SearchableSpinner
 
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/textInputEditEmail"
+            android:id="@+id/searchType"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email" />
+            android:visibility="gone"
+            app:hintText="Default" />
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/textInputLayoutAddress"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="@+id/textInputLayoutCategory"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/textInputLayoutCategory"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutCategory">
+            android:padding="8sp"
+            android:text="Prospect"
+            android:textColor="#000000" />
+    </LinearLayout>
 
-
-        </android.support.design.widget.TextInputLayout>
-
-    </android.support.design.widget.TextInputLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -92,6 +73,83 @@
             app:hintText="Default" />
     </LinearLayout>
 
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/textInputLayoutPhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/textInputLayoutState"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textInputLayoutState"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutState">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/textInputEditPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Phone No. "
+            android:nextFocusForward="@+id/textInputEditEmail"
+            android:inputType="phone"
+            android:maxLength="10"
+            android:maxLines="1" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/textInputLayoutEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/textInputLayoutPhone"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textInputLayoutPhone"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPhone">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/textInputEditEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
+            android:nextFocusForward="@+id/textInputEditAddress" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+            android:id="@+id/textInputLayoutAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@+id/textInputLayoutCategory"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/textInputLayoutCategory"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutCategory">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/textInputEditAddress"
+                android:gravity="start"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Address"
+                android:minLines="3" />
+
+
+        </android.support.design.widget.TextInputLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8sp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select State" />
+
+        <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+            android:id="@+id/searchState"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:hintText="Default" />
+    </LinearLayout>
 
     <!--<android.support.v7.widget.AppCompatSpinner-->
     <!--android:id="@+id/spinnerCategory"-->
@@ -134,42 +192,8 @@
             app:hintText="Default" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="8sp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Select State" />
-
-        <com.toptoche.searchablespinnerlibrary.SearchableSpinner
-            android:id="@+id/searchState"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:hintText="Default" />
-    </LinearLayout>
-
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/textInputLayoutCreatedBy"
-        android:layout_width="match_parent"
-        android:layout_height="59dp"
-        app:layout_constraintEnd_toEndOf="@+id/textInputLayoutPhone"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/textInputLayoutPhone"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPhone">
-
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/textInputEditCreatedBy"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Created By" />
-    </android.support.design.widget.TextInputLayout>
-
-
-<!--To Prevent Glitches-->
+    <!--To Prevent Glitches-->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="40sp" />
