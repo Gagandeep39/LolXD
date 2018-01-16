@@ -22,8 +22,6 @@
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/AppTheme.PopupOverlay"
                 app:title="Capture Prices" />
-
-        <!--</android.support.design.widget.CollapsingToolbarLayout>-->
     </android.support.design.widget.AppBarLayout>
 
     <include layout="@layout/content_insert_brand_price" />
